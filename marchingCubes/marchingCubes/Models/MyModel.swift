@@ -5,10 +5,16 @@
 //  Created by 温嘉宝 on 22.10.2024.
 //
 
+import SwiftData
 import Foundation
 
-struct MyModel: Identifiable {
-    var id = UUID()
+@Model
+class MyModel {
+    var id: UUID
     var title: String
-    var description: String
+    
+    init(id: UUID = UUID(), title: String) {
+        self.id = id
+        self.title = title
+    }
 }

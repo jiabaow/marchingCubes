@@ -6,18 +6,44 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MyView: View {
-    @StateObject var viewModel = MyViewModel() // Creating instance of ViewModel
+    @StateObject var viewModel = MyViewModel()  // ViewModel instance
+    @Environment(\.modelContext) var modelContext  // Access the SwiftData context
+    
+    @State private var title: String = ""
     
     var body: some View {
-        List(viewModel.models) { model in
-            VStack(alignment: .leading) {
-                Text(model.title)
-                    .font(.headline)
-                Text(model.description)
-                    .font(.subheadline)
+        VStack {
+            List(viewModel.models) { model in
+                VStack(alignment: .leading) {
+                    Text(model.title)
+                        .font(.headline)
+                }
             }
+            
+            // Form to add a new item
+            VStack {
+                TextField("Title", text: $title)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                
+                Button(action: {
+                    viewModel.addModel(title: title, modelContext: modelContext)
+                    title = ""
+                }) {
+                    Text("Add Item")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }
+            .padding()
+        }
+        .onAppear {
+            viewModel.fetchData(modelContext: modelContext)
         }
     }
 }

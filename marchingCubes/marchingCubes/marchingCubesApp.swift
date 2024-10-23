@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
-struct marchingCubesApp: App {
+struct MyAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(for: MyModel.self)  // Setup SwiftData for the model
         }
     }
 }
