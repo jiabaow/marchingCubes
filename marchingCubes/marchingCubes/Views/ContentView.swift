@@ -9,9 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        NavigationView {
-            MyView()
-                .navigationTitle("My Items")
+        TabView {
+            Dashboard()
+                .tabItem {
+                    Label("Dashboard", systemImage: "house.fill")
+                }
+
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person.fill")
+                }
         }
     }
 }

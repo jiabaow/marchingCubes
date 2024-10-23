@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct MyView: View {
+struct Dashboard: View {
     @StateObject var viewModel = MyViewModel()  // ViewModel instance
     @Environment(\.modelContext) var modelContext  // Access the SwiftData context
     
@@ -50,6 +50,6 @@ struct MyView: View {
 
 struct MyView_Previews: PreviewProvider {
     static var previews: some View {
-        MyView()
+        Dashboard()
     }
 }
