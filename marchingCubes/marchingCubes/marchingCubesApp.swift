@@ -10,6 +10,10 @@ import SwiftData
 
 @main
 struct MyAppApp: App {
+    init() {
+//        testRabbitModel()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
