@@ -12,6 +12,7 @@ import Foundation
 class MyViewModel: ObservableObject {
     @Published var models: [MyModel] = []
     
+    // autoload all files in
     init() {
         if let fileUrls = getCachedFiles() {
             for fileUrl in fileUrls {
@@ -19,7 +20,7 @@ class MyViewModel: ObservableObject {
             }
         }
     }
-
+    
     // Fetch all models from the SwiftData store
     func fetchData(modelContext: ModelContext) {
         let request = FetchDescriptor<MyModel>()

@@ -20,7 +20,7 @@ struct Upload: View {
     var body: some View {
         VStack {
             // Upload title
-            Text("Upload")
+            Text("Upload Your File")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
@@ -35,7 +35,7 @@ struct Upload: View {
                 .frame(height: 200)
                 .foregroundColor(.gray)
                 .overlay(
-                    Text("Upload File (.obj)")
+                    Text("Choose file (.obj)")
                         .foregroundColor(.gray)
                 )
                 .padding(.horizontal)
