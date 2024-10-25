@@ -14,10 +14,6 @@ struct ContentView: View {
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
                 }
-            Upload()
-                .tabItem {
-                    Label("Upload", systemImage: "square.and.arrow.up.fill")
-                }
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")

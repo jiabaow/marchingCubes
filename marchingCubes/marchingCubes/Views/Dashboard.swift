@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct Dashboard: View {
+    @State private var showDocumentPicker = false
     @StateObject var viewModel = MyViewModel()  // ViewModel instance
     @Environment(\.modelContext) var modelContext  // Access the SwiftData context
     
@@ -16,21 +17,30 @@ struct Dashboard: View {
     
     var body: some View {
         VStack {
-            List(viewModel.models) { model in
-                VStack(alignment: .leading) {
-                    Text(model.title)
-                        .font(.headline)
+            
+            List {
+                ForEach(viewModel.models) { model in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(model.title)
+                                .font(.headline)
+                        }
+                        Spacer()
+                        Button(action: {
+                            viewModel.removeModel(model, modelContext: modelContext)
+                        }) {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
                 }
             }
             
             // Form to add a new item
             VStack {
-                TextField("Title", text: $title)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
                 Button(action: {
-                    viewModel.addModel(title: title, modelContext: modelContext)
-                    title = ""
+                    showDocumentPicker = true
                 }) {
                     Text("Add Item")
                         .padding()
@@ -41,6 +51,14 @@ struct Dashboard: View {
                 }
             }
             .padding()
+            .sheet(isPresented: $showDocumentPicker) {
+                DocumentPicker {
+                    url in
+                    saveDocumentToCache(from: url)
+                    viewModel.addModel(title: url.absoluteString, modelContext: modelContext)
+                    showDocumentPicker = false
+                }
+            }
         }
         .onAppear {
             viewModel.fetchData(modelContext: modelContext)
