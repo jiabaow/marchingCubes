@@ -18,6 +18,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
+//            MarchingCubesView()
+//                .tabItem {
+//                    Label("Test", systemImage: "person.fill")
+//                }
         }
     }
 }

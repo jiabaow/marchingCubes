@@ -5,7 +5,6 @@
 //  Created by Charles Weng on 10/23/24.
 //
 import Foundation
-
 import SwiftUI
 
 struct Upload: View {
@@ -16,6 +15,7 @@ struct Upload: View {
     @StateObject var viewModel = MyViewModel()
     // Access the SwiftData context
     @Environment(\.modelContext) var modelContext
+    @State private var searchQuery: String = ""
 
     var body: some View {
         VStack {
@@ -24,6 +24,19 @@ struct Upload: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
+
+            // Search Bar
+            HStack {
+                TextField("Search files...", text: $searchQuery)
+                    .padding(10)
+                    .background(Color(UIColor.systemGray5))
+                    .cornerRadius(10)
+                    .padding(.leading)
+                Spacer()
+                Image(systemName: "magnifyingglass")
+                    .padding(.trailing)
+            }
+            .padding(.bottom, 10)
 
             // Tappable RoundedRectangle for Upload Image
             ZStack {
@@ -61,7 +74,9 @@ struct Upload: View {
 
             // The new cached files list view
             List {
-                ForEach(viewModel.models) { model in
+                ForEach(viewModel.models.filter { model in
+                    searchQuery.isEmpty || model.title.lowercased().contains(searchQuery.lowercased())
+                }) { model in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(model.title)
@@ -76,6 +91,30 @@ struct Upload: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
+                }
+            }
+
+            Spacer()
+
+            // Add Button
+            Button(action: {
+                showDocumentPicker = true
+            }) {
+                Image(systemName: "plus")
+                    .font(.system(size: 24))
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 5)
+            }
+            .padding(.bottom, 30)
+            .sheet(isPresented: $showDocumentPicker) {
+                DocumentPicker { url in
+                    self.selectedFileURL = url
+                    saveDocumentToCache(from: url)
+                    viewModel.addModel(title: url.absoluteString, modelContext: modelContext)
+                    showDocumentPicker = false
                 }
             }
         }

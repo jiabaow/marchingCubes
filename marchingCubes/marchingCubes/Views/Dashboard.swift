@@ -3,23 +3,35 @@
 //  marchingCubes
 //
 //  Created by 温嘉宝 on 22.10.2024.
-//
 
 import SwiftUI
 import SwiftData
 
 struct Dashboard: View {
     @State private var showDocumentPicker = false
-    @StateObject var viewModel = MyViewModel()  // ViewModel instance
-    @Environment(\.modelContext) var modelContext  // Access the SwiftData context
-    
-    @State private var title: String = ""
-    
+    @State private var searchQuery: String = ""
+    @StateObject var viewModel = MyViewModel()
+    @Environment(\.modelContext) var modelContext
+
     var body: some View {
         VStack {
-            
+            // Welcome text
+            Text("Welcome back")
+                .font(.largeTitle)
+                .padding(.top)
+
+            // Search bar
+            TextField("Search uploads...", text: $searchQuery)
+                .padding(10)
+                .background(Color(UIColor.systemGray5))
+                .cornerRadius(10)
+                .padding(.horizontal)
+
+            // Recent Creations and Uploads
             List {
-                ForEach(viewModel.models) { model in
+                ForEach(viewModel.models.filter { model in
+                    searchQuery.isEmpty || model.title.lowercased().contains(searchQuery.lowercased())
+                }) { model in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(model.title)
@@ -36,8 +48,8 @@ struct Dashboard: View {
                     }
                 }
             }
-            
-            // Form to add a new item
+
+            // Add button for new upload
             VStack {
                 Button(action: {
                     showDocumentPicker = true
@@ -52,8 +64,7 @@ struct Dashboard: View {
             }
             .padding()
             .sheet(isPresented: $showDocumentPicker) {
-                DocumentPicker {
-                    url in
+                DocumentPicker { url in
                     saveDocumentToCache(from: url)
                     viewModel.addModel(title: url.absoluteString, modelContext: modelContext)
                     showDocumentPicker = false
@@ -66,7 +77,7 @@ struct Dashboard: View {
     }
 }
 
-struct MyView_Previews: PreviewProvider {
+struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
         Dashboard()
     }
