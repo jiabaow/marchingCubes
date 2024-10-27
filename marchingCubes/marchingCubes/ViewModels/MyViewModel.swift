@@ -10,20 +10,20 @@ import Combine
 import Foundation
 
 class MyViewModel: ObservableObject {
-    @Published var models: [MyModel] = []
+    @Published var models: [ProjectModel] = []
     
     // autoload all files in
     init() {
         if let fileUrls = getCachedFiles() {
             for fileUrl in fileUrls {
-                self.models.append(MyModel(id: NSUUID() as UUID, title: fileUrl.absoluteString))
+                self.models.append(ProjectModel(id: NSUUID() as UUID, title: fileUrl.absoluteString))
             }
         }
     }
     
     // Fetch all models from the SwiftData store
     func fetchData(modelContext: ModelContext) {
-        let request = FetchDescriptor<MyModel>()
+        let request = FetchDescriptor<ProjectModel>()
         do {
             models = try modelContext.fetch(request)
         } catch {
@@ -33,7 +33,7 @@ class MyViewModel: ObservableObject {
 
     // Add a new model to the SwiftData store
     func addModel(title: String, modelContext: ModelContext) {
-        let newModel = MyModel(title: title)
+        let newModel = ProjectModel(title: title)
         modelContext.insert(newModel)
         saveContext(modelContext: modelContext)
         fetchData(modelContext: modelContext)
@@ -48,7 +48,7 @@ class MyViewModel: ObservableObject {
         }
     }
 
-    func removeModel(_ model: MyModel, modelContext: ModelContext) {
+    func removeModel(_ model: ProjectModel, modelContext: ModelContext) {
         if let index = models.firstIndex(where: { $0.id == model.id }) {
             models.remove(at: index)
             /*

@@ -7,7 +7,7 @@
 import Foundation
 import SwiftUI
 
-struct Upload: View {
+struct UploadView: View {
     @State private var selectedFileURL: URL?
     @State private var showDocumentPicker = false
     @State private var selectedFileText: String = ""
@@ -124,6 +124,6 @@ struct Upload: View {
 
 struct Upload_Previews: PreviewProvider {
     static var previews: some View {
-        Upload()
+        UploadView()
     }
 }
