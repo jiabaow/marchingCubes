@@ -18,9 +18,14 @@ struct ContentView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-//            MarchingCubesView()
+            
+            MarchingCubesView()
+                .tabItem {
+                    Label("Test", systemImage: "square.fill")
+            }
+//            CubeView()
 //                .tabItem {
-//                    Label("Test", systemImage: "person.fill")
+//                    Label("Cube", systemImage: "square.fill")
 //                }
         }
     }

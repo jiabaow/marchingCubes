@@ -3,7 +3,7 @@ import SceneKit
 
 struct MarchingCubesView: View {
     let filename = "rabbit"
-    let divisions = 5
+    let divisions = 15
 
     @State private var isLoading = true
 
@@ -61,7 +61,7 @@ struct SceneView: UIViewRepresentable {
             }
 
             let voxelGrid = convertTo3DArray(voxelArray: voxarr)
-            let mcNode = marchingCubes(data: voxelGrid)
+            let mcNode = marchingCubes2(data: voxelGrid, spacing: 0.5)
 
             // Create outline by duplicating the node
             let outlineNode = mcNode.clone()
