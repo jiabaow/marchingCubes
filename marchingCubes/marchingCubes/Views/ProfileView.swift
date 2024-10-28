@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SceneKit
 
 struct ProfileView: View {
     var body: some View {
-        Text("profile page place holder")
+        Text("profile placeholder")
     }
 }
 

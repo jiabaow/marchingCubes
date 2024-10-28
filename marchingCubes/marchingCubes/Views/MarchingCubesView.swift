@@ -2,10 +2,16 @@ import SwiftUI
 import SceneKit
 
 struct MarchingCubesView: View {
-    let filename = "rabbit"
-    let divisions = 5
+    let filename: String
+    let divisions: Int
 
     @State private var isLoading = true
+    
+    // Optional initializer
+    init(filename: String = "rabbit", divisions: Int = 15) {
+        self.filename = filename
+        self.divisions = divisions
+    }
 
     var body: some View {
         ZStack {
@@ -61,7 +67,7 @@ struct SceneView: UIViewRepresentable {
             }
 
             let voxelGrid = convertTo3DArray(voxelArray: voxarr)
-            let mcNode = marchingCubes(data: voxelGrid)
+            let mcNode = marchingCubes2(data: voxelGrid, spacing: 0.5)
 
             // Create outline by duplicating the node
             let outlineNode = mcNode.clone()
