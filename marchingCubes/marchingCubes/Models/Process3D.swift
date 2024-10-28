@@ -29,6 +29,10 @@ func testRabbitModel() {
     }
 }
 
+func loadOBJ(filename: URL) -> MDLAsset? {
+    return MDLAsset(url: filename)
+}
+
 func loadOBJ(filename: String) -> MDLAsset? {
     guard let url = Bundle.main.url(forResource: filename, withExtension: "obj") else {
         print("Failed to find the .obj file.")

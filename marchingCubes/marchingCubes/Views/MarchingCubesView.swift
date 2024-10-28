@@ -2,10 +2,16 @@ import SwiftUI
 import SceneKit
 
 struct MarchingCubesView: View {
-    let filename = "rabbit"
-    let divisions = 15
+    let filename: String
+    let divisions: Int
 
     @State private var isLoading = true
+    
+    // Optional initializer
+    init(filename: String = "rabbit", divisions: Int = 15) {
+        self.filename = filename
+        self.divisions = divisions
+    }
 
     var body: some View {
         ZStack {
