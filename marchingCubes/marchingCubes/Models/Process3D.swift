@@ -192,7 +192,12 @@ func marchingCubes2(data: [[[Int]]], spacing: Float) -> SCNNode {
                 let b2 = data[i+1][j+1][k]
                 let a2 = data[i+1][j+1][k+1]
                 let a1 = data[i][j+1][k+1]
-
+                
+                // Create a material and make it double-sided
+                let material = SCNMaterial()
+                material.isDoubleSided = true
+                material.diffuse.contents = UIColor.green
+                
                 if !indices.isEmpty {
                     if (b4 == 1 && a1 == 0 && a2 == 0 && a3 == 0 && a4 == 0 && b1 == 0 && b2 == 0 && b3 == 0) {
                         let vertices: [SCNVector3] = [
@@ -212,17 +217,13 @@ func marchingCubes2(data: [[[Int]]], spacing: Float) -> SCNNode {
                             0, 2, 3,  // Triangle 3
                             1, 2, 3   // Triangle 4
                         ]
+                        
+                        
                         // Create geometry element
                         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
                         
-                        
                         // Create geometry
                         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
-
-                        // Create a material and make it double-sided
-                        let material = SCNMaterial()
-                        material.isDoubleSided = true
-                        material.diffuse.contents = UIColor.green
                         
                         // Assign the material to the geometry
                         geometry.materials = [material]
@@ -231,8 +232,8 @@ func marchingCubes2(data: [[[Int]]], spacing: Float) -> SCNNode {
                         let node = SCNNode(geometry: geometry)
                         
                         parentNode.addChildNode(node)
-
                     }
+                    
                     
                     let geometry = SCNGeometry(
                         sources: [SCNGeometrySource(vertices: vertices)],
