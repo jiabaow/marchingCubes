@@ -195,45 +195,43 @@ func marchingCubes2(data: [[[Int]]], spacing: Float) -> SCNNode {
 
                 if !indices.isEmpty {
                     if (b4 == 1 && a1 == 0 && a2 == 0 && a3 == 0 && a4 == 0 && b1 == 0 && b2 == 0 && b3 == 0) {
-                        // Temporary container for geometries
-                        var brepTemp: [SCNGeometry] = []
-
-                        // Create the boundary face (z = 0.5)
-                        let pt_a = SCNVector3(Float(i), Float(j), Float(k) + 0.5)   // PointAt(0, 0, 0.5) => mid z
-                        let pt_b = SCNVector3(Float(i) + 0.5, Float(j), Float(k))   // PointAt(0.5, 0, 0) => mid x
-                        let pt_c = SCNVector3(Float(i), Float(j) + 0.5, Float(k))   // PointAt(0, 0.5, 0) => mid y
-                        let boundaryFace = createTriangleGeometry(ptA: pt_a, ptB: pt_b, ptC: pt_c)
-                        brepTemp.append(boundaryFace)
-
-                        // Create the x=0 face
-                        let pt_x0_a = SCNVector3(Float(i), Float(j), Float(k))
-                        let pt_x0_b = SCNVector3(Float(i), Float(j) + 0.5, Float(k)) // PointAt(0, 0.5, 0)
-                        let pt_x0_c = SCNVector3(Float(i), Float(j), Float(k) + 0.5) // PointAt(0, 0, 0.5)
-                        let x0Face = createTriangleGeometry(ptA: pt_x0_a, ptB: pt_x0_b, ptC: pt_x0_c)
-                        brepTemp.append(x0Face)
-
-                        // Create the y=0 face
-                        let pt_y0_a = SCNVector3(Float(i), Float(j), Float(k))
-                        let pt_y0_b = SCNVector3(Float(i) + 0.5, Float(j), Float(k)) // PointAt(0.5, 0, 0)
-                        let pt_y0_c = SCNVector3(Float(i), Float(j), Float(k) + 0.5) // PointAt(0, 0, 0.5)
-                        let y0Face = createTriangleGeometry(ptA: pt_y0_a, ptB: pt_y0_b, ptC: pt_y0_c)
-                        brepTemp.append(y0Face)
-
-                        // Create the z=0 face
-                        let pt_z0_a = SCNVector3(Float(i), Float(j), Float(k))
-                        let pt_z0_b = SCNVector3(Float(i), Float(j) + 0.5, Float(k)) // PointAt(0, 0.5, 0)
-                        let pt_z0_c = SCNVector3(Float(i) + 0.5, Float(j), Float(k)) // PointAt(0.5, 0, 0)
-                        let z0Face = createTriangleGeometry(ptA: pt_z0_a, ptB: pt_z0_b, ptC: pt_z0_c)
-                        brepTemp.append(z0Face)
+                        let vertices: [SCNVector3] = [
+                            SCNVector3(Float(i), Float(j), Float(k)),
+                            SCNVector3(Float(i), Float(j), Float(k) + 0.5),
+                            SCNVector3(Float(i), Float(j) + 0.5, Float(k)),
+                            SCNVector3(Float(i) + 0.5, Float(j), Float(k))
+                        ]
                         
-                        for geometry in brepTemp {
-                            let node = SCNNode(geometry: geometry)
-                            // Disable backface culling to show all faces
-                            node.geometry?.firstMaterial?.writesToDepthBuffer = true
-                            node.geometry?.firstMaterial?.readsFromDepthBuffer = false
-                            node.geometry?.firstMaterial?.isDoubleSided = true
-                            parentNode.addChildNode(node)
-                        }
+                        // Create geometry source
+                        let vertexSource = SCNGeometrySource(vertices: vertices)
+                        
+                        // Define indices for a closed geometry (e.g., a tetrahedron)
+                        let indices: [Int32] = [
+                            0, 1, 2,  // Triangle 1
+                            0, 1, 3,  // Triangle 2
+                            0, 2, 3,  // Triangle 3
+                            1, 2, 3   // Triangle 4
+                        ]
+                        // Create geometry element
+                        let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
+                        
+                        
+                        // Create geometry
+                        let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
+
+                        // Create a material and make it double-sided
+                        let material = SCNMaterial()
+                        material.isDoubleSided = true
+                        material.diffuse.contents = UIColor.green
+                        
+                        // Assign the material to the geometry
+                        geometry.materials = [material]
+                        
+                        // Use the geometry in a node
+                        let node = SCNNode(geometry: geometry)
+                        
+                        parentNode.addChildNode(node)
+
                     }
                     
                     let geometry = SCNGeometry(
@@ -242,8 +240,9 @@ func marchingCubes2(data: [[[Int]]], spacing: Float) -> SCNNode {
                     )
                     
                     let node = SCNNode(geometry: geometry)
-                    node.position = SCNVector3(Float(i), Float(j), Float(k)) // Set position with spacing
-                    parentNode.addChildNode(node) // Add the node to the parent
+//                    node.position = SCNVector3(Float(i), Float(j), Float(k)) // Set position with spacing
+                    node.scale = SCNVector3(0.998, 0.998, 0.998)
+//                    parentNode.addChildNode(node) // Add the node to the parent
 
                     // Clear vertices and indices for the next cube
                     vertices.removeAll()
