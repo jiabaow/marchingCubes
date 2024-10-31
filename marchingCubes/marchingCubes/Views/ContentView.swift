@@ -14,19 +14,18 @@ struct ContentView: View {
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
                 }
+            UploadView()
+                .tabItem {
+                    Label("Upload", systemImage: "arrow.up")
+                }
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-            
-            MarchingCubesView()
-                .tabItem {
-                    Label("Test", systemImage: "square.fill")
-            }
-//            CubeView()
+//            MarchingCubesView()
 //                .tabItem {
-//                    Label("Cube", systemImage: "square.fill")
-//                }
+//                    Label("Test", systemImage: "square.fill")
+//            }
         }
     }
 }
