@@ -4,12 +4,47 @@
 //
 //  Created by Charles Weng on 10/23/24.
 //
-
 import Foundation
+import SceneKit
+
+// Helper function to get the 3dFiles directory inside the app's directory
+func get3DFilesDirectory() -> URL? {
+    let fileManager = FileManager.default
+
+    // Get the app's documents directory
+    if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+        let threeDFilesDirectory = documentsDirectory.appendingPathComponent("3dFiles")
+
+        // Create the 3dFiles directory if it doesn't exist
+        if !fileManager.fileExists(atPath: threeDFilesDirectory.path) {
+            do {
+                try fileManager.createDirectory(at: threeDFilesDirectory, withIntermediateDirectories: true)
+                print("Created 3dFiles directory at: \(threeDFilesDirectory)")
+            } catch {
+                print("Error creating 3dFiles directory: \(error)")
+                return nil
+            }
+        }
+        return threeDFilesDirectory
+    }
+    return nil
+}
+
+// Function to check if a file exists in the 3dFiles directory
+func fileExistsIn3DFiles(filename: String) -> Bool {
+    guard let threeDFilesDirectory = get3DFilesDirectory() else {
+        print("3dFiles directory not found")
+        return false
+    }
+
+    let fileURL = threeDFilesDirectory.appendingPathComponent(filename)
+    return FileManager.default.fileExists(atPath: fileURL.path)
+}
 
 func getCachedFiles() -> [URL]? {
     let fileManager = FileManager.default
-    if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+
+    if let cacheDirectory = get3DFilesDirectory() {
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil)
             return fileURLs
@@ -25,28 +60,28 @@ func removeFile(at url: URL) {
 
     do {
         try fileManager.removeItem(at: url)
+        print("File removed: \(url)")
     } catch {
         print("Error removing file: \(error)")
     }
 }
 
-// Function to save the document to the cache directory
 func saveDocumentToCache(from url: URL) {
     let fileManager = FileManager.default
 
-    // Create a cache directory URL
-    if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+    if let cacheDirectory = get3DFilesDirectory() {
         let cachedFileURL = cacheDirectory.appendingPathComponent(url.lastPathComponent)
-
+        print(cachedFileURL.absoluteString)
         // Remove existing file if it exists
         try? fileManager.removeItem(at: cachedFileURL)
 
         do {
-            // Copy the file to the cache directory
+            // Copy the file to the 3dFiles directory
             try fileManager.copyItem(at: url, to: cachedFileURL)
-            print("File saved to cache at: \(cachedFileURL)")
+            print("File saved to 3dFiles at: \(cachedFileURL)")
         } catch {
-            print("Error saving file to cache: \(error)")
+            print("Error saving file to 3dFiles: \(error)")
         }
     }
 }
+

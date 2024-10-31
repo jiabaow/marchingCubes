@@ -9,12 +9,14 @@ import SwiftData
 import Foundation
 
 @Model
-class ProjectModel: Model, Identifiable {
+class ProjectModel: Identifiable {
     var id: UUID
     var title: String
+    var image: String
 
-    init(id: UUID = UUID(), title: String) {
+    init(id: UUID = UUID(), title: String, image: String) {
         self.id = id
         self.title = title
+        self.image = image
     }
 }
