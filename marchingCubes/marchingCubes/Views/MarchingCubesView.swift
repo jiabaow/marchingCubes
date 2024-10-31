@@ -62,51 +62,56 @@ struct SceneView: UIViewRepresentable {
         let result: (SCNNode?, SCNNode?) = await Task {
             var voxelArray: MDLVoxelArray? = nil
             
-            if let url = get3DModelURL(filename: filename) {
-                guard let obj = loadOBJ(filename: url),
-                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                    print("Failed to load or voxelize the model.")
-                    return (nil, nil)
-                }
-                voxelArray = voxarr
-            }
-            else {
+//            if let url = get3DModelURL(filename: filename) {
+//                guard let obj = loadObjAsset(filename: url),
+//                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+//                    print("Failed to load or voxelize the model.")
+//                    return (nil, nil)
+//                }
+//                voxelArray = voxarr
+//            }
+//            else {
                 guard let obj = loadOBJ(filename: filename),
                       let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
                     print("Failed to load or voxelize the model.")
                     return (nil, nil)
                 }
                 voxelArray = voxarr
-            }
+//            }
             
             
             let voxelGrid = convertTo3DArray(voxelArray: voxelArray!)
             let mcNode = marchingCubes(data: voxelGrid)
 
             // Create outline by duplicating the node
-//             let outlineNode = mcNode.clone()
-//             outlineNode.geometry = mcNode.geometry?.copy() as? SCNGeometry
-//             outlineNode.geometry?.firstMaterial = SCNMaterial()
-//             outlineNode.geometry?.firstMaterial?.diffuse.contents = UIColor.black
-//             outlineNode.geometry?.firstMaterial?.fillMode = .lines
+             let outlineNode = mcNode.clone()
+             outlineNode.geometry = mcNode.geometry?.copy() as? SCNGeometry
+             outlineNode.geometry?.firstMaterial = SCNMaterial()
+             outlineNode.geometry?.firstMaterial?.diffuse.contents = UIColor.black
+             outlineNode.geometry?.firstMaterial?.fillMode = .lines
             
-            let mcNode2 = marchingCubesV2(data: voxelGrid)
+//            let mcNode2 = marchingCubesV2(data: voxelGrid)
             
-             let mcNodeTest = testGetCube()
+//             let mcNodeTest = testGetCube()
             
             // Return an array of nodes
-            return [mcNode2]
-//            return [mcNode, outlineNode]
+//            return [mcNode]
+            return (mcNode, outlineNode)
 //            return [mcNodeTest]
         }.value
 
         // Update UI on the main thread
         DispatchQueue.main.async {
-            for node in result {
-                if let validNode = node {
-                    scene.rootNode.addChildNode(validNode)
-                }
+            if let mcNode = result.0, let outlineNode = result.1 {
+                scene.rootNode.addChildNode(mcNode)
+                scene.rootNode.addChildNode(outlineNode)
             }
+            addLights(to: scene)
+//            for node in result {
+//                if let validNode = node {
+//                    scene.rootNode.addChildNode(validNode)
+//                }
+//            }
             addLights(to: scene)
             isLoading = false
         }

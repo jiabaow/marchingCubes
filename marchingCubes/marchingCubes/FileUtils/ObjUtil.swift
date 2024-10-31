@@ -79,7 +79,7 @@ func get3DModelURL(filename: String) -> URL? {
     return directory.appendingPathComponent(filename)
 }
 
-func loadOBJ(filename: URL) -> MDLAsset? {
+func loadObjAsset(filename: URL) -> MDLAsset? {
     print("Loading model from: \(filename.path)")
     
     // Check if the file exists
