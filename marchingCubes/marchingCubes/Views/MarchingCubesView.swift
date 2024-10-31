@@ -8,7 +8,7 @@ struct MarchingCubesView: View {
     @State private var isLoading = true
     
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 7) {
+    init(filename: String = "Mesh_Anteater", divisions: Int = 7) {
         self.filename = filename
         self.divisions = divisions
     }
@@ -17,7 +17,7 @@ struct MarchingCubesView: View {
         ZStack {
             ScrollView {
                 VStack {
-                    Text("\(filename.capitalized)")
+                    Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
                         .font(.largeTitle)
                         .padding()
 
@@ -62,8 +62,8 @@ struct SceneView: UIViewRepresentable {
         let result: (SCNNode?, SCNNode?) = await Task {
             var voxelArray: MDLVoxelArray? = nil
             
-            if let fileURL = URL(string: filename) {
-                guard let obj = loadOBJ(filename: filename),
+            if let url = get3DModelURL(filename: filename) {
+                guard let obj = loadOBJ(filename: url),
                       let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
                     print("Failed to load or voxelize the model.")
                     return (nil, nil)

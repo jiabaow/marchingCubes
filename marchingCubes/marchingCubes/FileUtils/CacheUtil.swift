@@ -41,24 +41,6 @@ func fileExistsIn3DFiles(filename: String) -> Bool {
     return FileManager.default.fileExists(atPath: fileURL.path)
 }
 
-// Save the image to cache
-private func saveImageToCache(_ image: UIImage, _ filename: String) -> Bool {
-    guard let data = image.pngData() else { return false; }
-    guard let filedir = get3DFilesDirectory() else {
-        print("3dFiles directory not found")
-        return false
-    }
-    let fileURL = filedir.appendingPathComponent(filename)
-    do {
-        try data.write(to: fileURL)
-        print("Screenshot saved to cache: \(filename)")
-        return true;
-    } catch {
-        print("Error saving screenshot: \(error)")
-        return false;
-    }
-}
-
 func getCachedFiles() -> [URL]? {
     let fileManager = FileManager.default
 

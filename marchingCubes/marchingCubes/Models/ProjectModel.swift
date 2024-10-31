@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class ProjectModel: Model, Identifiable {
+class ProjectModel: Identifiable {
     var id: UUID
     var title: String
     var image: String

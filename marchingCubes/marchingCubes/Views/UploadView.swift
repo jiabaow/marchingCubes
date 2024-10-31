@@ -98,9 +98,11 @@ struct UploadView: View {
             if let url = selectedFileURL {
                 Button(action: {
                     guard let fileURL = selectedFileURL else { return }
+                    viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
                     saveDocumentToCache(from: fileURL)
                     takeScreenshot()
-                    viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
+                    print("Model obj filename: ", fileURL.lastPathComponent)
+                    print("Models inside save: ", viewModel.models)
                     selectedFileURL = nil
                     scene = nil // Clear the scene after saving
                 }) {
@@ -166,7 +168,6 @@ struct UploadView: View {
         
         // Capture screenshot
         let image = scnView.snapshot()
-        print("saving image " + "\(selectedFileURL.lastPathComponent)")
         // Save the image
         saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
     }
