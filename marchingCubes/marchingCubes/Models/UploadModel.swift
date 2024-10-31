@@ -14,9 +14,11 @@ import Foundation
 class UploadModel: Model {
     var id: UUID
     var title: String
+    var image: String
     
-    init(id: UUID, title: String) {
+    init(id: UUID, title: String, image: String) {
         self.id = id
         self.title = title
+        self.image =  image
     }
 }

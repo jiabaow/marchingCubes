@@ -8,7 +8,7 @@ struct MarchingCubesView: View {
     @State private var isLoading = true
     
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 15) {
+    init(filename: String = "rabbit", divisions: Int = 7) {
         self.filename = filename
         self.divisions = divisions
     }
@@ -59,16 +59,29 @@ struct SceneView: UIViewRepresentable {
             isLoading = true
         }
 
-        let result: [SCNNode?] = await Task {
-            guard let obj = loadOBJ(filename: filename),
-                  let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                print("Failed to load or voxelize the model.")
-                return []
+        let result: (SCNNode?, SCNNode?) = await Task {
+            var voxelArray: MDLVoxelArray? = nil
+            
+            if let fileURL = URL(string: filename) {
+                guard let obj = loadOBJ(filename: filename),
+                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                    print("Failed to load or voxelize the model.")
+                    return (nil, nil)
+                }
+                voxelArray = voxarr
             }
-
-            let voxelGrid = convertTo3DArray(voxelArray: voxarr)
-//            let mcNode = marchingCubes(data: voxelGrid)
-            // mcNode.scale = SCNVector3(0.998, 0.998, 0.998)
+            else {
+                guard let obj = loadOBJ(filename: filename),
+                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                    print("Failed to load or voxelize the model.")
+                    return (nil, nil)
+                }
+                voxelArray = voxarr
+            }
+            
+            
+            let voxelGrid = convertTo3DArray(voxelArray: voxelArray!)
+            let mcNode = marchingCubes(data: voxelGrid)
 
             // Create outline by duplicating the node
 //             let outlineNode = mcNode.clone()

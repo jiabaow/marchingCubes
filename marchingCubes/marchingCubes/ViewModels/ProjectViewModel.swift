@@ -9,16 +9,16 @@ import SwiftData
 import Combine
 import Foundation
 
-class MyViewModel: ObservableObject {
+class ProjectViewModel: ObservableObject {
     @Published var models: [ProjectModel] = []
     
     // autoload all files in
     init() {
-        if let fileUrls = getCachedFiles() {
-            for fileUrl in fileUrls {
-                self.models.append(ProjectModel(id: NSUUID() as UUID, title: fileUrl.absoluteString))
-            }
-        }
+//        if let fileUrls = getCachedFiles() {
+//            for fileUrl in fileUrls {
+//                self.models.append(ProjectModel(id: NSUUID() as UUID, title: fileUrl.absoluteString))
+//            }
+//        }
     }
     
     // Fetch all models from the SwiftData store
@@ -32,8 +32,8 @@ class MyViewModel: ObservableObject {
     }
 
     // Add a new model to the SwiftData store
-    func addModel(title: String, modelContext: ModelContext) {
-        let newModel = ProjectModel(title: title)
+    func addModel(title: String, image: String, modelContext: ModelContext) {
+        let newModel = ProjectModel(title: title, image: image)
         modelContext.insert(newModel)
         saveContext(modelContext: modelContext)
         fetchData(modelContext: modelContext)
