@@ -97,7 +97,7 @@ struct Dashboard: View {
             VStack(alignment: .leading) {
                 // Welcome text
                 Text("Welcome back")
-                    .font(.largeTitle)
+                .font(.system(size: 28, weight: .bold))
                     .padding(.top)
 
                 // Search bar
@@ -109,7 +109,7 @@ struct Dashboard: View {
 
                 // Recent Creations
                 Text("Recent Creations")
-                    .font(.headline)
+                .font(.system(size: 20, weight: .bold))
                     .padding(.leading)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
@@ -120,7 +120,7 @@ struct Dashboard: View {
                                     .frame(width: 100, height: 100)
                                     .cornerRadius(10)
                                 Text(model.title)
-                                    .font(.subheadline)
+                                .font(.system(size: 16, weight: .medium))
                                     .lineLimit(1)
                             }
                             .frame(width: 120)
@@ -132,7 +132,7 @@ struct Dashboard: View {
                 }
                 .padding(.vertical)
                 Text("Uploads")
-                    .font(.headline)
+                .font(.system(size: 20, weight: .bold))
                     .padding(.leading)
 
                 List {
@@ -152,6 +152,7 @@ struct Dashboard: View {
                         showDocumentPicker = true
                     }) {
                         Text("Add Item")
+                            .font(.system(size: 18, weight: .medium))
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.blue)
@@ -190,8 +191,8 @@ struct Dashboard: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                     Text("Status unknown")
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundColor(Color.gray)
                 }
                 Spacer()
                 Button(action: {
@@ -225,6 +226,7 @@ struct Dashboard_Previews: PreviewProvider {
         Dashboard()
     }
 }
+
 
 
 // Add button for new upload
