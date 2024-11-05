@@ -281,6 +281,237 @@ func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
                                  v3: v_a1, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a3, v8: v_a2)
                     }
                 }
+                else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 5){
+                    // MC3_1
+                    if (a2 == 0 && a3 == 0 && b1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+                                 v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+                    }
+                    else if (a2 == 0 && a3 == 0 && b4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+                                 v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
+                    }
+                    else if (a2 == 0 && a1 == 0 && b4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+                                 v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
+                    }
+                    else if (a2 == 0 && a1 == 0 && b3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+                                 v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
+                    }
+                    else if (a4 == 0 && a1 == 0 && b3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+                                 v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
+                    }
+                    else if (a4 == 0 && a1 == 0 && b2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+                                 v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
+                    }
+                    else if (a4 == 0 && a3 == 0 && b2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+                                 v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
+                    }
+                    else if (a4 == 0 && a3 == 0 && b1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+                                 v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
+                    }
+                    else if (b1 == 0 && b4 == 0 && a2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+                                 v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
+                    }
+                    else if (b1 == 0 && b4 == 0 && a3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+                                 v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
+                    }
+                    else if (b1 == 0 && b2 == 0 && a3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+                                 v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
+                    }
+                    else if (b1 == 0 && b2 == 0 && a4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+                                 v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
+                    }
+                    else if (b3 == 0 && b2 == 0 && a4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+                                 v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
+                    }
+                    else if (b3 == 0 && b2 == 0 && a1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+                                 v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
+                    }
+                    else if (b3 == 0 && b4 == 0 && a1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+                                 v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
+                    }
+                    else if (b3 == 0 && b4 == 0 && a2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+                                 v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
+                    }
+                    else if (a1 == 0 && b1 == 0 && b3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+                                 v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
+                    }
+                    else if (a1 == 0 && b1 == 0 && a3 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+                                 v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
+                    }
+                    else if (a2 == 0 && b2 == 0 && b4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+                                 v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
+                    }
+                    else if (a2 == 0 && b2 == 0 && a4 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+                                 v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
+                    }
+                    else if (a3 == 0 && b3 == 0 && b1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+                                 v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
+                    }
+                    else if (a3 == 0 && b3 == 0 && a1 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+                                 v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
+                    }
+                    else if (a4 == 0 && b4 == 0 && b2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+                                 v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
+                    }
+                    else if (a4 == 0 && b4 == 0 && a2 == 0){
+                        getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+                                 v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
+                    }
+                    // MC3_3
+                    else if (a1 == 0 && a3 == 0 && b4 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+                                 v3: v_a3, v4: v_b4, v5: v_a2, v6: v_b3, v7: v_b1, v8: v_b2)
+                    }
+                    else if (a1 == 0 && a3 == 0 && b2 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+                                 v3: v_b2, v4: v_a3, v5: v_b1, v6: v_b3, v7: v_a4, v8: v_b4)
+                    }
+                    else if (a2 == 0 && a4 == 0 && b3 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+                                 v3: v_a2, v4: v_b3, v5: v_a1, v6: v_b2, v7: v_b4, v8: v_b1)
+                    }
+                    else if (a2 == 0 && a4 == 0 && b1 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+                                 v3: v_a4, v4: v_b1, v5: v_a3, v6: v_b4, v7: v_b2, v8: v_b3)
+                    }
+                    else if (b1 == 0 && b3 == 0 && a4 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+                                 v3: v_b1, v4: v_a4, v5: v_b2, v6: v_a1, v7: v_a3, v8: v_a2)
+                    }
+                    else if (b1 == 0 && b3 == 0 && a2 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+                                 v3: v_b3, v4: v_a2, v5: v_b4, v6: v_a3, v7: v_a1, v8: v_a4)
+                    }
+                    else if (b2 == 0 && b4 == 0 && a1 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+                                 v3: v_b2, v4: v_a1, v5: v_b3, v6: v_a2, v7: v_a4, v8: v_a3)
+                    }
+                    else if (b2 == 0 && b4 == 0 && a3 == 0){
+                        getMC3_3(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+                                 v3: v_b4, v4: v_a3, v5: v_b1, v6: v_a4, v7: v_a2, v8: v_a1)
+                    }
+                }
+                else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 3){
+                    // MC3_1N
+                    if (a2 == 1 && a3 == 1 && b1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+                                 v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+                    }
+                    else if (a2 == 1 && a3 == 1 && b4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+                                 v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
+                    }
+                    else if (a2 == 1 && a1 == 1 && b4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+                                 v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
+                    }
+                    else if (a2 == 1 && a1 == 1 && b3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+                                 v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
+                    }
+                    else if (a4 == 1 && a1 == 1 && b3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+                                 v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
+                    }
+                    else if (a4 == 1 && a1 == 1 && b2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+                                 v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
+                    }
+                    else if (a4 == 1 && a3 == 1 && b2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+                                 v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
+                    }
+                    else if (a4 == 1 && a3 == 1 && b1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+                                 v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
+                    }
+                    else if (b1 == 1 && b4 == 1 && a2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+                                 v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
+                    }
+                    else if (b1 == 1 && b4 == 1 && a3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+                                 v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
+                    }
+                    else if (b1 == 1 && b2 == 1 && a3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+                                 v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
+                    }
+                    else if (b1 == 1 && b2 == 1 && a4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+                                 v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
+                    }
+                    else if (b3 == 1 && b2 == 1 && a4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+                                 v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
+                    }
+                    else if (b3 == 1 && b2 == 1 && a1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+                                 v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
+                    }
+                    else if (b3 == 1 && b4 == 1 && a1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+                                 v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
+                    }
+                    else if (b3 == 1 && b4 == 1 && a2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+                                 v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
+                    }
+                    else if (a1 == 1 && b1 == 1 && b3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+                                 v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
+                    }
+                    else if (a1 == 1 && b1 == 1 && a3 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+                                 v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
+                    }
+                    else if (a2 == 1 && b2 == 1 && b4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+                                 v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
+                    }
+                    else if (a2 == 1 && b2 == 1 && a4 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+                                 v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
+                    }
+                    else if (a3 == 1 && b3 == 1 && b1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+                                 v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
+                    }
+                    else if (a3 == 1 && b3 == 1 && a1 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+                                 v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
+                    }
+                    else if (a4 == 1 && b4 == 1 && b2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+                                 v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
+                    }
+                    else if (a4 == 1 && b4 == 1 && a2 == 1){
+                        getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+                                 v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
+                    }
+                }
                 else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 2){
                     if (a2 == 1 && b1 == 1) {
                         getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
