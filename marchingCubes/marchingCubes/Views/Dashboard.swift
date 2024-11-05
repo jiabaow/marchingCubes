@@ -167,19 +167,19 @@ struct Dashboard: View {
                 viewModel.fetchData(modelContext: modelContext)
             }
             .background(
-//                NavigationLink(destination: MarchingCubesView(filename: selectedModelTitle ?? ""), isActive: Binding<Bool>(
-//                    get: { selectedModelTitle != nil },
-//                    set: { if !$0 { selectedModelTitle = nil } }
-//                )) {
-//                    EmptyView()
-//                }
-                
-                NavigationLink(destination: MarchingCubesView(), isActive: Binding<Bool>(
+                NavigationLink(destination: MarchingCubesView(filename: selectedModelTitle ?? ""), isActive: Binding<Bool>(
                     get: { selectedModelTitle != nil },
                     set: { if !$0 { selectedModelTitle = nil } }
                 )) {
                     EmptyView()
                 }
+                
+//                NavigationLink(destination: MarchingCubesView(), isActive: Binding<Bool>(
+//                    get: { selectedModelTitle != nil },
+//                    set: { if !$0 { selectedModelTitle = nil } }
+//                )) {
+//                    EmptyView()
+//                }
             )
         }
     }

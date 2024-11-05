@@ -102,4 +102,3 @@ func loadObjAsset(filename: URL) -> MDLAsset? {
     }
 }
 
-
