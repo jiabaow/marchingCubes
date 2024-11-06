@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B0CCF892CDC072700C2DBBD /* AWSCognitoIdentity in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF882CDC072700C2DBBD /* AWSCognitoIdentity */; };
+		5B0CCF8B2CDC072700C2DBBD /* AWSCognitoIdentityProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8A2CDC072700C2DBBD /* AWSCognitoIdentityProvider */; };
+		5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */; };
+		5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8E2CDC072700C2DBBD /* AWSS3 */; };
 		5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */ = {isa = PBXBuildFile; productRef = 5B83D9E82CCEFAC400328931 /* Voxels */; };
 /* End PBXBuildFile section */
 
@@ -56,7 +60,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */,
+				5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */,
+				5B0CCF892CDC072700C2DBBD /* AWSCognitoIdentity in Frameworks */,
 				5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */,
+				5B0CCF8B2CDC072700C2DBBD /* AWSCognitoIdentityProvider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +126,10 @@
 			name = marchingCubes;
 			packageProductDependencies = (
 				5B83D9E82CCEFAC400328931 /* Voxels */,
+				5B0CCF882CDC072700C2DBBD /* AWSCognitoIdentity */,
+				5B0CCF8A2CDC072700C2DBBD /* AWSCognitoIdentityProvider */,
+				5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */,
+				5B0CCF8E2CDC072700C2DBBD /* AWSS3 */,
 			);
 			productName = marchingCubes;
 			productReference = E800433C2CC86C5300190DF4 /* marchingCubes.app */;
@@ -203,6 +215,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */,
+				5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E800433D2CC86C5300190DF4 /* Products */;
@@ -405,7 +418,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"marchingCubes/Preview Content\"";
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -434,7 +447,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"marchingCubes/Preview Content\"";
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -461,7 +474,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
@@ -480,7 +493,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
@@ -569,6 +582,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.34;
+			};
+		};
 		5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/heckj/voxels.git";
@@ -580,6 +601,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5B0CCF882CDC072700C2DBBD /* AWSCognitoIdentity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentity;
+		};
+		5B0CCF8A2CDC072700C2DBBD /* AWSCognitoIdentityProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentityProvider;
+		};
+		5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSDynamoDB;
+		};
+		5B0CCF8E2CDC072700C2DBBD /* AWSS3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSS3;
+		};
 		5B83D9E82CCEFAC400328931 /* Voxels */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */;
