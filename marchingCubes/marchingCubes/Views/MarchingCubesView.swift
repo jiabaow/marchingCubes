@@ -60,13 +60,24 @@ struct SceneView: UIViewRepresentable {
         }
 
         let result: [SCNNode?] = await Task {
-            guard let obj = loadOBJ(filename: filename),
-                  let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                print("Failed to load or voxelize the model.")
-                return []
+            var voxArray: MDLVoxelArray? = nil;
+            if let fileURL = get3DModelURL(filename: filename) {
+                guard let obj = loadObjAsset(filename: fileURL),
+                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                    print("Failed to load or voxelize the model.")
+                    return []
+                }
+                voxArray = voxarr
+            } else {
+                guard let obj = loadOBJ(filename: filename),
+                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                    print("Failed to load or voxelize the model.")
+                    return []
+                }
+                voxArray = voxarr;
             }
 
-            let voxelGrid = convertTo3DArray(voxelArray: voxarr)
+            let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
             let mcNode2 = marchingCubesV2(data: voxelGrid)
             
 //            let mcNode = marchingCubes(data: voxelGrid)

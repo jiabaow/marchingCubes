@@ -207,8 +207,23 @@ struct Dashboard: View {
             .background(Color.white)
             .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
             .background(
+                NavigationLink(destination: MarchingCubesView(filename: selectedModelTitle ?? ""), isActive: Binding<Bool>(
+                    get: { selectedModelTitle != nil },
+                    set: { if !$0 { selectedModelTitle = nil } }
+                )) {
+                    EmptyView()
+                }
+                
+//                NavigationLink(destination: MarchingCubesView(), isActive: Binding<Bool>(
+//                    get: { selectedModelTitle != nil },
+//                    set: { if !$0 { selectedModelTitle = nil } }
+//                )) {
+//                    EmptyView()
+//                }
+
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(Color.gray, lineWidth: 1)
+
             )
         }
         .swipeActions {
