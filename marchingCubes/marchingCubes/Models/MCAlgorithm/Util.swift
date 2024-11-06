@@ -68,8 +68,8 @@ func testGetCube() -> SCNNode{
     let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
     let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
     
-    getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b2,
-             v3: v_a2, v4: v_b1, v5: v_a4, v6: v_b3, v7: v_a3, v8: v_b4)
+    getMC3_3(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+             v3: v_b4, v4: v_a3, v5: v_b1, v6: v_a4, v7: v_a2, v8: v_a1)
     
     if (vertices.count != 0 && indices.count != 0) {
         // Create geometry source
@@ -93,6 +93,7 @@ func testGetCube() -> SCNNode{
         
         parentNode.addChildNode(node)
     }
+    
     return parentNode
 }
 
