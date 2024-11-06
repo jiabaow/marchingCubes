@@ -1,6 +1,24 @@
 {
-  "originHash" : "757cf60a7f35d0dae940da3a3cc6754d0fbd93bdfefec8d005e50b2d91dfa76b",
+  "originHash" : "1dc9137562cb79b93953b1849ba9011a6645499d20ba754a239140d6be6c9dfb",
   "pins" : [
+    {
+      "identity" : "aws-crt-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-crt-swift",
+      "state" : {
+        "revision" : "3f844bef042cc0a4c3381f7090414ce3f9a7e935",
+        "version" : "0.37.0"
+      }
+    },
+    {
+      "identity" : "aws-sdk-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-sdk-swift",
+      "state" : {
+        "revision" : "30c7bf83b14f1a36ee1a291989ed55bf6115ec2e",
+        "version" : "1.0.34"
+      }
+    },
     {
       "identity" : "heightmap",
       "kind" : "remoteSourceControl",
@@ -11,12 +29,30 @@
       }
     },
     {
+      "identity" : "smithy-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smithy-lang/smithy-swift",
+      "state" : {
+        "revision" : "276d09575d2f685ecf5bc9459a94f760bab644e1",
+        "version" : "0.88.0"
+      }
+    },
+    {
       "identity" : "swift-issue-reporting",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-issue-reporting",
       "state" : {
         "revision" : "770f990d3e4eececb57ac04a6076e22f8c97daeb",
         "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "9cb486020ebf03bfa5b5df985387a14a98744537",
+        "version" : "1.6.1"
       }
     },
     {
