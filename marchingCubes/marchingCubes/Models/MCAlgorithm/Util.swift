@@ -78,8 +78,8 @@ func testGetCube() -> SCNNode{
     parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
     
     
-    getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-             v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
+    getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+             v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
     
     if (vertices.count != 0 && indices.count != 0) {
         // Create geometry source
