@@ -54,6 +54,32 @@ func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
                 let v_a3_b3 = (v_a3 + v_b3) / 2
                 let v_a4_b4 = (v_a4 + v_b4) / 2
                 
+                if (a1 == 1) {
+                    parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
+                }
+                if (a2 == 1) {
+                    parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
+                }
+                if (a3 == 1) {
+                    parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
+                }
+                if (a4 == 1) {
+                    parentNode.addChildNode(createBall(at: v_a4, radius: 0.05, color: UIColor.yellow))
+                }
+                if (b1 == 1) {
+                    parentNode.addChildNode(createBall(at: v_b1, radius: 0.05, color: UIColor.cyan))
+                }
+                if (b2 == 1) {
+                    parentNode.addChildNode(createBall(at: v_b2, radius: 0.05, color: UIColor.magenta))
+                }
+                if (b3 == 1) {
+                    parentNode.addChildNode(createBall(at: v_b3, radius: 0.05, color: UIColor.orange))
+                }
+                if (b4 == 1){
+                    parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
+                }
+                
+                
                 var vertices: [SCNVector3] = []
                 var indices: [Int32] = []
                     
@@ -665,7 +691,7 @@ func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
                         getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
                                  v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_a4, v8: v_a3)
                     }
-                    else if (a1 == 0 && b1 == 0 && b2 == 0){
+                    else if (a1 == 1 && b1 == 1 && b2 == 1){
                         getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
                                  v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
                     }

@@ -67,9 +67,19 @@ func testGetCube() -> SCNNode{
     let v_b2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k))
     let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
     let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
-
-        getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                 v3: v_b4, v4: v_b3, v5: v_a2, v6: v_a1, v7: v_b1, v8: v_b2)
+    
+    parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
+    parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
+    parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
+    parentNode.addChildNode(createBall(at: v_a4, radius: 0.05, color: UIColor.yellow))
+    parentNode.addChildNode(createBall(at: v_b1, radius: 0.05, color: UIColor.cyan))
+    parentNode.addChildNode(createBall(at: v_b2, radius: 0.05, color: UIColor.magenta))
+    parentNode.addChildNode(createBall(at: v_b3, radius: 0.05, color: UIColor.orange))
+    parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
+    
+    
+    getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+             v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
     
     if (vertices.count != 0 && indices.count != 0) {
         // Create geometry source
