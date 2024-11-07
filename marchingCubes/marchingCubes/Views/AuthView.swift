@@ -108,6 +108,9 @@ struct SignUpView: View {
             Button(action: {
                 // Implement sign-up logic here
                 print("Sign up with username: \(username) and email: \(email)")
+                Task {
+                    await performSignUp()
+                }
             }) {
                 Text("Sign Up")
                     .frame(maxWidth: .infinity)
@@ -145,6 +148,21 @@ struct SignUpView: View {
         // Implement continue as guest logic here
         print("Continuing as guest.")
     }
+    
+    func performSignUp() async {
+            do {
+                try await CognitoAuthManager().signUp(username: username, password: password, email: email) { result in
+                    switch result {
+                    case .success:
+                        print("Sign-up successful!")
+                    case .failure(let error):
+                        print("Sign-up failed with error: \(error)")
+                    }
+                }
+            } catch {
+                print("Unexpected error: \(error)")
+            }
+        }
 }
 
 struct AuthSwitcherView_Previews: PreviewProvider {

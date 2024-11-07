@@ -20,16 +20,18 @@ class CognitoAuthManager {
             clientId: "68g2sfl6kbeacqrekd8s8oq2u2",
             password: password,
             userAttributes: [
-                CognitoIdentityProviderClientTypes.AttributeType.init(name: "email")
+                CognitoIdentityProviderClientTypes.AttributeType.init(name: "email", value: email)
             ],
-            username: email
+            username: username
         )
         
         // Create a sign-up request
         do {
             let signUpRequest = try await self.client.signUp(input: signUpInput)
+            completion(.success(()))
         } catch {
             print(error)
+            completion(.failure(error))
         }
         
         // Call the confirm sign-up API
