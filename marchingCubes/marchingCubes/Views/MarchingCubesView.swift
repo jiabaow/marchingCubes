@@ -78,15 +78,9 @@ struct SceneView: UIViewRepresentable {
             }
 
             let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
-            let mcNode2 = marchingCubesV2(data: voxelGrid)
-            
-//            let mcNode = marchingCubes(data: voxelGrid)
-//             let outlineNode = mcNode.clone()
-//             outlineNode.geometry = mcNode.geometry?.copy() as? SCNGeometry
-//             outlineNode.geometry?.firstMaterial = SCNMaterial()
-//             outlineNode.geometry?.firstMaterial?.diffuse.contents = UIColor.black
-//             outlineNode.geometry?.firstMaterial?.fillMode = .lines
-            
+            let algo = MarchingCubesAlgo()
+            let mcNode2 = algo.marchingCubesV2(data: voxelGrid)
+                     
 //             let mcNode2 = testGetCube()
             
             return [mcNode2]
