@@ -89,15 +89,16 @@ import SwiftData
 struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
+    @State private var selectedModelTitle: String? = nil // Track selected model title
     @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
+        NavigationView { // Add NavigationView here
+            VStack {
                 // Welcome text
                 Text("Welcome back")
-                .font(.system(size: 28, weight: .bold))
+                    .font(.largeTitle)
                     .padding(.top)
 
                 // Search bar
@@ -107,105 +108,64 @@ struct Dashboard: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
 
-                // Recent Creations
-                Text("Recent Creations")
-                .font(.system(size: 20, weight: .bold))
-                    .padding(.leading)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        ForEach(viewModel.models.prefix(2)) { model in
-                            VStack {
-                                Image(uiImage: UIImage(named: model.image ?? "") ?? UIImage())
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(10)
-                                Text(model.title)
-                                .font(.system(size: 16, weight: .medium))
-                                    .lineLimit(1)
+                // Recent Creations and Uploads
+                GeometryReader { geometry in
+                    List {
+                        ForEach(viewModel.models.filter { model in
+                            searchQuery.isEmpty || model.title.lowercased().contains(searchQuery.lowercased())
+                        }) { model in
+                            Button(action: {
+                                // Set selected model title and navigate
+                                selectedModelTitle = model.title
+                                print(model.title)
+                            }) { // Use Button instead of NavigationLink
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(model.title)
+                                            .font(.headline)
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
+                                    }
+                                    Spacer()
+                                    // Upload button
+                                    Button(action: {
+                                        // Add your upload action here
+                                        print("Upload action for \(model.title)")
+                                    }) {
+                                        // Example upload icon
+                                        Image(systemName: "icloud.and.arrow.up")
+                                            .font(.system(size: 24))
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
                             }
-                            .frame(width: 120)
-                            .background(Color(UIColor.systemGray6))
-                            .cornerRadius(10)
+                            .swipeActions {
+                                Button(role: .destructive) {
+                                    viewModel.removeModel(model, modelContext: modelContext)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
                         }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     }
-                    .padding(.horizontal)
+                    .listStyle(PlainListStyle())
                 }
-                .padding(.vertical)
-                Text("Uploads")
-                .font(.system(size: 20, weight: .bold))
-                    .padding(.leading)
-
-                List {
-                    ForEach(viewModel.models.filter { model in
-                        searchQuery.isEmpty || model.title.lowercased().contains(searchQuery.lowercased())
-                    }) { model in
-                        uploadRow(model: model)
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                }
-                .listStyle(PlainListStyle())
-
-                // Add button for new upload
-                VStack {
-                    Button(action: {
-                        showDocumentPicker = true
-                    }) {
-                        Text("Add Item")
-                            .font(.system(size: 18, weight: .medium))
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                }
-                .padding()
-                .sheet(isPresented: $showDocumentPicker) {
-                    DocumentPicker { url in
-                        saveDocumentToCache(from: url)
-                        viewModel.addModel(title: url.absoluteString, image: "", modelContext: modelContext)
-                        showDocumentPicker = false
-                    }
-                }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
-        }
-    }
-
-    // Extract Upload Row into a separate function
-    @ViewBuilder
-    private func uploadRow(model: ProjectModel) -> some View {
-        Button(action: {
-            // Set selected model title and navigate
-            print("Selected model: \(model.title)")
-        }) {
-            HStack {
-                Image(uiImage: UIImage(named: model.image ?? "") ?? UIImage())
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(5)
-                VStack(alignment: .leading) {
-                    Text(model.title)
-                        .font(.headline)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                    Text("Status unknown")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(Color.gray)
-                }
-                Spacer()
-                Button(action: {
-                    print("Upload action for \(model.title)")
-                }) {
-                    Image(systemName: "icloud.and.arrow.up")
-                        .font(.system(size: 24))
-                        .foregroundColor(.blue)
-                }
+            .onAppear {
+                viewModel.fetchData(modelContext: modelContext)
             }
-            .padding()
-            .background(Color.white)
-            .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
             .background(
                 NavigationLink(destination: MarchingCubesView(filename: selectedModelTitle ?? ""), isActive: Binding<Bool>(
                     get: { selectedModelTitle != nil },
@@ -220,18 +180,7 @@ struct Dashboard: View {
 //                )) {
 //                    EmptyView()
 //                }
-
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray, lineWidth: 1)
-
             )
-        }
-        .swipeActions {
-            Button(role: .destructive) {
-                viewModel.removeModel(model, modelContext: modelContext)
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
         }
     }
 }
@@ -241,8 +190,6 @@ struct Dashboard_Previews: PreviewProvider {
         Dashboard()
     }
 }
-
-
 
 // Add button for new upload
 //HStack {
