@@ -8,7 +8,7 @@ struct MarchingCubesView: View {
     @State private var isLoading = true
     
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 15) {
+    init(filename: String = "rabbit", divisions: Int = 5) {
         self.filename = filename
         self.divisions = divisions
     }
