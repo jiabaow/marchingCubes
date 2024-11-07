@@ -177,21 +177,41 @@ struct Dashboard: View {
     // Extract Upload Row into a separate function
     @ViewBuilder
     private func uploadRow(model: ProjectModel) -> some View {
-        Button(action: {
-            // Set selected model title and navigate
-            print("Selected model: \(model.title)")
-            NavigationLink(destination: MarchingCubesView(filename: selectedModelTitle ?? ""), isActive: Binding<Bool>(
-                get: { selectedModelTitle != nil },
-                set: { if !$0 { selectedModelTitle = nil } }
-            )) {
-                EmptyView()
-            }
-        }) {
+        NavigationLink(destination: MarchingCubesView(filename: model.title)) {
             HStack {
-                Image(uiImage: UIImage(named: model.image ?? "") ?? UIImage())
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(5)
+                // AsyncImage for loading image from URL
+                if !model.image.isEmpty, let url = get3DModelURL(filename: model.image) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            // You can show a placeholder image or spinner while loading
+                            ProgressView()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(5)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(5)
+                        case .failure:
+                            // Fallback to a default image if loading fails
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .cornerRadius(5)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                } else {
+                    // Default image if model.image is nil or invalid URL
+                    Image(systemName: "photo")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .cornerRadius(5)
+                }
+                
                 VStack(alignment: .leading) {
                     Text(model.title)
                         .font(.headline)
@@ -218,6 +238,7 @@ struct Dashboard: View {
                     .stroke(Color.gray, lineWidth: 1)
             )
         }
+        .buttonStyle(PlainButtonStyle())
         .swipeActions {
             Button(role: .destructive) {
                 viewModel.removeModel(model, modelContext: modelContext)
@@ -226,6 +247,8 @@ struct Dashboard: View {
             }
         }
     }
+
+
 }
 
 struct Dashboard_Previews: PreviewProvider {
