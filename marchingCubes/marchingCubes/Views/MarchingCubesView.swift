@@ -21,9 +21,24 @@ struct MarchingCubesView: View {
                         .font(.largeTitle)
                         .padding()
 
-                    SceneView(filename: filename, divisions: divisions, isLoading: $isLoading)
+                    SceneView(filename: filename, divisions: divisions,
+                              numLayer: divisions + 1, isLoading: $isLoading)
                         .frame(width: 300, height: 300)
                         .edgesIgnoringSafeArea(.all)
+                    
+                    ForEach(1...divisions+1, id: \.self) { iLayer in
+                        VStack {
+                            Text("Layer \(iLayer)")
+                                .font(.headline)
+                                .padding(.top)
+
+                            SceneView(filename: filename, divisions: divisions,
+                                      numLayer: iLayer, isLoading: $isLoading)
+                                .frame(width: 300, height: 300)
+                                .edgesIgnoringSafeArea(.all)
+                        }
+                    }
+
                 }
             }
 
@@ -35,6 +50,8 @@ struct MarchingCubesView: View {
 struct SceneView: UIViewRepresentable {
     let filename: String
     let divisions: Int
+    // the index of layer, -1 stands for the whole object
+    let numLayer: Int
     @Binding var isLoading: Bool
 
     func makeUIView(context: Context) -> SCNView {
@@ -46,7 +63,7 @@ struct SceneView: UIViewRepresentable {
         scnView.scene = scene
 
         Task {
-            await loadAndProcessModel(in: scene, scnView: scnView)
+            await loadAndProcessModel(in: scene, scnView: scnView, numLayer: numLayer)
         }
 
         return scnView
@@ -54,7 +71,7 @@ struct SceneView: UIViewRepresentable {
 
     func updateUIView(_ uiView: SCNView, context: Context) {}
 
-    private func loadAndProcessModel(in scene: SCNScene, scnView: SCNView) async {
+    private func loadAndProcessModel(in scene: SCNScene, scnView: SCNView, numLayer: Int) async {
         DispatchQueue.main.async {
             isLoading = true
         }
@@ -78,10 +95,12 @@ struct SceneView: UIViewRepresentable {
             }
 
             let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
+            let layeredData = getLayeredData(data: voxelGrid, numLayer: numLayer)
+            
             let algo = MarchingCubesAlgo()
-//            let mcNode2 = algo.marchingCubesV2(data: voxelGrid)
+            let mcNode2 = algo.marchingCubesV2(data: layeredData)
                      
-             let mcNode2 = testGetCube()
+//             let mcNode2 = testGetCube()
             
             return [mcNode2]
 //            return [mcNodeTest]

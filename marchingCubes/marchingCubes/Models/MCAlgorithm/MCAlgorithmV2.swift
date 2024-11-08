@@ -20,10 +20,7 @@ class MarchingCubesAlgo {
         for i in 0..<xDim {
             for j in 0..<yDim {
                 for k in 0..<zDim {
-//                    print(i, j, k)
-//                    if (k != 1) {
-//                        continue
-//                    }
+
                     let b4 = data[i][j][k]
                     let b3 = data[i+1][j][k]
                     let a3 = data[i+1][j][k+1]
@@ -65,9 +62,9 @@ class MarchingCubesAlgo {
 //                    if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 > 0) {
 //                        print(i, j, k)
 //                    }
-                    if (j != 15 && j != 16){
-                        continue
-                    }
+//                    if (j != 15 && j != 16){
+//                        continue
+//                    }
 //                    if (a1 == 1) {
 //                        parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
 //                    }
@@ -97,11 +94,6 @@ class MarchingCubesAlgo {
                     var vertices: [SCNVector3] = []
                     var indices: [Int32] = []
                     
-                    
-                    //                    if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) != 8) {
-                    //                        continue
-                    //                    }
-                    
                     if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) == 8) {
                         getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
                                  v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
@@ -114,44 +106,30 @@ class MarchingCubesAlgo {
                         else if (b3 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_b3, v2: v_b3_b4, v3: v_b2_b3, v4: v_a3_b3)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "x", through: SCNVector3(Float(i) + 0.5, Float(j), Float(k)))
                         }
                         else if (b2 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_b2, v2: v_b1_b2, v3: v_b2_b3, v4: v_a2_b2)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "y", through: vertices[2])
-                            //                            applyMirrorSymmetry(to: &vertices, along: "x", through: vertices[3])
                         }
                         else if (b1 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_b1, v2: v_b1_b4, v3: v_b1_b2, v4: v_a1_b1)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "y", through: SCNVector3(Float(i), Float(j) + 0.5, Float(k)))
                         }
                         else if (a4 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_a4, v2: v_a4_b4, v3: v_a1_a4, v4: v_a3_a4)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "z", through: SCNVector3(Float(i), Float(j), Float(k) + 0.5))
                         }
                         else if (a3 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_a3, v2: v_a3_b3, v3: v_a3_a4, v4: v_a2_a3)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "x", through: vertices[3])
-                            //                            applyMirrorSymmetry(to: &vertices, along: "z", through: vertices[1])
-                            
                         }
                         else if (a2 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_a2, v2: v_a2_b2, v3: v_a1_a2, v4: v_a2_a3)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "x", through: vertices[3])
-                            //                            applyMirrorSymmetry(to: &vertices, along: "z", through: vertices[1])
-                            //                            applyMirrorSymmetry(to: &vertices, along: "y", through: vertices[2])
-                            
                         }
                         else if (a1 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_a1, v2: v_a1_b1, v3: v_a1_a2, v4: v_a1_a4)
-                            //                            applyMirrorSymmetry(to: &vertices, along: "z", through: vertices[1])
-                            //                            applyMirrorSymmetry(to: &vertices, along: "y", through: vertices[2])
                         }
                     }
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 7){
@@ -941,10 +919,10 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3, v4: SCNVector3) {
         vertices += [v1, v2, v3, v4]
         indices += [
-            0, 1, 2,  // Triangle 1
-            0, 1, 3,  // Triangle 2
-            0, 2, 3,  // Triangle 3
-            1, 2, 3   // Triangle 4
+            0, 1, 2,
+            0, 1, 3,
+            0, 2, 3,
+            1, 2, 3
         ]
         indices4Lines += [
             0, 1,
