@@ -79,9 +79,9 @@ struct SceneView: UIViewRepresentable {
 
             let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
             let algo = MarchingCubesAlgo()
-            let mcNode2 = algo.marchingCubesV2(data: voxelGrid)
+//            let mcNode2 = algo.marchingCubesV2(data: voxelGrid)
                      
-//             let mcNode2 = testGetCube()
+             let mcNode2 = testGetCube()
             
             return [mcNode2]
 //            return [mcNodeTest]

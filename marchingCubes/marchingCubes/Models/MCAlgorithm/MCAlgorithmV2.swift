@@ -12,7 +12,7 @@ class MarchingCubesAlgo {
     
     func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
-        
+        print(data)
         let xDim = data.count - 1
         let yDim = data[0].count - 1
         let zDim = data[0][0].count - 1
@@ -20,6 +20,10 @@ class MarchingCubesAlgo {
         for i in 0..<xDim {
             for j in 0..<yDim {
                 for k in 0..<zDim {
+//                    print(i, j, k)
+//                    if (k != 1) {
+//                        continue
+//                    }
                     let b4 = data[i][j][k]
                     let b3 = data[i+1][j][k]
                     let a3 = data[i+1][j][k+1]
@@ -58,6 +62,12 @@ class MarchingCubesAlgo {
                     let v_a3_b3 = (v_a3 + v_b3) / 2
                     let v_a4_b4 = (v_a4 + v_b4) / 2
                     
+//                    if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 > 0) {
+//                        print(i, j, k)
+//                    }
+                    if (j != 15 && j != 16){
+                        continue
+                    }
 //                    if (a1 == 1) {
 //                        parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
 //                    }
@@ -1490,5 +1500,228 @@ class MarchingCubesAlgo {
             11, 13,
         ]
     }
+    func getMC4_1(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v4) / 2, (v1 + v2) / 2, (v2 + v3) / 2,
+                     (v3 + v4) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
+                     (v7 + v8) / 2, (v1 + v5) / 2, (v5 + v8) / 2,
+                     (v2 + v6) / 2, (v6 + v7) / 2, (v5 + v6) / 2]
+        
+        indices4Lines += [
+                9, 10,
+                9, 16,
+                10, 16,
+                11, 12,
+                12, 13,
+                11, 13,
+                14, 17,
+                14, 15,
+                15, 17,
+                18, 19,
+                19, 20,
+                18, 20,
+                2, 10,
+                2, 11,
+                4, 9,
+                4, 12,
+                4, 14,
+                2, 18,
+                7, 13,
+                7, 15,
+                7, 19,
+                5, 16,
+                5, 17,
+                5, 20,
+            ]
+        
+    }
+    
+    func getMC4_2(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v3 + v4) / 2, (v3 + v2) / 2, (v7 + v3) / 2,
+                     (v7 + v8) / 2, (v6 + v7) / 2, (v4 + v8) / 2,
+                     (v1 + v5) / 2, (v2 + v6) / 2]
+        
+        indices4Lines += [
+                9, 10,
+                10, 11,
+                9, 11,
+                1, 4,
+                4, 9,
+                4, 14,
+                1, 2,
+                1, 15,
+                2, 16,
+                2, 10,
+                14, 15,
+                15, 16,
+                14, 16,
+                7, 11,
+                7, 12,
+                7, 13,
+                12, 14,
+                13, 16,
+                12, 13,
+            ]
+    }
+    
+    func getMC4_3(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v3 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
+                     (v1 + v5) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
+                     (v8 + v5) / 2, (v7 + v6) / 2]
+        
+        indices4Lines += [
+                3, 4,
+                3, 9,
+                9, 10,
+                4, 10,
+                9, 11,
+                11, 12,
+                10, 12,
+                3, 13,
+                4, 14,
+                13, 14,
+                5, 12,
+                5, 15,
+                14, 15,
+                6, 16,
+                16, 13,
+                6, 11,
+                5, 6,
+                15, 16
+            ]
+    }
+    
+    func getMC4_5(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v2) / 2, (v2 + v3) / 2, (v3 + v7) / 2,
+                     (v7 + v8) / 2, (v5 + v8) / 2, (v1 + v5) / 2]
+        
+        indices4Lines += [
+                4, 1,
+                4, 3,
+                4, 8,
+                9, 10,
+                3, 10,
+                3, 11,
+                11, 12,
+                12, 8,
+                8, 13,
+                13, 14,
+                1, 14,
+                1, 9,
+                10, 11,
+                9, 14,
+                12, 13,
+            ]
+    }
+    
+    func getMC4_6(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
+                     (v3 + v7) / 2, (v7 + v8) / 2, (v5 + v8) / 2,
+                     (v1 + v7) / 2]
+        
+        indices4Lines += [
+            3, 2,
+            3, 4,
+            3, 12,
+            2, 9,
+            9, 10,
+            4, 10,
+            4, 8,
+            8, 13,
+            8, 14,
+            12, 13,
+            11, 12,
+            2, 11,
+            9, 11,
+            15, 11,
+            15, 12,
+            15, 10,
+            15, 14,
+            13, 14,
+            10, 14,
+            ]
+                    
+    }
 
+    func getMC4_7(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v2) / 2, (v2 + v3) / 2, (v1 + v5) / 2,
+                     (v4 + v8) / 2, (v8 + v7) / 2, (v6 + v7) / 2,
+                     (v1 + v7) / 2]
+        
+        indices4Lines += [
+                1, 9,
+                9, 10,
+                3, 10,
+                3, 7,
+                7, 13,
+                12, 13,
+                11, 12,
+                1, 11,
+                4, 1,
+                4, 3,
+                4, 12,
+                9, 11,
+                7, 14,
+                10, 14,
+                13, 14,
+                15, 10,
+                15, 11,
+                15, 12,
+                15, 14,
+            ]
+    }
+    
+    func getMC5_5(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v2) / 2, (v2 + v3) / 2, (v3 + v7) / 2,
+                     (v7 + v8) / 2, (v5 + v8) / 2, (v1 + v5) / 2,
+                    (v4 + v3) / 2, (v4 + v1) / 2, (v4 + v8) / 2]
+        
+        indices4Lines += [
+                15, 16,
+                16, 17,
+                15, 17,
+                1, 16,
+                8, 17,
+                3, 15,
+                9, 10,
+                3, 10,
+                3, 11,
+                11, 12,
+                12, 8,
+                8, 13,
+                13, 14,
+                1, 14,
+                1, 9,
+                10, 11,
+                9, 14,
+                12, 13,
+            ]
+    }
 }

@@ -79,10 +79,10 @@ func testGetCube() -> SCNNode{
     
     let algo = MarchingCubesAlgo()
     
-    algo.getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                  v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
+    algo.getMC5_5(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+                  v3: v_a2, v4: v_a1, v5: v_b4, v6: v_b3, v7: v_b2, v8: v_b1)
     
-    if (vertices.count != 0 && indices.count != 0) {
+    if (vertices.count != 0 ) {
         // Create geometry source
         let vertexSource = SCNGeometrySource(vertices: vertices)
         
