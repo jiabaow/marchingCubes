@@ -748,7 +748,7 @@ class MarchingCubesAlgo {
                             getMC4_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3, v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_b2, v8: v_b1)
                         }
                         else if (b1 == 1 && b2 == 1 && b3 == 1 && b4 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4, v3: v_b2, v4: v_b4, v5: v_a1, v6: v_a4, v7: v_a3, v8: v_a2)
+                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4, v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_a3, v8: v_a2)
                         }
                         
                     }
