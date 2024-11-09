@@ -1659,6 +1659,21 @@ class MarchingCubesAlgo {
             9, 12, 11,
             11, 9, 10
         ]
+        
+        indices4Lines += [
+            1, 2,
+            2, 3,
+            3, 4,
+            4, 1,
+            1, 9,
+            4, 10,
+            3, 11,
+            2, 12,
+            9, 10,
+            10, 11,
+            11, 12,
+            12, 9,
+        ]
     }
     
     func getMC4_5(vertices: inout [SCNVector3], indices: inout [Int32],

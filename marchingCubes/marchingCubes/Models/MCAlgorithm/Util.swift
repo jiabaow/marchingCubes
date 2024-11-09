@@ -69,20 +69,7 @@ func testGetCube() -> SCNNode{
     let v_b2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k))
     let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
     let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
-    // midpoint of vertices
-    let v_a1_a2 = (v_a1 + v_a2) / 2
-    let v_a2_a3 = (v_a3 + v_a2) / 2
-    let v_a3_a4 = (v_a4 + v_a3) / 2
-    let v_a1_a4 = (v_a1 + v_a4) / 2
-    let v_b1_b2 = (v_b2 + v_b1) / 2
-    let v_b2_b3 = (v_b3 + v_b2) / 2
-    let v_b3_b4 = (v_b4 + v_b3) / 2
-    let v_b1_b4 = (v_b1 + v_b4) / 2
-    let v_a1_b1 = (v_a1 + v_b1) / 2
-    let v_a2_b2 = (v_a2 + v_b2) / 2
-    let v_a3_b3 = (v_a3 + v_b3) / 2
-    let v_a4_b4 = (v_a4 + v_b4) / 2
-    
+
     parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
     parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
     parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
@@ -94,10 +81,7 @@ func testGetCube() -> SCNNode{
     
     let algo = MarchingCubesAlgo()
     
-    algo.getMC1_1(vertices: &vertices, indices: &indices,
-                  v1: v_a2_b2, v2: v_b1_b2, v3: v_b2_b3,
-                  v4: v_a2, v5: v_b1, v6: v_b3, v7: v_a1,
-                  v8: v_b4, v9: v_a3, v10: v_a4)
+    algo.getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
     
     if (vertices.count != 0 ) {
         // Create geometry source
