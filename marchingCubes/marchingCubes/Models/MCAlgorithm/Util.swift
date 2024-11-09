@@ -19,8 +19,10 @@ func testRabbitModel() {
             let voxelGrid = convertTo3DArray(voxelArray: voxarr)
             print("Voxel grid size: \(voxelGrid.count) x \(voxelGrid[0].count) x \(voxelGrid[0][0].count)")
             
-            let mcNode = marchingCubes(data: voxelGrid)
-            print("Marching cubes node created with geometry: \(mcNode.geometry?.description ?? "None")")
+            let data = getLayeredData(data: voxelGrid, numLayer: -1)
+            
+//            let mcNode = marchingCubes(data: voxelGrid)
+//            print("Marching cubes node created with geometry: \(mcNode.geometry?.description ?? "None")")
         } else {
             print("Failed to voxelize the model.")
         }
@@ -67,11 +69,37 @@ func testGetCube() -> SCNNode{
     let v_b2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k))
     let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
     let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
+    // midpoint of vertices
+    let v_a1_a2 = (v_a1 + v_a2) / 2
+    let v_a2_a3 = (v_a3 + v_a2) / 2
+    let v_a3_a4 = (v_a4 + v_a3) / 2
+    let v_a1_a4 = (v_a1 + v_a4) / 2
+    let v_b1_b2 = (v_b2 + v_b1) / 2
+    let v_b2_b3 = (v_b3 + v_b2) / 2
+    let v_b3_b4 = (v_b4 + v_b3) / 2
+    let v_b1_b4 = (v_b1 + v_b4) / 2
+    let v_a1_b1 = (v_a1 + v_b1) / 2
+    let v_a2_b2 = (v_a2 + v_b2) / 2
+    let v_a3_b3 = (v_a3 + v_b3) / 2
+    let v_a4_b4 = (v_a4 + v_b4) / 2
     
-    getMC3_3(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-             v3: v_b4, v4: v_a3, v5: v_b1, v6: v_a4, v7: v_a2, v8: v_a1)
+    parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
+    parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
+    parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
+    parentNode.addChildNode(createBall(at: v_a4, radius: 0.05, color: UIColor.yellow))
+    parentNode.addChildNode(createBall(at: v_b1, radius: 0.05, color: UIColor.cyan))
+    parentNode.addChildNode(createBall(at: v_b2, radius: 0.05, color: UIColor.magenta))
+    parentNode.addChildNode(createBall(at: v_b3, radius: 0.05, color: UIColor.orange))
+    parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
     
-    if (vertices.count != 0 && indices.count != 0) {
+    let algo = MarchingCubesAlgo()
+    
+    algo.getMC1_1(vertices: &vertices, indices: &indices,
+                  v1: v_a2_b2, v2: v_b1_b2, v3: v_b2_b3,
+                  v4: v_a2, v5: v_b1, v6: v_b3, v7: v_a1,
+                  v8: v_b4, v9: v_a3, v10: v_a4)
+    
+    if (vertices.count != 0 ) {
         // Create geometry source
         let vertexSource = SCNGeometrySource(vertices: vertices)
         
@@ -92,6 +120,14 @@ func testGetCube() -> SCNNode{
         let node = SCNNode(geometry: geometry)
         
         parentNode.addChildNode(node)
+        
+        let element4Lines = SCNGeometryElement(indices: algo.indices4Lines, primitiveType: .line)
+        let geometry4Lines = SCNGeometry(sources: [vertexSource], elements: [element4Lines])
+        let material4Lines = SCNMaterial()
+            material4Lines.diffuse.contents = UIColor.black
+        geometry4Lines.materials = [material4Lines]
+        let node4Lines = SCNNode(geometry: geometry4Lines)
+        parentNode.addChildNode(node4Lines)
     }
     
     return parentNode
@@ -130,6 +166,69 @@ func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
     }
 
     return voxelGrid
+}
+
+func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
+    var layeredData: [[[Int]]] = []
+    
+    var li: Int = data.count
+    var ri: Int = 0
+    var lj: Int = data[0].count
+    var rj: Int = 0
+    var lk: Int = data[0][0].count
+    var rk: Int = 0
+    
+    let xDim = data.count - 1
+    let yDim = data[0].count - 1
+    let zDim = data[0][0].count - 1
+    
+    for i in 0..<xDim {
+        for j in 0..<yDim {
+            for k in 0..<zDim {
+                let b4 = data[i][j][k]
+                let b3 = data[i+1][j][k]
+                let a3 = data[i+1][j][k+1]
+                let a4 = data[i][j][k+1]
+                let b1 = data[i][j+1][k]
+                let b2 = data[i+1][j+1][k]
+                let a2 = data[i+1][j+1][k+1]
+                let a1 = data[i][j+1][k+1]
+
+                if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 > 0) {
+                    li = min(li, i)
+                    ri = max(ri, i)
+                    lj = min(lj, j)
+                    rj = max(rj, j)
+                    lk = min(lk, k)
+                    rk = max(rk, k)
+                }
+            }
+        }
+    }
+    
+    li = max(li - 2, 0)
+    ri = min(ri + 2, data.count)
+    lj = max(lj - 2, 0)
+    rj = min(rj + 2, data[0].count)
+    lk = max(lk - 2, 0)
+    rk = min(rk + 2, data[0][0].count)
+    
+    if (numLayer != -1) {
+            rj = numLayer + lj + 2
+        }
+    
+    for i in li...ri {
+        var layer2D: [[Int]] = []
+        for j in lj...rj {
+            var row: [Int] = []
+            for k in lk...rk {
+                row.append(data[i][j][k])
+            }
+            layer2D.append(row)
+        }
+        layeredData.append(layer2D)
+    }
+    return layeredData
 }
 
 func createBall(at position: SCNVector3, radius: CGFloat, color: UIColor) -> SCNNode {
