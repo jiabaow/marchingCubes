@@ -726,7 +726,13 @@ class MarchingCubesAlgo {
                         }
                     }
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 4) {
-                        if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
+                        if (a1 == 1 && a3 == 1 && b2 == 1 && b4 == 1) {
+                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
+                        }
+                        else if (a2 == 1 && a4 == 1 && b1 == 1 && b3 == 1) {
+                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+                        }
+                        else if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
                             getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
                         else if (a1 == 1 && a2 == 1 && b1 == 1 && b2 == 1) {
@@ -1508,6 +1514,37 @@ class MarchingCubesAlgo {
                      (v3 + v4) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
                      (v7 + v8) / 2, (v1 + v5) / 2, (v5 + v8) / 2,
                      (v2 + v6) / 2, (v6 + v7) / 2, (v5 + v6) / 2]
+        
+        indices += [
+            9, 10, 16,
+            11, 12, 13,
+            14, 15, 17,
+            18, 19, 20,
+            4, 9, 14,
+            9, 14, 17,
+            9, 16, 17,
+            5, 16, 17,
+            4, 12, 13,
+            4, 7, 13,
+            4, 7, 14,
+            7, 14, 15,
+            2, 10, 11,
+            10, 11, 12,
+            9, 10, 12,
+            4, 9, 12,
+            2, 11, 18,
+            11, 13, 18,
+            13, 18, 19,
+            7, 13, 19,
+            2, 10, 18,
+            10, 16, 18,
+            16, 18, 20,
+            5, 16, 20,
+            5, 17, 20,
+            17, 19, 20,
+            14, 17, 19,
+            7, 15, 19
+        ]
         
         indices4Lines += [
                 9, 10,
