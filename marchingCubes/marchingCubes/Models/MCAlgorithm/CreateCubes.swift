@@ -308,3 +308,26 @@ func getMC3_3(vertices: inout [SCNVector3], indices: inout [Int32],
         5, 8, 17
     ]
 }
+
+func getMC4_4(vertices: inout [SCNVector3], indices: inout [Int32],
+              v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+             v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+              v7: SCNVector3, v8: SCNVector3) {
+    vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                 (v1 + v5) / 2, (v4 + v8) / 2, (v3 + v7) / 2, (v2 + v6) / 2]
+    
+    indices += [
+        1, 9, 4,
+        9, 4, 10,
+        4, 10, 3,
+        3, 10, 11,
+        1, 9, 2,
+        2, 12, 9,
+        2, 3, 12,
+        3, 12, 11,
+        1, 2, 3,
+        1, 3, 4,
+        9, 12, 11,
+        11, 9, 10
+    ]
+}
