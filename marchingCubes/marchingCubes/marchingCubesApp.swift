@@ -17,6 +17,7 @@ struct MyAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(ProjectViewModel())
                 .modelContainer(for: ProjectModel.self)  // Setup SwiftData for the model
         }
     }
