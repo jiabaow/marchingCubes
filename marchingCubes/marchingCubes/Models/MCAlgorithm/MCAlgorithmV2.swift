@@ -1886,39 +1886,6 @@ class MarchingCubesAlgo {
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
-                     (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
-                     (v3 + v7) / 2, (v7 + v8) / 2, (v5 + v8) / 2,
-                     (v1 + v7) / 2]
-        
-        indices4Lines += [
-            3, 2,
-            3, 4,
-            3, 12,
-            2, 9,
-            9, 10,
-            4, 10,
-            4, 8,
-            8, 13,
-            8, 14,
-            12, 13,
-            11, 12,
-            2, 11,
-            9, 11,
-            15, 11,
-            15, 12,
-            15, 10,
-            15, 14,
-            13, 14,
-            10, 14,
-            ]
-                    
-    }
-
-    func getMC4_7(vertices: inout [SCNVector3], indices: inout [Int32],
-                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
-                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
-                   v7: SCNVector3, v8: SCNVector3) {
-        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v2) / 2, (v2 + v3) / 2, (v1 + v5) / 2,
                      (v4 + v8) / 2, (v8 + v7) / 2, (v6 + v7) / 2,
                      (v1 + v7) / 2]
@@ -1944,6 +1911,38 @@ class MarchingCubesAlgo {
                 15, 12,
                 15, 14,
             ]
+    }
+    
+    func getMC4_7(vertices: inout [SCNVector3], indices: inout [Int32],
+                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
+                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
+                   v7: SCNVector3, v8: SCNVector3) {
+        vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
+                     (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
+                     (v3 + v7) / 2, (v7 + v8) / 2, (v5 + v8) / 2,
+                     (v1 + v7) / 2]
+        
+        indices4Lines += [
+            3, 2,
+            3, 4,
+            3, 12,
+            2, 9,
+            9, 10,
+            4, 10,
+            4, 8,
+            8, 13,
+            8, 14,
+            12, 13,
+            11, 12,
+            2, 11,
+            9, 11,
+            15, 11,
+            15, 12,
+            15, 10,
+            15, 14,
+            13, 14,
+            10, 14,
+        ]
     }
     
     func getMC5_5(vertices: inout [SCNVector3], indices: inout [Int32],
