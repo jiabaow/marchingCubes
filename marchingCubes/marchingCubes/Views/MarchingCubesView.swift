@@ -5,54 +5,81 @@ struct MarchingCubesView: View {
     let filename: String
     let divisions: Int
 
-    @State private var isLoading = true
-    
+    @StateObject private var dataLoader = VoxelDataLoader()
+
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 5) {
+    init(filename: String = "Mesh_Anteater", divisions: Int = 5) {
         self.filename = filename
         self.divisions = divisions
     }
-
+    
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack {
-                    Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
-                        .font(.largeTitle)
-                        .padding()
+            if dataLoader.isLoading {
+                LoadingView(filename: filename)
+            } else {
+                ScrollView {
+                    VStack {
+                        Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
+                            .font(.largeTitle)
+                            .padding()
 
-                    SceneView(filename: filename, divisions: divisions,
-                              numLayer: divisions + 1, isLoading: $isLoading)
-                        .frame(width: 300, height: 300)
-                        .edgesIgnoringSafeArea(.all)
-                    
-                    ForEach(1...divisions+1, id: \.self) { iLayer in
-                        VStack {
-                            Text("Layer \(iLayer)")
-                                .font(.headline)
-                                .padding(.top)
+                        SceneView(filename: filename, divisions: divisions,
+                                  numLayer: dataLoader.numLayer + 1, voxelData: dataLoader.voxelData)
+                            .frame(width: 300, height: 300)
+                            .edgesIgnoringSafeArea(.all)
 
-                            SceneView(filename: filename, divisions: divisions,
-                                      numLayer: iLayer, isLoading: $isLoading)
-                                .frame(width: 300, height: 300)
-                                .edgesIgnoringSafeArea(.all)
+                        ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
+                            VStack {
+                                Text("Layer \(iLayer)")
+                                    .font(.headline)
+                                    .padding(.top)
+
+                                SceneView(filename: filename, divisions: divisions,
+                                          numLayer: iLayer + 1, voxelData: dataLoader.voxelData)
+                                    .frame(width: 300, height: 300)
+                                    .edgesIgnoringSafeArea(.all)
+                            }
                         }
                     }
-
                 }
             }
-
-            LoadingView(filename: filename, isLoading: isLoading)
+        }
+        .onAppear {
+            dataLoader.loadVoxelData(filename: filename, divisions: divisions)
         }
     }
+    
+    // Helper function to load and voxelize the model
+     static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
+         var voxArray: MDLVoxelArray? = nil
+         if let fileURL = get3DModelURL(filename: filename) {
+             guard let obj = loadObjAsset(filename: fileURL),
+                   let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                 print("Failed to load or voxelize the model.")
+                 return nil
+             }
+             voxArray = voxarr
+         } else {
+             guard let obj = loadOBJ(filename: filename),
+                   let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
+                 print("Failed to load or voxelize the model.")
+                 return nil
+             }
+             voxArray = voxarr
+         }
+         let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
+         let voxelData = getAllLayers(data: voxelGrid)
+         let numLayer = voxelData[0].count - 1
+         return (voxelData, numLayer)
+     }
 }
 
 struct SceneView: UIViewRepresentable {
     let filename: String
     let divisions: Int
-    // the index of layer, -1 stands for the whole object
     let numLayer: Int
-    @Binding var isLoading: Bool
+    let voxelData: [[[Int]]]
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
@@ -63,7 +90,7 @@ struct SceneView: UIViewRepresentable {
         scnView.scene = scene
 
         Task {
-            await loadAndProcessModel(in: scene, scnView: scnView, numLayer: numLayer)
+            await loadAndProcessModel(in: scene, scnView: scnView)
         }
 
         return scnView
@@ -71,52 +98,22 @@ struct SceneView: UIViewRepresentable {
 
     func updateUIView(_ uiView: SCNView, context: Context) {}
 
-    private func loadAndProcessModel(in scene: SCNScene, scnView: SCNView, numLayer: Int) async {
-        DispatchQueue.main.async {
-            isLoading = true
-        }
+    private func loadAndProcessModel(in scene: SCNScene, scnView: SCNView) async {
 
         let result: [SCNNode?] = await Task {
-            var voxArray: MDLVoxelArray? = nil;
-            if let fileURL = get3DModelURL(filename: filename) {
-                guard let obj = loadObjAsset(filename: fileURL),
-                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                    print("Failed to load or voxelize the model.")
-                    return []
-                }
-                voxArray = voxarr
-            } else {
-                guard let obj = loadOBJ(filename: filename),
-                      let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                    print("Failed to load or voxelize the model.")
-                    return []
-                }
-                voxArray = voxarr;
-            }
-
-            let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
-            let layeredData = getLayeredData(data: voxelGrid, numLayer: numLayer)
-            
             let algo = MarchingCubesAlgo()
+            let layeredData = getLayeredData(data: self.voxelData, numLayer: self.numLayer)
+            print("layered data fetched!")
             let mcNode2 = algo.marchingCubesV2(data: layeredData)
-                     
-//             let mcNode2 = testGetCube()
-            
             return [mcNode2]
-//            return [mcNodeTest]
-//            return [mcNode, outlineNode]
         }.value
 
-        // Update UI on the main thread
-        DispatchQueue.main.async {
-            for node in result {
-                if let validNode = node {
-                    scene.rootNode.addChildNode(validNode)
-                }
+        for node in result {
+            if let validNode = node {
+                scene.rootNode.addChildNode(validNode)
             }
-            addLights(to: scene)
-            isLoading = false
         }
+        addLights(to: scene)
     }
 
     private func addLights(to scene: SCNScene) {
@@ -153,18 +150,39 @@ struct SceneView: UIViewRepresentable {
 
 struct LoadingView: View {
     let filename: String
-    let isLoading: Bool
 
     var body: some View {
-        if isLoading {
-            Text("Converting \(filename) to cubes...")
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(10)
-                .transition(.opacity)
-                .animation(.easeInOut, value: isLoading)
+        Text("Converting \(filename) to cubes...")
+            .font(.headline)
+            .foregroundColor(.white)
+            .padding()
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(10)
+            .transition(.opacity)
+            .animation(.easeInOut, value: true)
+    }
+}
+
+class VoxelDataLoader: ObservableObject {
+    @Published var voxelData: [[[Int]]] = []
+    @Published var numLayer: Int = 0
+    @Published var isLoading: Bool = true
+
+    func loadVoxelData(filename: String, divisions: Int) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let (loadedVoxelData, loadedNumLayer) = MarchingCubesView.loadVoxelData(filename: filename, divisions: divisions) else {
+                print("Failed to load voxel data.")
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.voxelData = loadedVoxelData
+                self.numLayer = loadedNumLayer
+                self.isLoading = false
+            }
         }
     }
 }
