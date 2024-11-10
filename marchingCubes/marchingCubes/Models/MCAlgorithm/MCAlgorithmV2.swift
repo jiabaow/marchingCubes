@@ -804,6 +804,24 @@ class MarchingCubesAlgo {
                         else if (a1 == 1 && a3 == 1 && b2 == 1 && b3 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3, v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a1, v8: v_b1)
                         }
+                        else if (a3 == 1 && a4 == 1 && b1 == 1 && b2 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+                        }
+                        else if (a2 == 1 && a3 == 1 && b1 == 1 && b4 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
+                        }
+                        else if (a1 == 1 && a2 == 1 && b3 == 1 && b4 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4, v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_b1, v8: v_b2)
+                        }
+                        else if (a1 == 1 && a4 == 1 && b2 == 1 && b3 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
+                        }
+                        else if (a1 == 1 && a3 == 1 && b1 == 1 && b3 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2, v3: v_b3, v4: v_a3, v5: v_a1, v6: v_b1, v7: v_b4, v8: v_a4)
+                        }
+                        else if (a2 == 1 && a4 == 1 && b2 == 1 && b4 == 1) {
+                            getMC4_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1, v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b3, v8: v_a3)
+                        }
                         else if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
                             getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
@@ -1710,6 +1728,29 @@ class MarchingCubesAlgo {
                      (v3 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
                      (v1 + v5) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
                      (v8 + v5) / 2, (v7 + v6) / 2]
+        
+        indices += [
+            3, 4, 9,
+            4, 9, 10,
+            3, 9, 13,
+            6, 11, 16,
+            9, 11, 16,
+            9, 13, 16,
+            6, 11, 12,
+            5, 6, 12,
+            5, 6, 15,
+            6, 15, 16,
+            3, 4, 13,
+            4, 13, 14,
+            9, 10, 11,
+            10, 11, 12,
+            13, 14, 16,
+            14, 15, 16,
+            4, 10, 14,
+            5, 12, 15,
+            10, 12, 15,
+            10, 14, 15
+        ]
         
         indices4Lines += [
                 3, 4,
