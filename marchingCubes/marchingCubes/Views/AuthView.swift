@@ -5,6 +5,7 @@
 //  Created by Charles Weng on 11/6/24.
 //
 import SwiftUI
+import AWSCognitoIdentityProvider
 
 struct AuthSwitcherView: View {
     @State private var isLoginView: Bool = true
@@ -21,6 +22,7 @@ struct AuthSwitcherView: View {
 }
 
 struct LoginView: View {
+    @AppStorage("isAuthenticated") private var isAuthenticated = false
     @Binding var isLoginView: Bool
     @State private var username: String = ""
     @State private var password: String = ""
@@ -78,14 +80,19 @@ struct LoginView: View {
     func continueAsGuest() {
         // Implement continue as guest logic here
         print("Continuing as guest.")
+        isAuthenticated = true
     }
 }
 
 struct SignUpView: View {
+    @AppStorage("isAuthenticated") private var isAuthenticated = false
     @Binding var isLoginView: Bool
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var email: String = ""
+    @State private var emailError: String? = nil
+    @State private var usernameError: String? = nil
+    @State private var passwordError: String? = nil
 
     var body: some View {
         VStack(spacing: 20) {
@@ -96,18 +103,35 @@ struct SignUpView: View {
             TextField("Email", text: $email)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
+            if let emailError = emailError {
+                Text(emailError)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.horizontal)
+            }
 
             TextField("Username", text: $username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
+            if let usernameError = usernameError {
+                Text(usernameError)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.horizontal)
+            }
 
             SecureField("Password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
+            if let passwordError = passwordError {
+                Text(passwordError)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.horizontal)
+            }
 
             Button(action: {
-                // Implement sign-up logic here
-                print("Sign up with username: \(username) and email: \(email)")
+                validateInputs()
                 Task {
                     await performSignUp()
                 }
@@ -147,22 +171,67 @@ struct SignUpView: View {
     func continueAsGuest() {
         // Implement continue as guest logic here
         print("Continuing as guest.")
+        isAuthenticated = true
+    }
+    
+    func validateInputs() {
+        emailError = email.isEmpty ? "Email is required." : nil
+        usernameError = username.isEmpty ? "Username is required." : nil
+        passwordError = password.isEmpty ? "Password is required." : nil
+
+        if let emailError = emailError, !email.isEmpty {
+            // Add more complex email validation if needed
+            if !email.contains("@") {
+                self.emailError = "Invalid email format."
+            }
+        }
+
+        if let passwordError = passwordError, !password.isEmpty {
+            // Add more complex password validation if needed
+            if password.count < 6 {
+                self.passwordError = "Password must be at least 6 characters."
+            }
+        }
     }
     
     func performSignUp() async {
-            do {
-                try await CognitoAuthManager().signUp(username: username, password: password, email: email) { result in
-                    switch result {
-                    case .success:
-                        print("Sign-up successful!")
-                    case .failure(let error):
-                        print("Sign-up failed with error: \(error)")
-                    }
-                }
-            } catch {
-                print("Unexpected error: \(error)")
-            }
+        // Ensure inputs are valid before attempting sign-up
+        guard emailError == nil, usernameError == nil, passwordError == nil else {
+            return
         }
+
+        do {
+            try await CognitoAuthManager().signUp(username: username, password: password, email: email) { result in
+                switch result {
+                case .success:
+                    print("Sign-up successful!")
+                    isAuthenticated = true
+                case .failure(let error):
+                    print("Sign-up failed with error: \(error)")
+                    handleSignUpError(error)
+                    // Handle sign-up failure logic here
+                }
+            }
+        } catch {
+            print("Unexpected error: \(error)")
+            handleSignUpError(error)
+            // Handle unexpected error logic here
+        }
+    }
+    
+    func handleSignUpError(_ error: Error) {
+        if let cognitoError = error as? AWSCognitoIdentityProvider.UsernameExistsException {
+            usernameError = "Username already exists."
+        } else if let cognitoError = error as?
+                    AWSCognitoIdentityProvider.InvalidPasswordException {
+            passwordError = "Invalid password."
+        } else if let cognitoError = error as?
+                    AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException {
+            emailError = "Invalid email."
+        } else {
+            print("Unknown error: ", error)
+        }
+    }
 }
 
 struct AuthSwitcherView_Previews: PreviewProvider {

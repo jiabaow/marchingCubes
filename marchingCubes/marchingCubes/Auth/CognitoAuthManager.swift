@@ -27,7 +27,7 @@ class CognitoAuthManager {
         
         // Create a sign-up request
         do {
-            let signUpRequest = try await self.client.signUp(input: signUpInput)
+            _ = try await self.client.signUp(input: signUpInput)
             completion(.success(()))
         } catch {
             print(error)

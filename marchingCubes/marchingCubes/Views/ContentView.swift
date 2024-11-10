@@ -8,6 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    // Use @AppStorage to persist authentication state across app launches
+    @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("lastActiveTime") private var lastActiveTime: Date = Date()
+    
+    // Define the timeout duration (e.g., 7 days)
+    private let timeoutInterval: TimeInterval = 7 * 3600 * 24
+
+    var body: some View {
+        Group {
+            if isAuthenticated {
+                // Show the main content view if authenticated
+                MainTabView()
+            } else {
+                // Show the sign-in view if not authenticated
+                AuthSwitcherView()
+            }
+        }
+    }
+    
+    // Start a timer to check for inactivity
+    private func startInactivityTimer() {
+        Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            checkInactivity()
+        }
+    }
+    
+    // Check if the user should be logged out due to inactivity
+    private func checkInactivity() {
+        let currentTime = Date()
+        if currentTime.timeIntervalSince(lastActiveTime) > timeoutInterval {
+            isAuthenticated = false
+        }
+    }
+}
+
+struct MainTabView: View {
     var body: some View {
         TabView {
             Dashboard()
@@ -25,7 +61,7 @@ struct ContentView: View {
             MarchingCubesView()
                 .tabItem {
                     Label("Test", systemImage: "square.fill")
-            }
+                }
         }
     }
 }
