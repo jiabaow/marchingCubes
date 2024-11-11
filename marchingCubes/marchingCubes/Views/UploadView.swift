@@ -199,7 +199,7 @@ struct SCNViewWrapper: UIViewRepresentable {
 
 struct Upload_Previews: PreviewProvider {
     static var previews: some View {
-        UploadView()
+        UploadView().environmentObject(ProjectViewModel())
     }
 }
 

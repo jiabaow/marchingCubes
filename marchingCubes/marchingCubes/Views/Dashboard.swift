@@ -253,7 +253,7 @@ struct Dashboard: View {
 
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        Dashboard()
+        Dashboard().environmentObject(ProjectViewModel())
     }
 }
 

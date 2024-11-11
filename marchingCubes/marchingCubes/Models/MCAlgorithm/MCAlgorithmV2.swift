@@ -93,787 +93,837 @@ class MarchingCubesAlgo {
                     
                     var vertices: [SCNVector3] = []
                     var indices: [Int32] = []
+                    var color_indices: [Int32] = []
                     
                     if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) == 8) {
-                        getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                 v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+//                        getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                 v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                     }
                     else if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) == 1) {
                         if (b4 == 1) {
+                            if j == yDim - 1 {
+                                color_indices.append(contentsOf: [0, 1, 2])
+                            }
+                            // Only generate face 2 if not at the boundary in the k direction
+                            if k == zDim - 1 {
+                                color_indices.append(contentsOf: [0, 1, 3])
+                            }
+                            // Only generate face 3 if not at the boundary in the i direction
+                            if i == xDim - 1 {
+                                color_indices.append(contentsOf: [0, 2, 3])
+                            }
+                            // Only generate face 4 if at the boundary in all directions
+                            if i == xDim - 1 && j == yDim - 1 && k == zDim - 1 {
+                                color_indices.append(contentsOf: [1, 2, 3])
+                            }
                             getMC1_1N(vertices: &vertices, indices: &indices,
                                       v1: v_b4, v2: v_b3_b4, v3: v_b1_b4, v4: v_a4_b4)
                         }
-                        else if (b3 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_b3, v2: v_b3_b4, v3: v_b2_b3, v4: v_a3_b3)
-                        }
-                        else if (b2 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_b2, v2: v_b1_b2, v3: v_b2_b3, v4: v_a2_b2)
-                        }
-                        else if (b1 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_b1, v2: v_b1_b4, v3: v_b1_b2, v4: v_a1_b1)
-                        }
-                        else if (a4 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_a4, v2: v_a4_b4, v3: v_a1_a4, v4: v_a3_a4)
-                        }
-                        else if (a3 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_a3, v2: v_a3_b3, v3: v_a3_a4, v4: v_a2_a3)
-                        }
-                        else if (a2 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_a2, v2: v_a2_b2, v3: v_a1_a2, v4: v_a2_a3)
-                        }
-                        else if (a1 == 1) {
-                            getMC1_1N(vertices: &vertices, indices: &indices,
-                                      v1: v_a1, v2: v_a1_b1, v3: v_a1_a2, v4: v_a1_a4)
-                        }
+//                        else if (b3 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_b3, v2: v_b3_b4, v3: v_b2_b3, v4: v_a3_b3)
+//                        }
+//                        else if (b2 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_b2, v2: v_b1_b2, v3: v_b2_b3, v4: v_a2_b2)
+//                        }
+//                        else if (b1 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_b1, v2: v_b1_b4, v3: v_b1_b2, v4: v_a1_b1)
+//                        }
+//                        else if (a4 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_a4, v2: v_a4_b4, v3: v_a1_a4, v4: v_a3_a4)
+//                        }
+//                        else if (a3 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_a3, v2: v_a3_b3, v3: v_a3_a4, v4: v_a2_a3)
+//                        }
+//                        else if (a2 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_a2, v2: v_a2_b2, v3: v_a1_a2, v4: v_a2_a3)
+//                        }
+//                        else if (a1 == 1) {
+//                            getMC1_1N(vertices: &vertices, indices: &indices,
+//                                      v1: v_a1, v2: v_a1_b1, v3: v_a1_a2, v4: v_a1_a4)
+//                        }
                     }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 7){
-                        if (b4 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a4_b4, v2: v_b3_b4, v3: v_b1_b4,
-                                     v4: v_a4, v5: v_b3, v6: v_b1, v7: v_a3,
-                                     v8: v_b2, v9: v_a1, v10: v_a2)
-                        }
-                        else if (b3 == 0){
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a3_b3, v2: v_b2_b3, v3: v_b3_b4,
-                                     v4: v_a3, v5: v_b2, v6: v_b4, v7: v_a2,
-                                     v8: v_b1, v9: v_a4, v10: v_a1)
-                        }
-                        else if (b2 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a2_b2, v2: v_b1_b2, v3: v_b2_b3,
-                                     v4: v_a2, v5: v_b1, v6: v_b3, v7: v_a1,
-                                     v8: v_b4, v9: v_a3, v10: v_a4)
-                        }
-                        else if (b1 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a1_b1, v2: v_b1_b4, v3: v_b1_b2,
-                                     v4: v_a1, v5: v_b4, v6: v_b2, v7: v_a4,
-                                     v8: v_b3, v9: v_a2, v10: v_a3)
-                        }
-                        else if (a1 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a1_b1, v2: v_a1_a2, v3: v_a1_a4,
-                                     v4: v_b1, v5: v_a2, v6: v_a4, v7: v_b2,
-                                     v8: v_a3, v9: v_b4, v10: v_b3)
-                        }
-                        else if (a2 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a2_b2, v2: v_a2_a3, v3: v_a1_a2,
-                                     v4: v_b2, v5: v_a3, v6: v_a1, v7: v_b3,
-                                     v8: v_a4, v9: v_b1, v10: v_b4)
-                        }
-                        else if (a3 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a3_b3, v2: v_a3_a4, v3: v_a2_a3,
-                                     v4: v_b3, v5: v_a4, v6: v_a2, v7: v_b4,
-                                     v8: v_a1, v9: v_b2, v10: v_b1)
-                        }
-                        else if (a4 == 0) {
-                            getMC1_1(vertices: &vertices, indices: &indices,
-                                     v1: v_a4_b4, v2: v_a1_a4, v3: v_a3_a4,
-                                     v4: v_b4, v5: v_a1, v6: v_a3, v7: v_b1,
-                                     v8: v_a2, v9: v_b3, v10: v_b2)
-                        }
-                    }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 6){
-                        if (a2 == 0 && b1 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
-                                     v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
-                        }
-                        else if (b1 == 0 && a4 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b1,
-                                     v3: v_a1, v4: v_b4, v5: v_a3, v6: v_b2, v7: v_a2, v8: v_b3)
-                        }
-                        else if (a3 == 0 && b4 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b4,
-                                     v3: v_a4, v4: v_b3, v5: v_a2, v6: v_b1, v7: v_a1, v8: v_b2)
-                        }
-                        else if (b3 == 0 && a2 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b3,
-                                     v3: v_a3, v4: v_b2, v5: v_a1, v6: v_b4, v7: v_a4, v8: v_b1)
-                        }
-                        else if (a1 == 0 && b2 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b2,
-                                     v3: v_a2, v4: v_b1, v5: v_a4, v6: v_b3, v7: v_a3, v8: v_b4)
-                        }
-                        else if (a1 == 0 && a3 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
-                                     v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
-                        }
-                        else if (a2 == 0 && a4 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a4,
-                                     v3: v_a1, v4: v_a3, v5: v_b2, v6: v_b4, v7: v_b1, v8: v_b3)
-                        }
-                        else if (b2 == 0 && b4 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b4,
-                                     v3: v_b1, v4: v_b3, v5: v_a2, v6: v_a4, v7: v_a1, v8: v_a3)
-                        }
-                        else if (b1 == 0 && b3 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b3,
-                                     v3: v_b2, v4: v_b4, v5: v_a1, v6: v_a3, v7: v_a2, v8: v_a4)
-                        }
-                        else if (a1 == 0 && b4 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
-                                     v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
-                        }
-                        else if (a4 == 0 && b3 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
-                                     v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
-                        }
-                        else if (a4 == 0 && b3 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b3,
-                                     v3: v_b4, v4: v_a3, v5: v_a1, v6: v_b2, v7: v_b1, v8: v_a2)
-                        }
-                        else if (b2 == 0 && a3 == 0) {
-                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
-                                     v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
-                        }
-                        else if (b3 == 0 && b4 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                     v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
-                        }
-                        else if (b3 == 0 && b2 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                     v3: v_a3, v4: v_a2, v5: v_a4, v6: v_a1, v7: v_b4, v8: v_b1)
-                        }
-                        else if (b2 == 0 && b1 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                     v3: v_a2, v4: v_a1, v5: v_a3, v6: v_a4, v7: v_b3, v8: v_b4)
-                        }
-                        else if (b4 == 0 && b1 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                     v3: v_a1, v4: v_a4, v5: v_a2, v6: v_a3, v7: v_b2, v8: v_b3)
-                        }
-                        else if (a2 == 0 && a1 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                     v3: v_a3, v4: v_a4, v5: v_b3, v6: v_b4, v7: v_b2, v8: v_b1)
-                        }
-                        else if (a2 == 0 && a3 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                     v3: v_a4, v4: v_a1, v5: v_b4, v6: v_b1, v7: v_b3, v8: v_b2)
-                        }
-                        else if (a4 == 0 && a3 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                     v3: v_a1, v4: v_a2, v5: v_b1, v6: v_b2, v7: v_b4, v8: v_b3)
-                        }
-                        else if (a4 == 0 && a1 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                     v3: v_a2, v4: v_a3, v5: v_b2, v6: v_b3, v7: v_b1, v8: v_b4)
-                        }
-                        else if (b1 == 0 && a1 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                     v3: v_a4, v4: v_b4, v5: v_a3, v6: v_b3, v7: v_a2, v8: v_b2)
-                        }
-                        else if (b2 == 0 && a2 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                     v3: v_a1, v4: v_b1, v5: v_a4, v6: v_b4, v7: v_a3, v8: v_b3)
-                        }
-                        else if (b3 == 0 && a3 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                     v3: v_a2, v4: v_b2, v5: v_a1, v6: v_b1, v7: v_a4, v8: v_b4)
-                        }
-                        else if (b4 == 0 && a4 == 0) {
-                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                     v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a1 == 0 && b3 == 0) {
-                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
-                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a2 == 0 && b4 == 0) {
-                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b4,
-                                     v3: v_a3, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a1, v8: v_a4)
-                        }
-                        else if (a3 == 0 && b1 == 0) {
-                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b1,
-                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a4 == 0 && b2 == 0) {
-                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b2,
-                                     v3: v_a1, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a3, v8: v_a2)
-                        }
-                    }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 5){
-                        // MC3_1
-                        if (a2 == 0 && a3 == 0 && b1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                     v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
-                        }
-                        else if (a2 == 0 && a3 == 0 && b4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
-                                     v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
-                        }
-                        else if (a2 == 0 && a1 == 0 && b4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                     v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
-                        }
-                        else if (a2 == 0 && a1 == 0 && b3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                     v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a4 == 0 && a1 == 0 && b3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                     v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
-                        }
-                        else if (a4 == 0 && a1 == 0 && b2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                                     v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
-                        }
-                        else if (a4 == 0 && a3 == 0 && b2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                     v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
-                        }
-                        else if (a4 == 0 && a3 == 0 && b1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                                     v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
-                        }
-                        else if (b1 == 0 && b4 == 0 && a2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
-                                     v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
-                        }
-                        else if (b1 == 0 && b4 == 0 && a3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                     v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
-                        }
-                        else if (b1 == 0 && b2 == 0 && a3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
-                                     v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
-                        }
-                        else if (b1 == 0 && b2 == 0 && a4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                     v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
-                        }
-                        else if (b3 == 0 && b2 == 0 && a4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
-                                     v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
-                        }
-                        else if (b3 == 0 && b2 == 0 && a1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                     v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
-                        }
-                        else if (b3 == 0 && b4 == 0 && a1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
-                                     v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
-                        }
-                        else if (b3 == 0 && b4 == 0 && a2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                     v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
-                        }
-                        else if (a1 == 0 && b1 == 0 && b3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                     v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
-                        }
-                        else if (a1 == 0 && b1 == 0 && a3 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
-                                     v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
-                        }
-                        else if (a2 == 0 && b2 == 0 && b4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                     v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a2 == 0 && b2 == 0 && a4 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
-                                     v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
-                        }
-                        else if (a3 == 0 && b3 == 0 && b1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                     v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
-                        }
-                        else if (a3 == 0 && b3 == 0 && a1 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
-                                     v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
-                        }
-                        else if (a4 == 0 && b4 == 0 && b2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                     v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
-                        }
-                        else if (a4 == 0 && b4 == 0 && a2 == 0){
-                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
-                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
-                        }
-                        // MC3_3
-                        else if (a1 == 0 && a3 == 0 && b4 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                                     v3: v_a3, v4: v_b4, v5: v_a2, v6: v_b3, v7: v_b1, v8: v_b2)
-                        }
-                        else if (a1 == 0 && a3 == 0 && b2 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                     v3: v_b2, v4: v_a3, v5: v_b1, v6: v_b3, v7: v_a4, v8: v_b4)
-                        }
-                        else if (a2 == 0 && a4 == 0 && b3 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                                     v3: v_a2, v4: v_b3, v5: v_a1, v6: v_b2, v7: v_b4, v8: v_b1)
-                        }
-                        else if (a2 == 0 && a4 == 0 && b1 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                     v3: v_a4, v4: v_b1, v5: v_a3, v6: v_b4, v7: v_b2, v8: v_b3)
-                        }
-                        else if (b1 == 0 && b3 == 0 && a4 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                     v3: v_b1, v4: v_a4, v5: v_b2, v6: v_a1, v7: v_a3, v8: v_a2)
-                        }
-                        else if (b1 == 0 && b3 == 0 && a2 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                     v3: v_b3, v4: v_a2, v5: v_b4, v6: v_a3, v7: v_a1, v8: v_a4)
-                        }
-                        else if (b2 == 0 && b4 == 0 && a1 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                     v3: v_b2, v4: v_a1, v5: v_b3, v6: v_a2, v7: v_a4, v8: v_a3)
-                        }
-                        else if (b2 == 0 && b4 == 0 && a3 == 0){
-                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                     v3: v_b4, v4: v_a3, v5: v_b1, v6: v_a4, v7: v_a2, v8: v_a1)
-                        }
-                        // MC3_4
-                        else if (a2 == 0 && a3 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                     v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
-                        }
-                        else if (a2 == 0 && a3 == 0 && a1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                     v3: v_a2, v4: v_a1, v5: v_b4, v6: v_b3, v7: v_b2, v8: v_b1)
-                        }
-                        else if (a2 == 0 && a1 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                     v3: v_a1, v4: v_a4, v5: v_b3, v6: v_b2, v7: v_b1, v8: v_b4)
-                        }
-                        else if (a2 == 0 && a3 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                     v3: v_a4, v4: v_a3, v5: v_b2, v6: v_b1, v7: v_b4, v8: v_b3)
-                        }
-                        else if (b2 == 0 && b3 == 0 && b4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
-                                     v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_a3, v8: v_a4)
-                        }
-                        else if (b2 == 0 && b3 == 0 && b1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
-                                     v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_a2, v8: v_a3)
-                        }
-                        else if (b3 == 0 && b4 == 0 && b1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
-                                     v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_a4, v8: v_a1)
-                        }
-                        else if (b2 == 0 && b4 == 0 && b1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
-                                     v3: v_b1, v4: v_b2, v5: v_a3, v6: v_a4, v7: v_a1, v8: v_a2)
-                        }
-                        else if (a1 == 0 && b4 == 0 && b1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                                     v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_b2, v8: v_b3)
-                        }
-                        else if (a1 == 0 && b1 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
-                                     v3: v_a1, v4: v_b1, v5: v_b3, v6: v_a3, v7: v_a2, v8: v_b2)
-                        }
-                        else if (a1 == 0 && b4 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                     v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_a3, v8: v_a2)
-                        }
-                        else if (b4 == 0 && b1 == 0 && a4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                     v3: v_b4, v4: v_a4, v5: v_a2, v6: v_b2, v7: v_b3, v8: v_a3)
-                        }
-                        else if (a1 == 0 && a2 == 0 && b2 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
-                                     v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a3, v8: v_b3)
-                        }
-                        else if (a1 == 0 && a2 == 0 && b1 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                     v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a1 == 0 && b1 == 0 && b2 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                     v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
-                        }
-                        else if (b1 == 0 && a2 == 0 && b2 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                     v3: v_b2, v4: v_b1, v5: v_a4, v6: v_a3, v7: v_b3, v8: v_b4)
-                        }
-                        else if (a3 == 0 && a2 == 0 && b3 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
-                                     v3: v_a3, v4: v_b3, v5: v_b1, v6: v_a1, v7: v_a4, v8: v_b4)
-                        }
-                        else if (a3 == 0 && a2 == 0 && b2 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                     v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_a1, v8: v_a4)
-                        }
-                        else if (b3 == 0 && a2 == 0 && b2 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                     v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b1, v8: v_a1)
-                        }
-                        else if (a3 == 0 && b2 == 0 && b3 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
-                                     v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_b4, v8: v_b1)
-                        }
-                        else if (a3 == 0 && a4 == 0 && b4 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
-                                     v3: v_a4, v4: v_b4, v5: v_b2, v6: v_a2, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a3 == 0 && a4 == 0 && b3 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                     v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_a2, v8: v_a1)
-                        }
-                        else if (a3 == 0 && b4 == 0 && b3 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                     v3: v_b3, v4: v_a3, v5: v_a1, v6: v_b1, v7: v_b2, v8: v_a2)
-                        }
-                        else if (a4 == 0 && b4 == 0 && b3 == 0){
-                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                                     v3: v_b4, v4: v_b3, v5: v_a2, v6: v_a1, v7: v_b1, v8: v_b2)
-                        }
-                    }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 3){
-                        // MC3_1N
-                        if (a2 == 1 && a3 == 1 && b1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                      v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
-                        }
-                        else if (a2 == 1 && a3 == 1 && b4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
-                                      v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
-                        }
-                        else if (a2 == 1 && a1 == 1 && b4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                      v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
-                        }
-                        else if (a2 == 1 && a1 == 1 && b3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                      v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a4 == 1 && a1 == 1 && b3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                      v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
-                        }
-                        else if (a4 == 1 && a1 == 1 && b2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                                      v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
-                        }
-                        else if (a4 == 1 && a3 == 1 && b2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                      v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
-                        }
-                        else if (a4 == 1 && a3 == 1 && b1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                                      v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
-                        }
-                        else if (b1 == 1 && b4 == 1 && a2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
-                                      v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
-                        }
-                        else if (b1 == 1 && b4 == 1 && a3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                      v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
-                        }
-                        else if (b1 == 1 && b2 == 1 && a3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
-                                      v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
-                        }
-                        else if (b1 == 1 && b2 == 1 && a4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                      v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
-                        }
-                        else if (b3 == 1 && b2 == 1 && a4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
-                                      v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
-                        }
-                        else if (b3 == 1 && b2 == 1 && a1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                      v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
-                        }
-                        else if (b3 == 1 && b4 == 1 && a1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
-                                      v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
-                        }
-                        else if (b3 == 1 && b4 == 1 && a2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                      v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
-                        }
-                        else if (a1 == 1 && b1 == 1 && b3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                      v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
-                        }
-                        else if (a1 == 1 && b1 == 1 && a3 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
-                                      v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
-                        }
-                        else if (a2 == 1 && b2 == 1 && b4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                      v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a2 == 1 && b2 == 1 && a4 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
-                                      v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
-                        }
-                        else if (a3 == 1 && b3 == 1 && b1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                      v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
-                        }
-                        else if (a3 == 1 && b3 == 1 && a1 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
-                                      v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
-                        }
-                        else if (a4 == 1 && b4 == 1 && b2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                      v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
-                        }
-                        else if (a4 == 1 && b4 == 1 && a2 == 1){
-                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
-                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
-                        }
-                        // MC3_4N
-                        else if (a2 == 1 && a3 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                      v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
-                        }
-                        else if (a2 == 1 && a3 == 1 && a1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                      v3: v_a2, v4: v_a1, v5: v_b4, v6: v_b3, v7: v_b2, v8: v_b1)
-                        }
-                        else if (a2 == 1 && a1 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                      v3: v_a1, v4: v_a4, v5: v_b3, v6: v_b2, v7: v_b1, v8: v_b4)
-                        }
-                        else if (a2 == 1 && a3 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                      v3: v_a4, v4: v_a3, v5: v_b2, v6: v_b1, v7: v_b4, v8: v_b3)
-                        }
-                        else if (b2 == 1 && b3 == 1 && b4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
-                                      v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_a3, v8: v_a4)
-                        }
-                        else if (b2 == 1 && b3 == 1 && b1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
-                                      v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_a2, v8: v_a3)
-                        }
-                        else if (b3 == 1 && b4 == 1 && b1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
-                                      v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_a4, v8: v_a1)
-                        }
-                        else if (b2 == 1 && b4 == 1 && b1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
-                                      v3: v_b1, v4: v_b2, v5: v_a3, v6: v_a4, v7: v_a1, v8: v_a2)
-                        }
-                        else if (a1 == 1 && b4 == 1 && b1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                                      v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_b2, v8: v_b3)
-                        }
-                        else if (a1 == 1 && b1 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
-                                      v3: v_a1, v4: v_b1, v5: v_b3, v6: v_a3, v7: v_a2, v8: v_b2)
-                        }
-                        else if (a1 == 1 && b4 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                      v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_a3, v8: v_a2)
-                        }
-                        else if (b4 == 1 && b1 == 1 && a4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                      v3: v_b4, v4: v_a4, v5: v_a2, v6: v_b2, v7: v_b3, v8: v_a3)
-                        }
-                        else if (a1 == 1 && a2 == 1 && b2 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
-                                      v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a3, v8: v_b3)
-                        }
-                        else if (a1 == 1 && a2 == 1 && b1 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                      v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a1 == 1 && b1 == 1 && b2 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                      v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
-                        }
-                        else if (b1 == 1 && a2 == 1 && b2 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
-                                      v3: v_b2, v4: v_b1, v5: v_a4, v6: v_a3, v7: v_b3, v8: v_b4)
-                        }
-                        else if (a3 == 1 && a2 == 1 && b3 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
-                                      v3: v_a3, v4: v_b3, v5: v_b1, v6: v_a1, v7: v_a4, v8: v_b4)
-                        }
-                        else if (a3 == 1 && a2 == 1 && b2 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                      v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_a1, v8: v_a4)
-                        }
-                        else if (b3 == 1 && a2 == 1 && b2 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                      v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b1, v8: v_a1)
-                        }
-                        else if (a3 == 1 && b2 == 1 && b3 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
-                                      v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_b4, v8: v_b1)
-                        }
-                        else if (a3 == 1 && a4 == 1 && b4 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
-                                      v3: v_a4, v4: v_b4, v5: v_b2, v6: v_a2, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a3 == 1 && a4 == 1 && b3 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                      v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_a2, v8: v_a1)
-                        }
-                        else if (a3 == 1 && b4 == 1 && b3 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                      v3: v_b3, v4: v_a3, v5: v_a1, v6: v_b1, v7: v_b2, v8: v_a2)
-                        }
-                        else if (a4 == 1 && b4 == 1 && b3 == 1){
-                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
-                                      v3: v_b4, v4: v_b3, v5: v_a2, v6: v_a1, v7: v_b1, v8: v_b2)
-                        }
-                    }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 4) {
-                        if (a1 == 1 && a3 == 1 && b2 == 1 && b4 == 1) {
-                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
-                        }
-                        else if (a2 == 1 && a4 == 1 && b1 == 1 && b3 == 1) {
-                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
-                        }
-                        else if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
-                        }
-                        else if (a1 == 1 && a2 == 1 && b1 == 1 && b2 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1, v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b3, v8: v_a3)
-                        }
-                        else if (a1 == 1 && a4 == 1 && b1 == 1 && b4 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4, v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_b3, v8: v_b2)
-                        }
-                        else if (a2 == 1 && a3 == 1 && b2 == 1 && b3 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2, v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_b1, v8: v_b4)
-                        }
-                        else if (a3 == 1 && a4 == 1 && b3 == 1 && b4 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3, v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_b2, v8: v_b1)
-                        }
-                        else if (b1 == 1 && b2 == 1 && b3 == 1 && b4 == 1) {
-                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4, v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_a3, v8: v_a2)
-                        }
-                        
-                    }
-                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 2){
-                        if (a2 == 1 && b1 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
-                                      v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
-                        }
-                        else if (b1 == 1 && a4 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b1,
-                                      v3: v_a1, v4: v_b4, v5: v_a3, v6: v_b2, v7: v_a2, v8: v_b3)
-                        }
-                        else if (a3 == 1 && b4 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b4,
-                                      v3: v_a4, v4: v_b3, v5: v_a2, v6: v_b1, v7: v_a1, v8: v_b2)
-                        }
-                        else if (b3 == 1 && a2 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b3,
-                                      v3: v_a3, v4: v_b2, v5: v_a1, v6: v_b4, v7: v_a4, v8: v_b1)
-                        }
-                        else if (a1 == 1 && b2 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b2,
-                                      v3: v_a2, v4: v_b1, v5: v_a4, v6: v_b3, v7: v_a3, v8: v_b4)
-                        }
-                        else if (a1 == 1 && a3 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
-                                      v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
-                        }
-                        else if (a2 == 1 && a4 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a4,
-                                      v3: v_a1, v4: v_a3, v5: v_b2, v6: v_b4, v7: v_b1, v8: v_b3)
-                        }
-                        else if (b2 == 1 && b4 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b4,
-                                      v3: v_b1, v4: v_b3, v5: v_a2, v6: v_a4, v7: v_a1, v8: v_a3)
-                        }
-                        else if (b1 == 1 && b3 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b3,
-                                      v3: v_b2, v4: v_b4, v5: v_a1, v6: v_a3, v7: v_a2, v8: v_a4)
-                        }
-                        else if (a1 == 1 && b4 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
-                                      v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
-                        }
-                        else if (a4 == 1 && b3 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
-                                      v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
-                        }
-                        else if (a4 == 1 && b3 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b3,
-                                      v3: v_b4, v4: v_a3, v5: v_a1, v6: v_b2, v7: v_b1, v8: v_a2)
-                        }
-                        else if (b2 == 1 && a3 == 1) {
-                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
-                                      v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
-                        }
-                        else if (b3 == 1 && b4 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                                      v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
-                        }
-                        else if (b3 == 1 && b2 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
-                                      v3: v_a3, v4: v_a2, v5: v_a4, v6: v_a1, v7: v_b4, v8: v_b1)
-                        }
-                        else if (b2 == 1 && b1 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
-                                      v3: v_a2, v4: v_a1, v5: v_a3, v6: v_a4, v7: v_b3, v8: v_b4)
-                        }
-                        else if (b4 == 1 && b1 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
-                                      v3: v_a1, v4: v_a4, v5: v_a2, v6: v_a3, v7: v_b2, v8: v_b3)
-                        }
-                        else if (a2 == 1 && a1 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
-                                      v3: v_a3, v4: v_a4, v5: v_b3, v6: v_b4, v7: v_b2, v8: v_b1)
-                        }
-                        else if (a2 == 1 && a3 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                                      v3: v_a4, v4: v_a1, v5: v_b4, v6: v_b1, v7: v_b3, v8: v_b2)
-                        }
-                        else if (a4 == 1 && a3 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
-                                      v3: v_a1, v4: v_a2, v5: v_b1, v6: v_b2, v7: v_b4, v8: v_b3)
-                        }
-                        else if (a4 == 1 && a1 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                                      v3: v_a2, v4: v_a3, v5: v_b2, v6: v_b3, v7: v_b1, v8: v_b4)
-                        }
-                        else if (b1 == 1 && a1 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
-                                      v3: v_a4, v4: v_b4, v5: v_a3, v6: v_b3, v7: v_a2, v8: v_b2)
-                        }
-                        else if (b2 == 1 && a2 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
-                                      v3: v_a1, v4: v_b1, v5: v_a4, v6: v_b4, v7: v_a3, v8: v_b3)
-                        }
-                        else if (b3 == 1 && a3 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
-                                      v3: v_a2, v4: v_b2, v5: v_a1, v6: v_b1, v7: v_a4, v8: v_b4)
-                        }
-                        else if (b4 == 1 && a4 == 1) {
-                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
-                                      v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
-                        }
-                        else if (a1 == 1 && b3 == 1) {
-                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
-                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a2 == 1 && b4 == 1) {
-                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b4,
-                                      v3: v_a3, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a1, v8: v_a4)
-                        }
-                        else if (a3 == 1 && b1 == 1) {
-                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b1,
-                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
-                        }
-                        else if (a4 == 1 && b2 == 1) {
-                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b2,
-                                      v3: v_a1, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a3, v8: v_a2)
-                        }
-                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 7){
+//                        if (b4 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a4_b4, v2: v_b3_b4, v3: v_b1_b4,
+//                                     v4: v_a4, v5: v_b3, v6: v_b1, v7: v_a3,
+//                                     v8: v_b2, v9: v_a1, v10: v_a2)
+//                        }
+//                        else if (b3 == 0){
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a3_b3, v2: v_b2_b3, v3: v_b3_b4,
+//                                     v4: v_a3, v5: v_b2, v6: v_b4, v7: v_a2,
+//                                     v8: v_b1, v9: v_a4, v10: v_a1)
+//                        }
+//                        else if (b2 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a2_b2, v2: v_b1_b2, v3: v_b2_b3,
+//                                     v4: v_a2, v5: v_b1, v6: v_b3, v7: v_a1,
+//                                     v8: v_b4, v9: v_a3, v10: v_a4)
+//                        }
+//                        else if (b1 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a1_b1, v2: v_b1_b4, v3: v_b1_b2,
+//                                     v4: v_a1, v5: v_b4, v6: v_b2, v7: v_a4,
+//                                     v8: v_b3, v9: v_a2, v10: v_a3)
+//                        }
+//                        else if (a1 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a1_b1, v2: v_a1_a2, v3: v_a1_a4,
+//                                     v4: v_b1, v5: v_a2, v6: v_a4, v7: v_b2,
+//                                     v8: v_a3, v9: v_b4, v10: v_b3)
+//                        }
+//                        else if (a2 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a2_b2, v2: v_a2_a3, v3: v_a1_a2,
+//                                     v4: v_b2, v5: v_a3, v6: v_a1, v7: v_b3,
+//                                     v8: v_a4, v9: v_b1, v10: v_b4)
+//                        }
+//                        else if (a3 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a3_b3, v2: v_a3_a4, v3: v_a2_a3,
+//                                     v4: v_b3, v5: v_a4, v6: v_a2, v7: v_b4,
+//                                     v8: v_a1, v9: v_b2, v10: v_b1)
+//                        }
+//                        else if (a4 == 0) {
+//                            getMC1_1(vertices: &vertices, indices: &indices,
+//                                     v1: v_a4_b4, v2: v_a1_a4, v3: v_a3_a4,
+//                                     v4: v_b4, v5: v_a1, v6: v_a3, v7: v_b1,
+//                                     v8: v_a2, v9: v_b3, v10: v_b2)
+//                        }
+//                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 6){
+//                        if (a2 == 0 && b1 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
+//                                     v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
+//                        }
+//                        else if (b1 == 0 && a4 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b1,
+//                                     v3: v_a1, v4: v_b4, v5: v_a3, v6: v_b2, v7: v_a2, v8: v_b3)
+//                        }
+//                        else if (a3 == 0 && b4 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b4,
+//                                     v3: v_a4, v4: v_b3, v5: v_a2, v6: v_b1, v7: v_a1, v8: v_b2)
+//                        }
+//                        else if (b3 == 0 && a2 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b3,
+//                                     v3: v_a3, v4: v_b2, v5: v_a1, v6: v_b4, v7: v_a4, v8: v_b1)
+//                        }
+//                        else if (a1 == 0 && b2 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b2,
+//                                     v3: v_a2, v4: v_b1, v5: v_a4, v6: v_b3, v7: v_a3, v8: v_b4)
+//                        }
+//                        else if (a1 == 0 && a3 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
+//                                     v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
+//                        }
+//                        else if (a2 == 0 && a4 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a4,
+//                                     v3: v_a1, v4: v_a3, v5: v_b2, v6: v_b4, v7: v_b1, v8: v_b3)
+//                        }
+//                        else if (b2 == 0 && b4 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b4,
+//                                     v3: v_b1, v4: v_b3, v5: v_a2, v6: v_a4, v7: v_a1, v8: v_a3)
+//                        }
+//                        else if (b1 == 0 && b3 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b3,
+//                                     v3: v_b2, v4: v_b4, v5: v_a1, v6: v_a3, v7: v_a2, v8: v_a4)
+//                        }
+//                        else if (a1 == 0 && b4 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
+//                                     v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
+//                        }
+//                        else if (a4 == 0 && b3 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
+//                                     v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
+//                        }
+//                        else if (a4 == 0 && b3 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b3,
+//                                     v3: v_b4, v4: v_a3, v5: v_a1, v6: v_b2, v7: v_b1, v8: v_a2)
+//                        }
+//                        else if (b2 == 0 && a3 == 0) {
+//                            getMC2_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
+//                                     v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
+//                        }
+//                        else if (b3 == 0 && b4 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                     v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
+//                        }
+//                        else if (b3 == 0 && b2 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                     v3: v_a3, v4: v_a2, v5: v_a4, v6: v_a1, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (b2 == 0 && b1 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                     v3: v_a2, v4: v_a1, v5: v_a3, v6: v_a4, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (b4 == 0 && b1 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                     v3: v_a1, v4: v_a4, v5: v_a2, v6: v_a3, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (a2 == 0 && a1 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                     v3: v_a3, v4: v_a4, v5: v_b3, v6: v_b4, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (a2 == 0 && a3 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                     v3: v_a4, v4: v_a1, v5: v_b4, v6: v_b1, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (a4 == 0 && a3 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                     v3: v_a1, v4: v_a2, v5: v_b1, v6: v_b2, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (a4 == 0 && a1 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                     v3: v_a2, v4: v_a3, v5: v_b2, v6: v_b3, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (b1 == 0 && a1 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                     v3: v_a4, v4: v_b4, v5: v_a3, v6: v_b3, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (b2 == 0 && a2 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                     v3: v_a1, v4: v_b1, v5: v_a4, v6: v_b4, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (b3 == 0 && a3 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                     v3: v_a2, v4: v_b2, v5: v_a1, v6: v_b1, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (b4 == 0 && a4 == 0) {
+//                            getMC2_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                     v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a1 == 0 && b3 == 0) {
+//                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
+//                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a2 == 0 && b4 == 0) {
+//                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b4,
+//                                     v3: v_a3, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (a3 == 0 && b1 == 0) {
+//                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b1,
+//                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a4 == 0 && b2 == 0) {
+//                            getMC2_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b2,
+//                                     v3: v_a1, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a3, v8: v_a2)
+//                        }
+//                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 5){
+//                        // MC3_1
+//                        if (a2 == 0 && a3 == 0 && b1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                     v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+//                        }
+//                        else if (a2 == 0 && a3 == 0 && b4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+//                                     v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (a2 == 0 && a1 == 0 && b4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                     v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
+//                        }
+//                        else if (a2 == 0 && a1 == 0 && b3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                     v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a4 == 0 && a1 == 0 && b3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                     v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
+//                        }
+//                        else if (a4 == 0 && a1 == 0 && b2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+//                                     v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
+//                        }
+//                        else if (a4 == 0 && a3 == 0 && b2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                     v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
+//                        }
+//                        else if (a4 == 0 && a3 == 0 && b1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+//                                     v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
+//                        }
+//                        else if (b1 == 0 && b4 == 0 && a2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+//                                     v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (b1 == 0 && b4 == 0 && a3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                     v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (b1 == 0 && b2 == 0 && a3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+//                                     v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (b1 == 0 && b2 == 0 && a4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                     v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (b3 == 0 && b2 == 0 && a4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+//                                     v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (b3 == 0 && b2 == 0 && a1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                     v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (b3 == 0 && b4 == 0 && a1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+//                                     v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (b3 == 0 && b4 == 0 && a2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                     v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
+//                        }
+//                        else if (a1 == 0 && b1 == 0 && b3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                     v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (a1 == 0 && b1 == 0 && a3 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+//                                     v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
+//                        }
+//                        else if (a2 == 0 && b2 == 0 && b4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                     v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a2 == 0 && b2 == 0 && a4 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+//                                     v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
+//                        }
+//                        else if (a3 == 0 && b3 == 0 && b1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                     v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (a3 == 0 && b3 == 0 && a1 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+//                                     v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
+//                        }
+//                        else if (a4 == 0 && b4 == 0 && b2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                     v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (a4 == 0 && b4 == 0 && a2 == 0){
+//                            getMC3_1(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+//                                     v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
+//                        }
+//                        // MC3_3
+//                        else if (a1 == 0 && a3 == 0 && b4 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+//                                     v3: v_a3, v4: v_b4, v5: v_a2, v6: v_b3, v7: v_b1, v8: v_b2)
+//                        }
+//                        else if (a1 == 0 && a3 == 0 && b2 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                     v3: v_b2, v4: v_a3, v5: v_b1, v6: v_b3, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (a2 == 0 && a4 == 0 && b3 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+//                                     v3: v_a2, v4: v_b3, v5: v_a1, v6: v_b2, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (a2 == 0 && a4 == 0 && b1 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                     v3: v_a4, v4: v_b1, v5: v_a3, v6: v_b4, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (b1 == 0 && b3 == 0 && a4 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                     v3: v_b1, v4: v_a4, v5: v_b2, v6: v_a1, v7: v_a3, v8: v_a2)
+//                        }
+//                        else if (b1 == 0 && b3 == 0 && a2 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                     v3: v_b3, v4: v_a2, v5: v_b4, v6: v_a3, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (b2 == 0 && b4 == 0 && a1 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                     v3: v_b2, v4: v_a1, v5: v_b3, v6: v_a2, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (b2 == 0 && b4 == 0 && a3 == 0){
+//                            getMC3_3(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                     v3: v_b4, v4: v_a3, v5: v_b1, v6: v_a4, v7: v_a2, v8: v_a1)
+//                        }
+//                        // MC3_4
+//                        else if (a2 == 0 && a3 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                     v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (a2 == 0 && a3 == 0 && a1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                     v3: v_a2, v4: v_a1, v5: v_b4, v6: v_b3, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (a2 == 0 && a1 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                     v3: v_a1, v4: v_a4, v5: v_b3, v6: v_b2, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (a2 == 0 && a3 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                     v3: v_a4, v4: v_a3, v5: v_b2, v6: v_b1, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (b2 == 0 && b3 == 0 && b4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+//                                     v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_a3, v8: v_a4)
+//                        }
+//                        else if (b2 == 0 && b3 == 0 && b1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+//                                     v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_a2, v8: v_a3)
+//                        }
+//                        else if (b3 == 0 && b4 == 0 && b1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+//                                     v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_a4, v8: v_a1)
+//                        }
+//                        else if (b2 == 0 && b4 == 0 && b1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+//                                     v3: v_b1, v4: v_b2, v5: v_a3, v6: v_a4, v7: v_a1, v8: v_a2)
+//                        }
+//                        else if (a1 == 0 && b4 == 0 && b1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+//                                     v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (a1 == 0 && b1 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+//                                     v3: v_a1, v4: v_b1, v5: v_b3, v6: v_a3, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (a1 == 0 && b4 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                     v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_a3, v8: v_a2)
+//                        }
+//                        else if (b4 == 0 && b1 == 0 && a4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                     v3: v_b4, v4: v_a4, v5: v_a2, v6: v_b2, v7: v_b3, v8: v_a3)
+//                        }
+//                        else if (a1 == 0 && a2 == 0 && b2 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+//                                     v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (a1 == 0 && a2 == 0 && b1 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                     v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a1 == 0 && b1 == 0 && b2 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                     v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
+//                        }
+//                        else if (b1 == 0 && a2 == 0 && b2 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                     v3: v_b2, v4: v_b1, v5: v_a4, v6: v_a3, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (a3 == 0 && a2 == 0 && b3 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+//                                     v3: v_a3, v4: v_b3, v5: v_b1, v6: v_a1, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (a3 == 0 && a2 == 0 && b2 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                     v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (b3 == 0 && a2 == 0 && b2 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                     v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b1, v8: v_a1)
+//                        }
+//                        else if (a3 == 0 && b2 == 0 && b3 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+//                                     v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (a3 == 0 && a4 == 0 && b4 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+//                                     v3: v_a4, v4: v_b4, v5: v_b2, v6: v_a2, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a3 == 0 && a4 == 0 && b3 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                     v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_a2, v8: v_a1)
+//                        }
+//                        else if (a3 == 0 && b4 == 0 && b3 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                     v3: v_b3, v4: v_a3, v5: v_a1, v6: v_b1, v7: v_b2, v8: v_a2)
+//                        }
+//                        else if (a4 == 0 && b4 == 0 && b3 == 0){
+//                            getMC3_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+//                                     v3: v_b4, v4: v_b3, v5: v_a2, v6: v_a1, v7: v_b1, v8: v_b2)
+//                        }
+//                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 3){
+//                        // MC3_1N
+//                        if (a2 == 1 && a3 == 1 && b1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                      v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+//                        }
+//                        else if (a2 == 1 && a3 == 1 && b4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+//                                      v3: v_b4, v4: v_b1, v5: v_b2, v6: v_b3, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (a2 == 1 && a1 == 1 && b4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                      v3: v_b4, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a3, v8: v_a4)
+//                        }
+//                        else if (a2 == 1 && a1 == 1 && b3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                      v3: v_b3, v4: v_b4, v5: v_b1, v6: v_b2, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a4 == 1 && a1 == 1 && b3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                      v3: v_b3, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a2, v8: v_a3)
+//                        }
+//                        else if (a4 == 1 && a1 == 1 && b2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+//                                      v3: v_b2, v4: v_b3, v5: v_b4, v6: v_b1, v7: v_a3, v8: v_a2)
+//                        }
+//                        else if (a4 == 1 && a3 == 1 && b2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                      v3: v_b2, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a1, v8: v_a2)
+//                        }
+//                        else if (a4 == 1 && a3 == 1 && b1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+//                                      v3: v_b1, v4: v_b2, v5: v_b3, v6: v_b4, v7: v_a2, v8: v_a1)
+//                        }
+//                        else if (b1 == 1 && b4 == 1 && a2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+//                                      v3: v_a2, v4: v_a3, v5: v_a4, v6: v_a1, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (b1 == 1 && b4 == 1 && a3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                      v3: v_a3, v4: v_a2, v5: v_a1, v6: v_a4, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (b1 == 1 && b2 == 1 && a3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+//                                      v3: v_a3, v4: v_a4, v5: v_a1, v6: v_a2, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (b1 == 1 && b2 == 1 && a4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                      v3: v_a4, v4: v_a3, v5: v_a2, v6: v_a1, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (b3 == 1 && b2 == 1 && a4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+//                                      v3: v_a4, v4: v_a1, v5: v_a2, v6: v_a3, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (b3 == 1 && b2 == 1 && a1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                      v3: v_a1, v4: v_a4, v5: v_a3, v6: v_a2, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (b3 == 1 && b4 == 1 && a1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+//                                      v3: v_a1, v4: v_a2, v5: v_a3, v6: v_a4, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (b3 == 1 && b4 == 1 && a2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                      v3: v_a2, v4: v_a1, v5: v_a4, v6: v_a3, v7: v_b1, v8: v_b2)
+//                        }
+//                        else if (a1 == 1 && b1 == 1 && b3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                      v3: v_b3, v4: v_a3, v5: v_a2, v6: v_b2, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (a1 == 1 && b1 == 1 && a3 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+//                                      v3: v_a3, v4: v_b3, v5: v_b2, v6: v_a2, v7: v_b4, v8: v_a4)
+//                        }
+//                        else if (a2 == 1 && b2 == 1 && b4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                      v3: v_b4, v4: v_a4, v5: v_a3, v6: v_b3, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a2 == 1 && b2 == 1 && a4 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+//                                      v3: v_a4, v4: v_b4, v5: v_b3, v6: v_a3, v7: v_b1, v8: v_a1)
+//                        }
+//                        else if (a3 == 1 && b3 == 1 && b1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                      v3: v_b1, v4: v_a1, v5: v_a4, v6: v_b4, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (a3 == 1 && b3 == 1 && a1 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+//                                      v3: v_a1, v4: v_b1, v5: v_b4, v6: v_a4, v7: v_b2, v8: v_a2)
+//                        }
+//                        else if (a4 == 1 && b4 == 1 && b2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                      v3: v_b2, v4: v_a2, v5: v_a1, v6: v_b1, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (a4 == 1 && b4 == 1 && a2 == 1){
+//                            getMC3_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+//                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_a1, v7: v_b3, v8: v_a3)
+//                        }
+//                        // MC3_4N
+//                        else if (a2 == 1 && a3 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                      v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (a2 == 1 && a3 == 1 && a1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                      v3: v_a2, v4: v_a1, v5: v_b4, v6: v_b3, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (a2 == 1 && a1 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                      v3: v_a1, v4: v_a4, v5: v_b3, v6: v_b2, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (a2 == 1 && a3 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                      v3: v_a4, v4: v_a3, v5: v_b2, v6: v_b1, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (b2 == 1 && b3 == 1 && b4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b2,
+//                                      v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_a3, v8: v_a4)
+//                        }
+//                        else if (b2 == 1 && b3 == 1 && b1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b1,
+//                                      v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_a2, v8: v_a3)
+//                        }
+//                        else if (b3 == 1 && b4 == 1 && b1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3,
+//                                      v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_a4, v8: v_a1)
+//                        }
+//                        else if (b2 == 1 && b4 == 1 && b1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b4,
+//                                      v3: v_b1, v4: v_b2, v5: v_a3, v6: v_a4, v7: v_a1, v8: v_a2)
+//                        }
+//                        else if (a1 == 1 && b4 == 1 && b1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
+//                                      v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (a1 == 1 && b1 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_a4,
+//                                      v3: v_a1, v4: v_b1, v5: v_b3, v6: v_a3, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (a1 == 1 && b4 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                      v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_a3, v8: v_a2)
+//                        }
+//                        else if (b4 == 1 && b1 == 1 && a4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                      v3: v_b4, v4: v_a4, v5: v_a2, v6: v_b2, v7: v_b3, v8: v_a3)
+//                        }
+//                        else if (a1 == 1 && a2 == 1 && b2 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_a1,
+//                                      v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (a1 == 1 && a2 == 1 && b1 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                      v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a1 == 1 && b1 == 1 && b2 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                      v3: v_b1, v4: v_a1, v5: v_a3, v6: v_b3, v7: v_b4, v8: v_a4)
+//                        }
+//                        else if (b1 == 1 && a2 == 1 && b2 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
+//                                      v3: v_b2, v4: v_b1, v5: v_a4, v6: v_a3, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (a3 == 1 && a2 == 1 && b3 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_a2,
+//                                      v3: v_a3, v4: v_b3, v5: v_b1, v6: v_a1, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (a3 == 1 && a2 == 1 && b2 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                      v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (b3 == 1 && a2 == 1 && b2 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                      v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b1, v8: v_a1)
+//                        }
+//                        else if (a3 == 1 && b2 == 1 && b3 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3,
+//                                      v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (a3 == 1 && a4 == 1 && b4 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3,
+//                                      v3: v_a4, v4: v_b4, v5: v_b2, v6: v_a2, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a3 == 1 && a4 == 1 && b3 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                      v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_a2, v8: v_a1)
+//                        }
+//                        else if (a3 == 1 && b4 == 1 && b3 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                      v3: v_b3, v4: v_a3, v5: v_a1, v6: v_b1, v7: v_b2, v8: v_a2)
+//                        }
+//                        else if (a4 == 1 && b4 == 1 && b3 == 1){
+//                            getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4,
+//                                      v3: v_b4, v4: v_b3, v5: v_a2, v6: v_a1, v7: v_b1, v8: v_b2)
+//                        }
+//                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 4) {
+//                        if (a1 == 1 && a3 == 1 && b2 == 1 && b4 == 1) {
+//                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (a2 == 1 && a4 == 1 && b1 == 1 && b3 == 1) {
+//                            getMC4_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (a1 == 1 && a2 == 1 && b1 == 1 && b2 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1, v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b3, v8: v_a3)
+//                        }
+//                        else if (a1 == 1 && a4 == 1 && b1 == 1 && b4 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4, v3: v_b4, v4: v_b1, v5: v_a2, v6: v_a3, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (a2 == 1 && a3 == 1 && b2 == 1 && b3 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2, v3: v_b2, v4: v_b3, v5: v_a4, v6: v_a1, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (a3 == 1 && a4 == 1 && b3 == 1 && b4 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3, v3: v_b3, v4: v_b4, v5: v_a1, v6: v_a2, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (b1 == 1 && b2 == 1 && b3 == 1 && b4 == 1) {
+//                            getMC4_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4, v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_a3, v8: v_a2)
+//                        }
+//                        
+//                    }
+//                    else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 2){
+//                        if (a2 == 1 && b1 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
+//                                      v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
+//                        }
+//                        else if (b1 == 1 && a4 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b1,
+//                                      v3: v_a1, v4: v_b4, v5: v_a3, v6: v_b2, v7: v_a2, v8: v_b3)
+//                        }
+//                        else if (a3 == 1 && b4 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b4,
+//                                      v3: v_a4, v4: v_b3, v5: v_a2, v6: v_b1, v7: v_a1, v8: v_b2)
+//                        }
+//                        else if (b3 == 1 && a2 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b3,
+//                                      v3: v_a3, v4: v_b2, v5: v_a1, v6: v_b4, v7: v_a4, v8: v_b1)
+//                        }
+//                        else if (a1 == 1 && b2 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b2,
+//                                      v3: v_a2, v4: v_b1, v5: v_a4, v6: v_b3, v7: v_a3, v8: v_b4)
+//                        }
+//                        else if (a1 == 1 && a3 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
+//                                      v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
+//                        }
+//                        else if (a2 == 1 && a4 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a4,
+//                                      v3: v_a1, v4: v_a3, v5: v_b2, v6: v_b4, v7: v_b1, v8: v_b3)
+//                        }
+//                        else if (b2 == 1 && b4 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b4,
+//                                      v3: v_b1, v4: v_b3, v5: v_a2, v6: v_a4, v7: v_a1, v8: v_a3)
+//                        }
+//                        else if (b1 == 1 && b3 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b3,
+//                                      v3: v_b2, v4: v_b4, v5: v_a1, v6: v_a3, v7: v_a2, v8: v_a4)
+//                        }
+//                        else if (a1 == 1 && b4 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
+//                                      v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
+//                        }
+//                        else if (a4 == 1 && b3 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
+//                                      v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
+//                        }
+//                        else if (a4 == 1 && b3 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b3,
+//                                      v3: v_b4, v4: v_a3, v5: v_a1, v6: v_b2, v7: v_b1, v8: v_a2)
+//                        }
+//                        else if (b2 == 1 && a3 == 1) {
+//                            getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
+//                                      v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
+//                        }
+//                        else if (b3 == 1 && b4 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
+//                                      v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
+//                        }
+//                        else if (b3 == 1 && b2 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2,
+//                                      v3: v_a3, v4: v_a2, v5: v_a4, v6: v_a1, v7: v_b4, v8: v_b1)
+//                        }
+//                        else if (b2 == 1 && b1 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b1,
+//                                      v3: v_a2, v4: v_a1, v5: v_a3, v6: v_a4, v7: v_b3, v8: v_b4)
+//                        }
+//                        else if (b4 == 1 && b1 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4,
+//                                      v3: v_a1, v4: v_a4, v5: v_a2, v6: v_a3, v7: v_b2, v8: v_b3)
+//                        }
+//                        else if (a2 == 1 && a1 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a1,
+//                                      v3: v_a3, v4: v_a4, v5: v_b3, v6: v_b4, v7: v_b2, v8: v_b1)
+//                        }
+//                        else if (a2 == 1 && a3 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
+//                                      v3: v_a4, v4: v_a1, v5: v_b4, v6: v_b1, v7: v_b3, v8: v_b2)
+//                        }
+//                        else if (a4 == 1 && a3 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a3,
+//                                      v3: v_a1, v4: v_a2, v5: v_b1, v6: v_b2, v7: v_b4, v8: v_b3)
+//                        }
+//                        else if (a4 == 1 && a1 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
+//                                      v3: v_a2, v4: v_a3, v5: v_b2, v6: v_b3, v7: v_b1, v8: v_b4)
+//                        }
+//                        else if (b1 == 1 && a1 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1,
+//                                      v3: v_a4, v4: v_b4, v5: v_a3, v6: v_b3, v7: v_a2, v8: v_b2)
+//                        }
+//                        else if (b2 == 1 && a2 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b2,
+//                                      v3: v_a1, v4: v_b1, v5: v_a4, v6: v_b4, v7: v_a3, v8: v_b3)
+//                        }
+//                        else if (b3 == 1 && a3 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b3,
+//                                      v3: v_a2, v4: v_b2, v5: v_a1, v6: v_b1, v7: v_a4, v8: v_b4)
+//                        }
+//                        else if (b4 == 1 && a4 == 1) {
+//                            getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
+//                                      v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
+//                        }
+//                        else if (a1 == 1 && b3 == 1) {
+//                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
+//                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a2 == 1 && b4 == 1) {
+//                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b4,
+//                                      v3: v_a3, v4: v_b3, v5: v_b2, v6: v_b1, v7: v_a1, v8: v_a4)
+//                        }
+//                        else if (a3 == 1 && b1 == 1) {
+//                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b1,
+//                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
+//                        }
+//                        else if (a4 == 1 && b2 == 1) {
+//                            getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b2,
+//                                      v3: v_a1, v4: v_b1, v5: v_b4, v6: v_b3, v7: v_a3, v8: v_a2)
+//                        }
+//                    }
                     
                     if (vertices.count != 0 && indices.count != 0) {
                         // Create geometry source
                         let vertexSource = SCNGeometrySource(vertices: vertices)
+                        
+                        // Create different materials
+                        let material1 = SCNMaterial()
+                        material1.diffuse.contents = UIColor.red
+                        material1.isDoubleSided = true
+                        
+                        let material2 = SCNMaterial()
+                        material2.diffuse.contents = UIColor.green
+                        material2.isDoubleSided = true
+                        
+                        let material3 = SCNMaterial()
+                        material3.diffuse.contents = UIColor.blue
+                        material3.isDoubleSided = true
+                        
+                        let material4 = SCNMaterial()
+                        material4.diffuse.contents = UIColor.yellow
+                        material4.isDoubleSided = true
+
+                        // Determine materials based on color_indices
+                        var materials: [SCNMaterial] = []
+                        for index in color_indices {
+                            switch index {
+                            case 0:
+                                materials.append(material1)
+                            case 1:
+                                materials.append(material2)
+                            case 2:
+                                materials.append(material3)
+                            case 3:
+                                materials.append(material4)
+                            default:
+                                materials.append(material1) // Default material if needed
+                            }
+                        }
                         
                         // Create geometry element
                         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
@@ -882,7 +932,7 @@ class MarchingCubesAlgo {
                         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
                         
                         // Assign the material to the geometry
-                        geometry.materials = [material]
+                        geometry.materials = materials
                         
                         // Use the geometry in a node
                         let node = SCNNode(geometry: geometry)

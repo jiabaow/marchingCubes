@@ -69,6 +69,6 @@ struct ProfileView: View {
 
 struct Profile_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView().environmentObject(ProjectViewModel())
     }
 }
