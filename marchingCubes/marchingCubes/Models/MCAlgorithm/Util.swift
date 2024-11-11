@@ -70,18 +70,22 @@ func testGetCube() -> SCNNode{
     let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
     let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
 
-    parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
-    parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
-    parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
-    parentNode.addChildNode(createBall(at: v_a4, radius: 0.05, color: UIColor.yellow))
-    parentNode.addChildNode(createBall(at: v_b1, radius: 0.05, color: UIColor.cyan))
-    parentNode.addChildNode(createBall(at: v_b2, radius: 0.05, color: UIColor.magenta))
-    parentNode.addChildNode(createBall(at: v_b3, radius: 0.05, color: UIColor.orange))
-    parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
+//    parentNode.addChildNode(createBall(at: v_a1, radius: 0.05, color: UIColor.red))
+//    parentNode.addChildNode(createBall(at: v_a2, radius: 0.05, color: UIColor.green))
+//    parentNode.addChildNode(createBall(at: v_a3, radius: 0.05, color: UIColor.blue))
+//    parentNode.addChildNode(createBall(at: v_a4, radius: 0.05, color: UIColor.yellow))
+//    parentNode.addChildNode(createBall(at: v_b1, radius: 0.05, color: UIColor.cyan))
+//    parentNode.addChildNode(createBall(at: v_b2, radius: 0.05, color: UIColor.magenta))
+//    parentNode.addChildNode(createBall(at: v_b3, radius: 0.05, color: UIColor.orange))
+//    parentNode.addChildNode(createBall(at: v_b4, radius: 0.05, color: UIColor.purple))
     
     let algo = MarchingCubesAlgo()
+
+//    algo.getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
     
-    algo.getMC4_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4, v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_b1, v8: v_b2)
+//    parentNode.addChildNode(marchingCubes2D(data:[[0, 0, 0], [ 0, 1, 0],[0, 0, 0]
+//                                                  ]))
+
     
     if (vertices.count != 0 ) {
         // Create geometry source
@@ -205,12 +209,36 @@ func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
     return layeredData
 }
 
+func get2DDataFromLayer(data: [[[Int]]], numLayer: Int) -> [[Int]] {
+    var layeredData: [[Int]] = []
+    if (numLayer < 0 || numLayer > data[0].count) {
+        print("wrong numLayer input, in get2DDataFromLayer, numLayer", numLayer)
+        return []
+    }
+//    print(data)
+//    print(numLayer)
+    
+    for i in 0..<data.count {
+        var row: [Int] = []
+        for k in 0..<data[i][numLayer].count {
+            row.append(data[i][numLayer][k])
+        }
+        layeredData.append(row)
+    }
+//    print("2d layered data")
+//    print(layeredData)
+    return layeredData
+}
+
 func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
     var layeredData: [[[Int]]] = []
-
+    if (numLayer < 0 || numLayer > data[0].count) {
+        print("wrong numLayer input, in getLayeredData, numLayer", numLayer)
+        return []
+    }
     for i in 0..<data.count {
         var layer2D: [[Int]] = []
-        for j in 0..<min(numLayer, data[i].count) {
+        for j in 0..<numLayer {
             var row: [Int] = []
             for k in 0..<data[i][j].count {
                 row.append(data[i][j][k])
@@ -255,6 +283,11 @@ func +(lhs: SCNVector3, rhs: SCNVector3) -> SCNVector3 {
 // Division by scalar
 func /(lhs: SCNVector3, rhs: Float) -> SCNVector3 {
     return SCNVector3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs)
+}
+
+// Multiplication by scalar
+func *(lhs: SCNVector3, rhs: Float) -> SCNVector3 {
+    return SCNVector3(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs)
 }
 
 func applyMirrorSymmetry(to vertices: inout [SCNVector3], along axis: String, through point: SCNVector3) {

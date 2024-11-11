@@ -8,7 +8,7 @@ struct MarchingCubesView: View {
     @StateObject private var dataLoader = VoxelDataLoader()
 
     // Optional initializer
-    init(filename: String = "Mesh_Anteater", divisions: Int = 5) {
+    init(filename: String = "rabbit", divisions: Int = 10) {
         self.filename = filename
         self.divisions = divisions
     }
@@ -25,7 +25,7 @@ struct MarchingCubesView: View {
                             .padding()
 
                         SceneView(filename: filename, divisions: divisions,
-                                  numLayer: dataLoader.numLayer + 1, voxelData: dataLoader.voxelData)
+                                  numLayer: dataLoader.numLayer + 1, voxelData: dataLoader.voxelData, isTopLayer: true)
                             .frame(width: 300, height: 300)
                             .edgesIgnoringSafeArea(.all)
 
@@ -36,7 +36,8 @@ struct MarchingCubesView: View {
                                     .padding(.top)
 
                                 SceneView(filename: filename, divisions: divisions,
-                                          numLayer: iLayer + 1, voxelData: dataLoader.voxelData)
+                                          numLayer: iLayer + 1, voxelData: dataLoader.voxelData,
+                                          isTopLayer: iLayer == dataLoader.numLayer)
                                     .frame(width: 300, height: 300)
                                     .edgesIgnoringSafeArea(.all)
                             }
@@ -80,6 +81,7 @@ struct SceneView: UIViewRepresentable {
     let divisions: Int
     let numLayer: Int
     let voxelData: [[[Int]]]
+    let isTopLayer: Bool
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
@@ -101,11 +103,20 @@ struct SceneView: UIViewRepresentable {
     private func loadAndProcessModel(in scene: SCNScene, scnView: SCNView) async {
 
         let result: [SCNNode?] = await Task {
+            var res: [SCNNode?] = []
             let algo = MarchingCubesAlgo()
             let layeredData = getLayeredData(data: self.voxelData, numLayer: self.numLayer)
-            print("layered data fetched!")
             let mcNode2 = algo.marchingCubesV2(data: layeredData)
-            return [mcNode2]
+            res.append(mcNode2)
+            
+            if (isTopLayer == false) {
+                let algo2d = MarchingCubes2D()
+                let colorNode = algo2d.marchingCubes2D(data: get2DDataFromLayer(data: self.voxelData, numLayer: self.numLayer - 1))
+                colorNode.position.y += Float(self.numLayer - 1) + 0.01
+                
+                res.append(colorNode)
+            }
+            return res
         }.value
 
         for node in result {
