@@ -189,6 +189,6 @@ class VoxelDataLoader: ObservableObject {
 
 struct MarchingCubes_Previews: PreviewProvider {
     static var previews: some View {
-        MarchingCubesView().environmentObject(ProjectViewModel())
+        MarchingCubesView()
     }
 }

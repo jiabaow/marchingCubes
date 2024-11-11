@@ -236,6 +236,6 @@ struct SignUpView: View {
 
 struct AuthSwitcherView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthSwitcherView().environmentObject(ProjectViewModel())
+        AuthSwitcherView()
     }
 }

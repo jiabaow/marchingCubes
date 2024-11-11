@@ -90,7 +90,8 @@ struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
-    @EnvironmentObject var viewModel: ProjectViewModel
+//    @EnvironmentObject var viewModel: ProjectViewModel
+    @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
@@ -253,7 +254,7 @@ struct Dashboard: View {
 
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        Dashboard().environmentObject(ProjectViewModel())
+        Dashboard()
     }
 }
 
