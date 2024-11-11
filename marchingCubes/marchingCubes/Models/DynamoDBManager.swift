@@ -17,32 +17,18 @@ class DynamoDBManager {
     }
     
     func getUserAsItem(userModel: UserModel) async throws -> [Swift.String:DynamoDBClientTypes.AttributeValue]  {
-            // Build the item record, starting with the year and title, which are
-            // always present.
             // Convert each project and favorite to a DynamoDB AttributeValue
             let projectsAttributeValue = userModel.projects.map { DynamoDBClientTypes.AttributeValue.s($0) }
             let favoritesAttributeValue = userModel.favorites.map { DynamoDBClientTypes.AttributeValue.s($0) }
 
-            var item: [Swift.String:DynamoDBClientTypes.AttributeValue] = [
+            let item: [Swift.String:DynamoDBClientTypes.AttributeValue] = [
                 "id": .s(userModel.id),
                 "email": .s(userModel.email),
+                "profile_image": .s(userModel.profile_image),
                 "projects": .l(projectsAttributeValue),
-                "favorites": .l(favoritesAttributeValue)
+                "favorites": .l(favoritesAttributeValue),
+                "created_timestamp": .n(String(userModel.created_timestamp))
             ]
-
-            // Add the `info` field with the rating and/or plot if they're
-            // available.
-
-            var details: [Swift.String:DynamoDBClientTypes.AttributeValue] = [:]
-//            if (self.info.rating != nil || self.info.plot != nil) {
-//                if self.info.rating != nil {
-//                    details["rating"] = .n(String(self.info.rating!))
-//                }
-//                if self.info.plot != nil {
-//                    details["plot"] = .s(self.info.plot!)
-//                }
-//            }
-            item["info"] = .m(details)
 
             return item
         }
@@ -51,26 +37,17 @@ class DynamoDBManager {
         let client = self.dynamoDB
         
         // Convert UserModel to a dictionary
-//        let item: [String: AWSDynamoDBAttributeValue] = [
-//            "id": AWSDynamoDBAttributeValue(s: userModel.id),
-//            "email": AWSDynamoDBAttributeValue(s: userModel.email),
-//            "profile_image": AWSDynamoDBAttributeValue(s: userModel.profile_image),
-//            "projects": AWSDynamoDBAttributeValue(ss: userModel.projects),
-//            "favorites": AWSDynamoDBAttributeValue(ss: userModel.favorites),
-//            "created_timestamp": AWSDynamoDBAttributeValue(n: "\(userModel.created_timestamp)")
-//        ]
-        
-//        let input = AWSDynamoDBPutItemInput()
-//        input?.tableName = "YourDynamoDBTableName" // Replace with your table name
-//        input?.item = item
-//        
-//        dynamoDB.putItem(input!) { (output, error) in
-//            if let error = error {
-//                print("Failed to save object to DynamoDB: \(error.localizedDescription)")
-//            } else {
-//                print("Successfully saved object to DynamoDB.")
-//            }
-//        }
+        do {
+            let dynamoItem = try await getUserAsItem(userModel: userModel)
+            let input = PutItemInput(
+                item: dynamoItem,
+                tableName: "marchingcubes"
+                )
+            _ = try await client.putItem(input: input)
+        } catch {
+            print("Error insertUserModel: ", dump(error))
+            throw error
+        }
     }
 }
 

@@ -12,6 +12,8 @@
 		5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */; };
 		5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8E2CDC072700C2DBBD /* AWSS3 */; };
 		5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */ = {isa = PBXBuildFile; productRef = 5B83D9E82CCEFAC400328931 /* Voxels */; };
+		5BF17B082CE02A17002B6325 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5BF17B072CE02A17002B6325 /* SVGKit */; };
+		5BF17B0A2CE02A17002B6325 /* SVGKitSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5BF17B092CE02A17002B6325 /* SVGKitSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,9 +62,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BF17B082CE02A17002B6325 /* SVGKit in Frameworks */,
 				5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */,
 				5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */,
 				5B0CCF892CDC072700C2DBBD /* AWSCognitoIdentity in Frameworks */,
+				5BF17B0A2CE02A17002B6325 /* SVGKitSwift in Frameworks */,
 				5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */,
 				5B0CCF8B2CDC072700C2DBBD /* AWSCognitoIdentityProvider in Frameworks */,
 			);
@@ -130,6 +134,8 @@
 				5B0CCF8A2CDC072700C2DBBD /* AWSCognitoIdentityProvider */,
 				5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */,
 				5B0CCF8E2CDC072700C2DBBD /* AWSS3 */,
+				5BF17B072CE02A17002B6325 /* SVGKit */,
+				5BF17B092CE02A17002B6325 /* SVGKitSwift */,
 			);
 			productName = marchingCubes;
 			productReference = E800433C2CC86C5300190DF4 /* marchingCubes.app */;
@@ -216,6 +222,7 @@
 			packageReferences = (
 				5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */,
 				5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+				5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E800433D2CC86C5300190DF4 /* Products */;
@@ -598,6 +605,14 @@
 				minimumVersion = 0.2.4;
 			};
 		};
+		5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -625,6 +640,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */;
 			productName = Voxels;
+		};
+		5BF17B072CE02A17002B6325 /* SVGKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKit;
+		};
+		5BF17B092CE02A17002B6325 /* SVGKitSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKitSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

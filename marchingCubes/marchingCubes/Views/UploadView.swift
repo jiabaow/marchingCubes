@@ -13,6 +13,7 @@ struct UploadView: View {
     @State private var showDocumentPicker = false
     @State private var scene: SCNScene? = nil
     @State private var zoomLevel: Float = 20.0 // Initial zoom level
+//    @EnvironmentObject var viewModel: ProjectViewModel
     @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 

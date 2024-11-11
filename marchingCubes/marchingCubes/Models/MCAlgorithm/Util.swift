@@ -152,7 +152,7 @@ func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
     return voxelGrid
 }
 
-func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
+func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
     var layeredData: [[[Int]]] = []
     
     var li: Int = data.count
@@ -190,22 +190,29 @@ func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
         }
     }
     
-    li = max(li - 2, 0)
-    ri = min(ri + 2, data.count)
-    lj = max(lj - 2, 0)
-    rj = min(rj + 2, data[0].count)
-    lk = max(lk - 2, 0)
-    rk = min(rk + 2, data[0][0].count)
-    
-    if (numLayer != -1) {
-            rj = numLayer + lj + 2
-        }
-    
-    for i in li...ri {
+
+    for i in li...ri+1 {
         var layer2D: [[Int]] = []
-        for j in lj...rj {
+        for j in lj...rj+1 {
             var row: [Int] = []
-            for k in lk...rk {
+            for k in lk...rk+1 {
+                row.append(data[i][j][k])
+            }
+            layer2D.append(row)
+        }
+        layeredData.append(layer2D)
+    }
+    return layeredData
+}
+
+func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
+    var layeredData: [[[Int]]] = []
+
+    for i in 0..<data.count {
+        var layer2D: [[Int]] = []
+        for j in 0..<min(numLayer, data[i].count) {
+            var row: [Int] = []
+            for k in 0..<data[i][j].count {
                 row.append(data[i][j][k])
             }
             layer2D.append(row)

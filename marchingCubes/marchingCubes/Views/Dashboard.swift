@@ -90,6 +90,7 @@ struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
+//    @EnvironmentObject var viewModel: ProjectViewModel
     @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 

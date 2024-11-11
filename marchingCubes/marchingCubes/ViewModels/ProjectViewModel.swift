@@ -56,15 +56,16 @@ class ProjectViewModel: ObservableObject {
     func removeModel(_ model: ProjectModel, modelContext: ModelContext) {
         if let index = models.firstIndex(where: { $0.id == model.id }) {
             models.remove(at: index)
-            /*
-            removes from real filesystem
-            if let url = URL(string: model.title) {
+            // removes from real filesystem in cache
+            if let url = get3DModelURL(filename: model.title), let urlimage = get3DModelURL(filename: model.image) {
                 removeFile(at: url)
+                removeFile(at: urlimage)
             } else {
                 // Handle invalid URL case if needed
                 print("Invalid URL string: \(model.title)")
+                print("Invalid URL string: \(model.image)")
             }
-            */
+            
             modelContext.delete(model) // Remove from context
         }
     }
