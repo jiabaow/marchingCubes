@@ -12,7 +12,6 @@ class MarchingCubesAlgo {
     
     func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
-        print(data)
         let xDim = data.count - 1
         let yDim = data[0].count - 1
         let zDim = data[0][0].count - 1
@@ -741,10 +740,10 @@ class MarchingCubesAlgo {
                         else if (a1 == 1 && a3 == 1 && a4 == 1 && b2 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
                         }
-                        else if (a2 == 1 && a3 == 1 && a3 == 1 && b1 == 1) {
+                        else if (a2 == 1 && a3 == 1 && a4 == 1 && b1 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4, v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_b1, v8: v_b2)
                         }
-                        else if (a2 == 1 && b2 == 1 && b3 == 1 && a4 == 1) {
+                        else if (a2 == 1 && a4 == 1 && b2 == 1 && b3 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_b2, v2: v_b3, v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a1)
                         }
                         else if (a1 == 1 && a3 == 1 && b1 == 1 && b2 == 1) {
@@ -944,7 +943,7 @@ class MarchingCubesAlgo {
                         else if (a1 == 1 && a3 == 1 && b2 == 1) {
                             getMC5_5(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a4, v3: v_a1, v4: v_a2, v5: v_b3, v6: v_b4, v7: v_b1, v8: v_b2)
                         }
-                        else if (a2 == 1 && b4 == 1 && b1 == 1) {
+                        else if (a2 == 1 && a4 == 1 && b1 == 1) {
                             getMC5_5(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_a3, v7: v_a4, v8: v_a1)
                         }
                         else if (a1 == 1 && a3 == 1 && b4 == 1) {
