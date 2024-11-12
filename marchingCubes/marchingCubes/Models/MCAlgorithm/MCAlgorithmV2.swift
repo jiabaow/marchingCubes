@@ -12,7 +12,7 @@ class MarchingCubesAlgo {
     
     func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
-        print(data)
+//        print(data)
         let xDim = data.count - 1
         let yDim = data[0].count - 1
         let zDim = data[0][0].count - 1
