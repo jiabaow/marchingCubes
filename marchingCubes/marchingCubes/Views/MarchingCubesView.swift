@@ -79,24 +79,6 @@ struct MarchingCubesView: View {
          let numLayer = voxelData[0].count - 1
          return (voxelData, numLayer)
      }
-    
-    // called in VoxelDataLoader
-    static func loadSCNNodesByLayer(numLayer: Int, voxelData: [[[Int]]], isTopLayer: Bool) -> [SCNNode?] {
-        var res: [SCNNode?] = []
-        let algo = MarchingCubesAlgo()
-        let layeredData = getLayeredData(data: voxelData, numLayer: numLayer)
-        let mcNode2 = algo.marchingCubesV2(data: layeredData)
-        res.append(mcNode2)
-        
-        if (isTopLayer == false) {
-            let algo2d = MarchingCubes2D()
-            let colorNode = algo2d.marchingCubes2D(data: get2DDataFromLayer(data: voxelData, numLayer: numLayer - 1))
-            colorNode.position.y += Float(numLayer - 1) + 0.01
-            
-            res.append(colorNode)
-        }
-        return res
-    }
 }
 
 struct MarchingCubes_Previews: PreviewProvider {
