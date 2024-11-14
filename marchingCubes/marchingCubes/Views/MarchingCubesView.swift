@@ -14,39 +14,47 @@ struct MarchingCubesView: View {
     }
     
     var body: some View {
-        ZStack {
-            if dataLoader.isLoading {
-                LoadingView(filename: filename)
-            } else {
-                ScrollView {
-                    VStack {
-                        Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
-                            .font(.largeTitle)
-                            .padding()
+            ZStack {
+                if dataLoader.isLoading {
+                    LoadingView(filename: filename)
+                } else {
+                    ScrollView {
+                        VStack {
+                            headerView
+                            
+                            SceneView(scnNodes: dataLoader.scnNodesByLayer[0])
+                                .frame(width: 300, height: 300)
+                                .edgesIgnoringSafeArea(.all)
 
-                        SceneView(scnNodes: dataLoader.scnNodesByLayer[0])
-                            .frame(width: 300, height: 300)
-                            .edgesIgnoringSafeArea(.all)
-
-                        ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
-                            VStack {
-                                Text("Layer \(iLayer)")
-                                    .font(.headline)
-                                    .padding(.top)
-
-                                SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
-                                    .frame(width: 300, height: 300)
-                                    .edgesIgnoringSafeArea(.all)
-                            }
+                            layersView
                         }
                     }
                 }
             }
+            .onAppear {
+                dataLoader.loadVoxelData(filename: filename, divisions: divisions)
+            }
         }
-        .onAppear {
-            dataLoader.loadVoxelData(filename: filename, divisions: divisions)
+        
+        private var headerView: some View {
+            Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
+                .font(.largeTitle)
+                .padding()
         }
-    }
+        
+        private var layersView: some View {
+            ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
+                VStack {
+                    Text("Layer \(iLayer)")
+                        .font(.headline)
+                        .padding(.top)
+
+                    SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
+                        .frame(width: 300, height: 300)
+                        .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
     
     // Helper function to load and voxelize the model
      static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
@@ -72,6 +80,7 @@ struct MarchingCubesView: View {
          return (voxelData, numLayer)
      }
     
+    // called in VoxelDataLoader
     static func loadSCNNodesByLayer(numLayer: Int, voxelData: [[[Int]]], isTopLayer: Bool) -> [SCNNode?] {
         var res: [SCNNode?] = []
         let algo = MarchingCubesAlgo()
