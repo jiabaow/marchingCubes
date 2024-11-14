@@ -90,21 +90,6 @@ struct MarchingCubesView: View {
     }
 }
 
-struct LoadingView: View {
-    let filename: String
-
-    var body: some View {
-        Text("Converting \(filename) to cubes...")
-            .font(.headline)
-            .foregroundColor(.white)
-            .padding()
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(10)
-            .transition(.opacity)
-            .animation(.easeInOut, value: true)
-    }
-}
-
 struct MarchingCubes_Previews: PreviewProvider {
     static var previews: some View {
         MarchingCubesView()
