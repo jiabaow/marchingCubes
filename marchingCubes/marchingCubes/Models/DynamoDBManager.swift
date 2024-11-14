@@ -50,6 +50,10 @@ class DynamoDBManager {
                     return
                 }
             } catch {
+                if error is TableAlreadyExistsException {
+                    print("table already exists")
+                    return;
+                }
                 print("ERROR: createTable:", dump(error))
                 throw error
             }
