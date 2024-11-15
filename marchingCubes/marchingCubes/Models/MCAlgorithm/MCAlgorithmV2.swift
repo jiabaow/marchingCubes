@@ -9,6 +9,7 @@ import SceneKit
 
 class MarchingCubesAlgo {
     var indices4Lines: [Int32] = []
+    var caseCounts: [String: Int] = [:]
     
     func marchingCubesV2(data: [[[Int]]]) -> SCNNode {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
@@ -1121,6 +1122,8 @@ class MarchingCubesAlgo {
     func getMC0_1(vertices: inout [SCNVector3], indices: inout [Int32],
                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3, v4: SCNVector3,
                   v5: SCNVector3, v6: SCNVector3, v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC0_1")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8]
         indices += [
             1, 2, 3,
@@ -1154,6 +1157,8 @@ class MarchingCubesAlgo {
 
     func getMC1_1N(vertices: inout [SCNVector3], indices: inout [Int32],
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3, v4: SCNVector3) {
+        incrementCaseCount(caseName: "MC1_1N")
+        
         vertices += [v1, v2, v3, v4]
         indices += [
             0, 1, 2,
@@ -1175,6 +1180,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3, v9: SCNVector3, v10: SCNVector3) {
+        incrementCaseCount(caseName: "MC1_1")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10]
         indices += [
             1, 2, 3,
@@ -1217,6 +1224,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_1")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v3) / 2, (v1 + v4) / 2, (v1 + v5) / 2,
         (v2 + v3) / 2, (v2 + v4) / 2, (v2 + v6) / 2]
@@ -1270,6 +1279,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_1N")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v3) / 2, (v1 + v4) / 2, (v1 + v5) / 2,
         (v2 + v3) / 2, (v2 + v4) / 2, (v2 + v6) / 2]
@@ -1309,6 +1320,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_2")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v7) / 2, (v1 + v3) / 2, (v2 + v8) / 2, (v2 + v4) / 2]
         
@@ -1353,6 +1366,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_2N")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v7) / 2, (v1 + v3) / 2, (v2 + v8) / 2, (v2 + v4) / 2]
         
@@ -1383,6 +1398,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_3")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v3) / 2, (v1 + v5) / 2, (v1 + v7) / 2,
         (v2 + v4) / 2, (v2 + v6) / 2, (v2 + v8) / 2]
@@ -1435,6 +1452,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC2_3N")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v3) / 2, (v1 + v5) / 2, (v1 + v7) / 2,
         (v2 + v4) / 2, (v2 + v6) / 2, (v2 + v8) / 2]
@@ -1469,6 +1488,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC3_1")
+
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v5) / 2, (v1 + v7) / 2, (v2 + v8) / 2,
         (v2 + v6) / 2, (v3 + v6) / 2, (v3 + v8) / 2,
@@ -1522,6 +1543,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC3_1N")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v5) / 2, (v1 + v7) / 2, (v2 + v8) / 2,
         (v2 + v6) / 2, (v3 + v6) / 2, (v3 + v8) / 2,
@@ -1574,6 +1597,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC3_3")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v2 + v5) / 2, (v1 + v2) / 2, (v2 + v7) / 2,
         (v7 + v4) / 2, (v4 + v1) / 2, (v4 + v6) / 2,
@@ -1634,6 +1659,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC3_4")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
         (v3 + v7) / 2, (v4 + v8) / 2]
@@ -1680,6 +1707,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC3_4N")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
         (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
         (v3 + v7) / 2, (v4 + v8) / 2]
@@ -1719,6 +1748,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_1")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v4) / 2, (v1 + v2) / 2, (v2 + v3) / 2,
                      (v3 + v4) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
@@ -1789,6 +1820,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_2")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v3 + v4) / 2, (v3 + v2) / 2, (v7 + v3) / 2,
                      (v7 + v8) / 2, (v6 + v7) / 2, (v4 + v8) / 2,
@@ -1844,6 +1877,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_3")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v3 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
                      (v1 + v5) / 2, (v3 + v7) / 2, (v4 + v8) / 2,
@@ -1898,6 +1933,8 @@ class MarchingCubesAlgo {
                   v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                  v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                   v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_4")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v5) / 2, (v4 + v8) / 2, (v3 + v7) / 2, (v2 + v6) / 2]
         
@@ -1936,6 +1973,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_5")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v2) / 2, (v2 + v3) / 2, (v3 + v7) / 2,
                      (v7 + v8) / 2, (v5 + v8) / 2, (v1 + v5) / 2]
@@ -1982,6 +2021,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_6")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v2) / 2, (v2 + v3) / 2, (v1 + v5) / 2,
                      (v4 + v8) / 2, (v8 + v7) / 2, (v6 + v7) / 2,
@@ -2035,6 +2076,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC4_7")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v2) / 2, (v1 + v4) / 2, (v2 + v6) / 2,
                      (v3 + v7) / 2, (v7 + v8) / 2, (v5 + v8) / 2,
@@ -2088,6 +2131,8 @@ class MarchingCubesAlgo {
                    v1: SCNVector3, v2: SCNVector3, v3: SCNVector3,
                   v4: SCNVector3, v5: SCNVector3, v6: SCNVector3,
                    v7: SCNVector3, v8: SCNVector3) {
+        incrementCaseCount(caseName: "MC5_5")
+        
         vertices += [v1, v1, v2, v3, v4, v5, v6, v7, v8,
                      (v1 + v2) / 2, (v2 + v3) / 2, (v3 + v7) / 2,
                      (v7 + v8) / 2, (v5 + v8) / 2, (v1 + v5) / 2,
@@ -2136,5 +2181,13 @@ class MarchingCubesAlgo {
                 9, 14,
                 12, 13,
             ]
+    }
+    
+    func incrementCaseCount(caseName: String) {
+        if let count = caseCounts[caseName] {
+            caseCounts[caseName] = count + 1
+        } else {
+            caseCounts[caseName] = 1
+        }
     }
 }
