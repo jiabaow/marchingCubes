@@ -26,7 +26,16 @@ struct MarchingCubesView: View {
                                 .frame(width: 300, height: 300)
                                 .edgesIgnoringSafeArea(.all)
 
-                            layersView
+                            TabView {
+                                unitsCountView
+                                    .tag(0)
+                                
+                                layersView
+                                    .tag(1)
+                                
+                            }
+                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                            .frame(height: 350)
                         }
                     }
                 }
@@ -47,7 +56,7 @@ struct MarchingCubesView: View {
                 VStack {
                     Text("Layer \(iLayer)")
                         .font(.headline)
-                        .padding(.top)
+//                        .padding(.top)
 
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
                         .frame(width: 300, height: 300)
@@ -55,6 +64,15 @@ struct MarchingCubesView: View {
                 }
             }
         }
+    
+        private var unitsCountView: some View {
+                VStack {
+                    Text("Units Count")
+                        .font(.headline)
+                        .padding(.top)
+
+                }
+            }
     
     // Helper function to load and voxelize the model
      static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
