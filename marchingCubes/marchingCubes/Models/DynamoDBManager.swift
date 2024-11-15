@@ -6,32 +6,76 @@
 //
 
 import Foundation
+import AWSClientRuntime
 import AWSDynamoDB
 
 class DynamoDBManager {
     
     let dynamoDB: AWSDynamoDB.DynamoDBClient
     
-    init() throws {
-        self.dynamoDB = try AWSDynamoDB.DynamoDBClient(region: "us-east-2")
+    init() async throws {
+//        let credentialsProvider = AWSClientRuntime.(accessKey: ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"],
+//                                                               secretKey: ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"])
+        do {
+            let config = try await DynamoDBClient.DynamoDBClientConfiguration(region: "us-east-2")
+            self.dynamoDB = AWSDynamoDB.DynamoDBClient(config: config)
+        } catch {
+            print("Error: ", dump(error, name: "Initializing Amazon DynamoDBClient client"))
+            throw error
+        }
     }
     
-    func getUserAsItem(userModel: UserModel) async throws -> [Swift.String:DynamoDBClientTypes.AttributeValue]  {
-            // Convert each project and favorite to a DynamoDB AttributeValue
-            let projectsAttributeValue = userModel.projects.map { DynamoDBClientTypes.AttributeValue.s($0) }
-            let favoritesAttributeValue = userModel.favorites.map { DynamoDBClientTypes.AttributeValue.s($0) }
+    func createTable() async throws {
+            do {
+                let client = self.dynamoDB
 
-            let item: [Swift.String:DynamoDBClientTypes.AttributeValue] = [
-                "id": .s(userModel.id),
-                "email": .s(userModel.email),
-                "profile_image": .s(userModel.profile_image),
-                "projects": .l(projectsAttributeValue),
-                "favorites": .l(favoritesAttributeValue),
-                "created_timestamp": .n(String(userModel.created_timestamp))
-            ]
-
-            return item
+                let input = CreateTableInput(
+                    attributeDefinitions: [
+                        DynamoDBClientTypes.AttributeDefinition(attributeName: "year", attributeType: .n),
+                        DynamoDBClientTypes.AttributeDefinition(attributeName: "title", attributeType: .s)
+                    ],
+                    keySchema: [
+                        DynamoDBClientTypes.KeySchemaElement(attributeName: "year", keyType: .hash),
+                        DynamoDBClientTypes.KeySchemaElement(attributeName: "title", keyType: .range)
+                    ],
+                    provisionedThroughput: DynamoDBClientTypes.ProvisionedThroughput(
+                        readCapacityUnits: 10,
+                        writeCapacityUnits: 10
+                    ),
+                    tableName: "movies"
+                )
+                let output = try await client.createTable(input: input)
+                if output.tableDescription == nil {
+                    print("error: in tble")
+                    return
+                }
+            } catch {
+                if error is TableAlreadyExistsException {
+                    print("table already exists")
+                    return;
+                }
+                print("ERROR: createTable:", dump(error))
+                throw error
+            }
         }
+
+    
+    func getUserAsItem(userModel: UserModel) async throws -> [Swift.String:DynamoDBClientTypes.AttributeValue]  {
+        // Convert each project and favorite to a DynamoDB AttributeValue
+        let projectsAttributeValue = userModel.projects.map { DynamoDBClientTypes.AttributeValue.s($0) }
+        let favoritesAttributeValue = userModel.favorites.map { DynamoDBClientTypes.AttributeValue.s($0) }
+
+        let item: [Swift.String:DynamoDBClientTypes.AttributeValue] = [
+            "id": .s(userModel.id),
+            "email": .s(userModel.email),
+            "profile_image": .s(userModel.profile_image),
+            "projects": .l(projectsAttributeValue),
+            "favorites": .l(favoritesAttributeValue),
+            "created_timestamp": .n(String(userModel.created_timestamp))
+        ]
+
+        return item
+    }
     
     func insertUserModel(userModel: UserModel) async throws {
         let client = self.dynamoDB

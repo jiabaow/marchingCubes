@@ -209,13 +209,24 @@ struct SignUpView: View {
                 case .failure(let error):
                     print("Sign-up failed with error: \(error)")
                     handleSignUpError(error)
-                    // Handle sign-up failure logic here
                 }
+            }
+            if (isAuthenticated) {
+                var data: String = ""
+                fetchSVGBase64 {image in
+                    DispatchQueue.main.async {
+                        data = image!
+                    }
+                }
+                try await
+                DynamoDBManager().createTable()
+//                try await DynamoDBManager().insertUserModel(userModel: UserModel(
+//                    id: username, email: email, profile_image: data, projects: [], favorites: [], created_timestamp:  Int(Date().timeIntervalSince1970)
+//                ))
             }
         } catch {
             print("Unexpected error: \(error)")
             handleSignUpError(error)
-            // Handle unexpected error logic here
         }
     }
     

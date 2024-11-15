@@ -4,7 +4,6 @@
 //
 //  Created by 温嘉宝 on 22.10.2024.
 //
-
 import SwiftUI
 
 struct ProfileView: View {
@@ -50,9 +49,9 @@ struct ProfileView: View {
             }
             .padding()
         }.onAppear {
-            fetchSVGImage { image in
+            fetchSVGBase64 { image in
                 DispatchQueue.main.async {
-                    self.avatarImage = image
+                    self.avatarImage = loadSVGImage(from: image ?? "")
                 }
             }
         }

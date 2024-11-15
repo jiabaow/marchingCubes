@@ -82,7 +82,6 @@
 //        Dashboard()
 //    }
 //}
-
 import SwiftUI
 import SwiftData
 
@@ -248,8 +247,6 @@ struct Dashboard: View {
             }
         }
     }
-
-
 }
 
 struct Dashboard_Previews: PreviewProvider {
