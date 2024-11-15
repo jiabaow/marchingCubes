@@ -212,17 +212,12 @@ struct SignUpView: View {
                 }
             }
             if (isAuthenticated) {
-                var data: String = ""
-                fetchSVGBase64 {image in
-                    DispatchQueue.main.async {
-                        data = image!
-                    }
-                }
-                try await
-                DynamoDBManager().createTable()
-//                try await DynamoDBManager().insertUserModel(userModel: UserModel(
-//                    id: username, email: email, profile_image: data, projects: [], favorites: [], created_timestamp:  Int(Date().timeIntervalSince1970)
-//                ))
+//                try await
+//                    DynamoDBManager().createTable()
+                let imageString = await fetchSVGBase64Async()
+                try await DynamoDBManager().insertUserModel(userModel: UserModel(
+                    id: username, email: email, profile_image: imageString!, projects: [], favorites: [], created_timestamp:  Int(Date().timeIntervalSince1970)
+                ))
             }
         } catch {
             print("Unexpected error: \(error)")

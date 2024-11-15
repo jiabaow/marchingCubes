@@ -35,6 +35,23 @@ func fetchSVGBase64(from urlString: String = "https://api.dicebear.com/9.x/lorel
     task.resume()
 }
 
+func fetchSVGBase64Async(from urlString: String = "https://api.dicebear.com/9.x/lorelei/svg?seed=\(generateRandomString())") async -> String? {
+    guard let url = URL(string: urlString) else {
+        return nil
+    }
+    
+    do {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        // Convert SVG data to Base64-encoded string
+        let base64String = data.base64EncodedString()
+        let svgBase64String = "data:image/svg+xml;base64,\(base64String)"
+        return svgBase64String
+    } catch {
+        print("Error fetching SVG: \(error)")
+        return nil
+    }
+}
+
 func loadSVGImage(from base64String: String) -> UIImage? {
     // Remove the "data:image/svg+xml;base64," prefix if present
     guard let data = Data(base64Encoded: base64String.replacingOccurrences(of: "data:image/svg+xml;base64,", with: "")) else {

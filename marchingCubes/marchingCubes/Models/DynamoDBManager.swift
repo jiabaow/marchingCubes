@@ -31,18 +31,18 @@ class DynamoDBManager {
 
                 let input = CreateTableInput(
                     attributeDefinitions: [
-                        DynamoDBClientTypes.AttributeDefinition(attributeName: "year", attributeType: .n),
-                        DynamoDBClientTypes.AttributeDefinition(attributeName: "title", attributeType: .s)
+                        DynamoDBClientTypes.AttributeDefinition(attributeName: "id", attributeType: .s),
+                        DynamoDBClientTypes.AttributeDefinition(attributeName: "email", attributeType: .s)
                     ],
                     keySchema: [
-                        DynamoDBClientTypes.KeySchemaElement(attributeName: "year", keyType: .hash),
-                        DynamoDBClientTypes.KeySchemaElement(attributeName: "title", keyType: .range)
+                        DynamoDBClientTypes.KeySchemaElement(attributeName: "id", keyType: .hash),
+                        DynamoDBClientTypes.KeySchemaElement(attributeName: "email", keyType: .range)
                     ],
                     provisionedThroughput: DynamoDBClientTypes.ProvisionedThroughput(
                         readCapacityUnits: 10,
                         writeCapacityUnits: 10
                     ),
-                    tableName: "movies"
+                    tableName: "marchingcubesusers"
                 )
                 let output = try await client.createTable(input: input)
                 if output.tableDescription == nil {
@@ -85,7 +85,7 @@ class DynamoDBManager {
             let dynamoItem = try await getUserAsItem(userModel: userModel)
             let input = PutItemInput(
                 item: dynamoItem,
-                tableName: "marchingcubes"
+                tableName: "marchingcubesusers"
                 )
             _ = try await client.putItem(input: input)
         } catch {
