@@ -110,15 +110,15 @@ struct SignUpView: View {
                     .padding(.horizontal)
             }
 
-            TextField("Username", text: $username)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-            if let usernameError = usernameError {
-                Text(usernameError)
-                    .foregroundColor(.red)
-                    .font(.caption)
-                    .padding(.horizontal)
-            }
+//            TextField("Username", text: $username)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//                .padding(.horizontal)
+//            if let usernameError = usernameError {
+//                Text(usernameError)
+//                    .foregroundColor(.red)
+//                    .font(.caption)
+//                    .padding(.horizontal)
+//            }
 
             SecureField("Password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -196,12 +196,12 @@ struct SignUpView: View {
     
     func performSignUp() async {
         // Ensure inputs are valid before attempting sign-up
-        guard emailError == nil, usernameError == nil, passwordError == nil else {
+        guard emailError == nil, /*usernameError == nil,*/ passwordError == nil else {
             return
         }
 
         do {
-            try await CognitoAuthManager().signUp(username: username, password: password, email: email) { result in
+            try await CognitoAuthManager().signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
                 switch result {
                 case .success:
                     print("Sign-up successful!")

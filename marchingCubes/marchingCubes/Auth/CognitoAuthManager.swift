@@ -17,7 +17,7 @@ class CognitoAuthManager {
 
     func signUp(username: String, password: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) async {
         let signUpInput = SignUpInput(
-            clientId: "793iigcjhdaj0309vq8q00v9ps",
+            clientId: "91t5sp3jgildqv5n4e5c4ncd6",
             password: password,
             userAttributes: [
                 CognitoIdentityProviderClientTypes.AttributeType.init(name: "email", value: email)
