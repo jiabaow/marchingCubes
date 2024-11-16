@@ -82,9 +82,8 @@ struct SceneView: UIViewRepresentable {
         let keyLight1 = SCNLight()
         keyLight1.type = .directional
         keyLight1.intensity = 500
-        keyLight1.castsShadow = true
-        keyLight1.shadowRadius = 3.0
-        keyLight1.shadowColor = UIColor(white: 0.0, alpha: 0.5)
+        keyLight1.castsShadow = false
+        
         keyLightNode1.light = keyLight1
         keyLightNode1.eulerAngles = SCNVector3(-Float.pi / 4, -Float.pi / 4, 0)
         scene.rootNode.addChildNode(keyLightNode1)
@@ -93,9 +92,8 @@ struct SceneView: UIViewRepresentable {
         let keyLight2 = SCNLight()
         keyLight2.type = .directional
         keyLight2.intensity = 500
-        keyLight2.castsShadow = true
-        keyLight2.shadowRadius = 3.0
-        keyLight2.shadowColor = UIColor(white: 0.0, alpha: 0.5)
+        keyLight2.castsShadow = false
+
         keyLightNode2.light = keyLight2
         keyLightNode2.eulerAngles = SCNVector3(Float.pi / 4, Float.pi / 4, 0)
         scene.rootNode.addChildNode(keyLightNode2)
