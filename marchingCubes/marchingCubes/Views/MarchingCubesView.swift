@@ -66,13 +66,13 @@ struct MarchingCubesView: View {
         }
     
         private var unitsCountView: some View {
-                VStack {
-                    Text("Units Count")
-                        .font(.headline)
-                        .padding(.top)
+            VStack {
+                Text("Units Count")
+                    .font(.headline)
+                    .padding(.top)
 
-                }
             }
+        }
     
     // Helper function to load and voxelize the model
      static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
