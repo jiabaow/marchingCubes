@@ -1,5 +1,6 @@
 import SwiftUI
 import SceneKit
+import ModelIO
 
 struct MarchingCubesView: View {
     let filename: String
@@ -65,14 +66,29 @@ struct MarchingCubesView: View {
             }
         }
     
-        private var unitsCountView: some View {
-            VStack {
-                Text("Units Count")
-                    .font(.headline)
-                    .padding(.top)
+    private var unitsCountView: some View {
+        VStack {
+            Text("Units Count")
+                .font(.headline)
+                .padding(.top)
 
+            ForEach(dataLoader.cumulativeCaseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
+                VStack {
+                    // call sceneView with key.obj, load the obj with name key and voxelize it
+
+                    HStack {
+                        Text("\(key):")
+                            .font(.subheadline)
+                        Spacer()
+                        Text("\(count)")
+                            .font(.subheadline)
+                    }
+                    .padding(.horizontal)
+                }
             }
         }
+        .padding()
+    }
     
     // Helper function to load and voxelize the model
      static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {

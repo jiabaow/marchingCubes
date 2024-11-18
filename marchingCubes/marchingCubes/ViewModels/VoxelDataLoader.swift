@@ -14,6 +14,7 @@ class VoxelDataLoader: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var scnNodesByLayer: [Int: [SCNNode?]] = [:]
     var layerCaseCounts: [Int: [String: Int]] = [:]
+    var cumulativeCaseCounts: [String: Int] = [:]
     
     func loadVoxelData(filename: String, divisions: Int) {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -35,7 +36,6 @@ class VoxelDataLoader: ObservableObject {
     }
     
     private func loadSCNNodesForAllLayers() {
-        var cumulativeCaseCounts: [String: Int] = [:]
         
         for layer in 0...numLayer {
             let isTopLayer = (layer == numLayer)
