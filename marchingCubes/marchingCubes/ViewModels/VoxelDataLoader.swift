@@ -7,17 +7,14 @@
 import Foundation
 import SceneKit
 
-// VoxelDataLoader is responsible for loading voxel data and managing 3D scene nodes.
 class VoxelDataLoader: ObservableObject {
-
     @Published var voxelData: [[[Int]]] = []
     @Published var numLayer: Int = 0
     @Published var isLoading: Bool = true
     @Published var scnNodesByLayer: [Int: [SCNNode?]] = [:]
     var layerCaseCounts: [Int: [String: Int]] = [:]
     var cumulativeCaseCounts: [String: Int] = [:]
-
-    // Asynchronously loads voxel data from a file
+    
     func loadVoxelData(filename: String, divisions: Int) {
         let jsonFilename = filename.replacingOccurrences(of: ".obj", with: "_voxel_data.json")
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(jsonFilename)
@@ -42,17 +39,14 @@ class VoxelDataLoader: ObservableObject {
         print("not cashed, need to voxelize the model")
         
         DispatchQueue.global(qos: .userInitiated).async {
-            // Attempt to load voxel data using MarchingCubesView
             guard let (loadedVoxelData, loadedNumLayer) = MarchingCubesView.loadVoxelData(filename: filename, divisions: divisions) else {
                 print("Failed to load voxel data.")
-                // Update loading state on the main thread
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
                 return
             }
             
-            // Update voxel data and load nodes on the main thread
             DispatchQueue.main.async {
                 self.voxelData = loadedVoxelData
                 self.numLayer = loadedNumLayer
@@ -67,31 +61,25 @@ class VoxelDataLoader: ObservableObject {
         }
     }
     
-    // Loads SceneKit nodes for all layers in the voxel data
     private func loadSCNNodesForAllLayers() {
-        var cumulativeCaseCounts: [String: Int] = [:] // Tracks cumulative case counts
         
-        // Iterate through each layer to load nodes
         for layer in 0...numLayer {
             let isTopLayer = (layer == numLayer)
             let nodes = loadSCNNodesByLayer(numLayer: layer + 1, voxelData: voxelData, isTopLayer: isTopLayer, cumulativeCaseCounts: &cumulativeCaseCounts)
             scnNodesByLayer[layer] = nodes
         }
-        // Load full node for the entire data set
         let fullNode = loadSCNNodesByLayer(numLayer: numLayer + 1, voxelData: voxelData, isTopLayer: false, cumulativeCaseCounts: &cumulativeCaseCounts)
         scnNodesByLayer[0] = fullNode
     }
     
-    // Loads SceneKit nodes for a specific layer
     private func loadSCNNodesByLayer(numLayer: Int, voxelData: [[[Int]]], isTopLayer: Bool, cumulativeCaseCounts: inout [String: Int]) -> [SCNNode?] {
         var res: [SCNNode?] = []
     
-        let algo = MarchingCubesAlgo() // Initialize MarchingCubes algorithm
-        let layeredData = getLayeredData(data: voxelData, numLayer: numLayer) // Retrieve data for the current layer
-        let mcNode2 = algo.marchingCubesV2(data: layeredData) // Generate 3D node using marching cubes
+        let algo = MarchingCubesAlgo()
+        let layeredData = getLayeredData(data: voxelData, numLayer: numLayer)
+        let mcNode2 = algo.marchingCubesV2(data: layeredData)
         res.append(mcNode2)
         
-        // Update case counts for the current layer
         if layerCaseCounts[numLayer-1] == nil {
             layerCaseCounts[numLayer-1] = [:]
         }
@@ -105,7 +93,6 @@ class VoxelDataLoader: ObservableObject {
             cumulativeCaseCounts[key] = count
         }
 
-        // If not the top layer, generate a 2D color node
         if !isTopLayer {
             let algo2d = MarchingCubes2D()
             let colorNode = algo2d.marchingCubes2D(data: get2DDataFromLayer(data: voxelData, numLayer: numLayer - 1))
