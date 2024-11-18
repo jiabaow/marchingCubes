@@ -31,10 +31,12 @@ func testRabbitModel() {
     }
 }
 
+// Load an OBJ file from a URL
 func loadOBJ(filename: URL) -> MDLAsset? {
     return MDLAsset(url: filename)
 }
 
+// Load an OBJ file from the app bundle using its filename
 func loadOBJ(filename: String) -> MDLAsset? {
     guard let url = Bundle.main.url(forResource: filename, withExtension: "obj") else {
         print("Failed to find the .obj file.")
@@ -43,6 +45,7 @@ func loadOBJ(filename: String) -> MDLAsset? {
     return MDLAsset(url: url)
 }
 
+// Voxelize a given MDLAsset with specified divisions
 func voxelize(asset: MDLAsset, divisions: Int32) -> MDLVoxelArray? {
     guard let mesh = asset.object(at: 0) as? MDLMesh else {
         print("Failed to extract MDLMesh.")
@@ -51,6 +54,7 @@ func voxelize(asset: MDLAsset, divisions: Int32) -> MDLVoxelArray? {
     return MDLVoxelArray(asset: asset, divisions: divisions, patchRadius: 0)
 }
 
+// Test function to create a cube node using SceneKit
 func testGetCube() -> SCNNode{
     let parentNode = SCNNode() // Create a parent node to hold all generated nodes
     var vertices: [SCNVector3] = []
@@ -121,6 +125,7 @@ func testGetCube() -> SCNNode{
     return parentNode
 }
 
+// Convert a MDLVoxelArray to a 3D array of integers
 func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
     let extent = voxelArray.boundingBox
     let sizeX = Int((extent.maxBounds.x - extent.minBounds.x) * 4)
@@ -156,9 +161,11 @@ func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
     return voxelGrid
 }
 
+// Extract all non-zero layers from a 3D data array
 func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
     var layeredData: [[[Int]]] = []
     
+    // Initialize bounds for non-empty layers
     var li: Int = data.count
     var ri: Int = 0
     var lj: Int = data[0].count
@@ -170,6 +177,7 @@ func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
     let yDim = data[0].count - 1
     let zDim = data[0][0].count - 1
     
+    // Determine bounds of non-empty layers
     for i in 0..<xDim {
         for j in 0..<yDim {
             for k in 0..<zDim {
@@ -194,7 +202,7 @@ func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
         }
     }
     
-
+    // Extract layers within bounds
     for i in li...ri+1 {
         var layer2D: [[Int]] = []
         for j in lj...rj+1 {
@@ -209,14 +217,13 @@ func getAllLayers(data: [[[Int]]]) -> [[[Int]]] {
     return layeredData
 }
 
+// Get a 2D slice from a specific layer in a 3D data array
 func get2DDataFromLayer(data: [[[Int]]], numLayer: Int) -> [[Int]] {
     var layeredData: [[Int]] = []
     if (numLayer < 0 || numLayer > data[0].count) {
         print("wrong numLayer input, in get2DDataFromLayer, numLayer", numLayer)
         return []
     }
-//    print(data)
-//    print(numLayer)
     
     for i in 0..<data.count {
         var row: [Int] = []
@@ -225,11 +232,10 @@ func get2DDataFromLayer(data: [[[Int]]], numLayer: Int) -> [[Int]] {
         }
         layeredData.append(row)
     }
-//    print("2d layered data")
-//    print(layeredData)
     return layeredData
 }
 
+// Get layered data from a 3D data array up to a specific layer
 func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
     var layeredData: [[[Int]]] = []
     if (numLayer < 0 || numLayer > data[0].count) {
@@ -250,6 +256,7 @@ func getLayeredData(data: [[[Int]]], numLayer: Int) -> [[[Int]]] {
     return layeredData
 }
 
+// Create a sphere node at a given position with specified radius and color
 func createBall(at position: SCNVector3, radius: CGFloat, color: UIColor) -> SCNNode {
     // Create a sphere geometry with the specified radius
     let sphereGeometry = SCNSphere(radius: radius)
@@ -290,6 +297,7 @@ func *(lhs: SCNVector3, rhs: Float) -> SCNVector3 {
     return SCNVector3(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs)
 }
 
+// Apply mirror symmetry to a set of vertices along a specified axis
 func applyMirrorSymmetry(to vertices: inout [SCNVector3], along axis: String, through point: SCNVector3) {
     for index in vertices.indices {
         // Translate the vertex to the origin relative to the specified point

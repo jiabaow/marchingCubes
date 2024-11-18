@@ -7,6 +7,9 @@
 
 import SceneKit
 
+// the Marchingcubes algorithm
+// data: 3D voxel data
+// return: a SCNNode with cubes created from voxelized data
 func marchingCubes(data: [[[Int]]]) -> SCNNode {
     var vertices: [SCNVector3] = []
     var indices: [Int32] = []

@@ -7,6 +7,8 @@
 
 import SceneKit
 
+// "physical" marching cubes algorithm
+// generate all cubes instead of only outer surfaces
 class MarchingCubesAlgo {
     var indices4Lines: [Int32] = []
     var caseCounts: [String: Int] = [:]
@@ -29,12 +31,6 @@ class MarchingCubesAlgo {
                     let b2 = data[i+1][j+1][k]
                     let a2 = data[i+1][j+1][k+1]
                     let a1 = data[i][j+1][k+1]
-                    
-                    // Create a material and make it double-sided
-                    let material = SCNMaterial()
-                    material.isDoubleSided = true
-//                    material.transparency = 0.7
-                    //                material.diffuse.contents = UIColor.green
                     
                     // vertices
                     let v_b4 = SCNVector3(Float(i), Float(j), Float(k))
@@ -93,11 +89,12 @@ class MarchingCubesAlgo {
                     
                     var vertices: [SCNVector3] = []
                     var indices: [Int32] = []
-                    
+                    // MC0_1
                     if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) == 8) {
                         getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2,
                                  v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                     }
+                    //MC1_1N
                     else if ((a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4) == 1) {
                         if (b4 == 1) {
                             getMC1_1N(vertices: &vertices, indices: &indices,
@@ -132,6 +129,7 @@ class MarchingCubesAlgo {
                                       v1: v_a1, v2: v_a1_b1, v3: v_a1_a2, v4: v_a1_a4)
                         }
                     }
+                    // MC1_1
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 7){
                         if (b4 == 0) {
                             getMC1_1(vertices: &vertices, indices: &indices,
@@ -183,6 +181,7 @@ class MarchingCubesAlgo {
                         }
                     }
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 6){
+                        // MC2_1
                         if (a2 == 0 && b1 == 0) {
                             getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
                                      v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
@@ -235,6 +234,7 @@ class MarchingCubesAlgo {
                             getMC2_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
                                      v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
                         }
+                        // MC2_2
                         else if (b3 == 0 && b4 == 0) {
                             getMC2_2(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
                                      v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
@@ -283,6 +283,7 @@ class MarchingCubesAlgo {
                             getMC2_2(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
                                      v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
                         }
+                        // MC2_3
                         else if (a1 == 0 && b3 == 0) {
                             getMC2_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
                                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
@@ -726,12 +727,14 @@ class MarchingCubesAlgo {
                         }
                     }
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 4) {
+                        // MC4_1
                         if (a1 == 1 && a3 == 1 && b2 == 1 && b4 == 1) {
                             getMC4_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
                         }
                         else if (a2 == 1 && a4 == 1 && b1 == 1 && b3 == 1) {
                             getMC4_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
+                        // MC4_2
                         else if (a1 == 1 && a2 == 1 && a3 == 1 && b4 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
                         }
@@ -804,6 +807,7 @@ class MarchingCubesAlgo {
                         else if (a1 == 1 && a3 == 1 && b2 == 1 && b3 == 1) {
                             getMC4_2(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_a3, v3: v_a2, v4: v_b2, v5: v_b4, v6: v_a4, v7: v_a1, v8: v_b1)
                         }
+                        // MC4_3
                         else if (a3 == 1 && a4 == 1 && b1 == 1 && b2 == 1) {
                             getMC4_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
@@ -822,6 +826,7 @@ class MarchingCubesAlgo {
                         else if (a2 == 1 && a4 == 1 && b2 == 1 && b4 == 1) {
                             getMC4_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b1, v3: v_b2, v4: v_a2, v5: v_a4, v6: v_b4, v7: v_b3, v8: v_a3)
                         }
+                        // MC4_4
                         else if (a1 == 1 && a2 == 1 && a3 == 1 && a4 == 1) {
                             getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
@@ -840,6 +845,7 @@ class MarchingCubesAlgo {
                         else if (b1 == 1 && b2 == 1 && b3 == 1 && b4 == 1) {
                             getMC4_4(vertices: &vertices, indices: &indices, v1: v_b1, v2: v_b4, v3: v_b3, v4: v_b2, v5: v_a1, v6: v_a4, v7: v_a3, v8: v_a2)
                         }
+                        // MC4_5
                         else if (a2 == 1 && a3 == 1 && a4 == 1 && b3 == 1) {
                             getMC4_5(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
                         }
@@ -864,6 +870,7 @@ class MarchingCubesAlgo {
                         else if (a4 == 1 && b1 == 1 && b3 == 1 && b4 == 1) {
                             getMC4_5(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2, v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_a1, v8: v_a4)
                         }
+                        // MC4_6
                         else if (a1 == 1 && a3 == 1 && a4 == 1 && b3 == 1) {
                             getMC4_6(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
@@ -900,6 +907,7 @@ class MarchingCubesAlgo {
                         else if (a1 == 1 && b1 == 1 && b3 == 1 && b4 == 1) {
                             getMC4_6(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2, v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_a1, v8: v_a4)
                         }
+                        // MC4_7
                         else if (a2 == 1 && a3 == 1 && a4 == 1 && b4 == 1) {
                             getMC4_7(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
                         }
@@ -937,6 +945,7 @@ class MarchingCubesAlgo {
                             getMC4_7(vertices: &vertices, indices: &indices, v1: v_b3, v2: v_b2, v3: v_b1, v4: v_b4, v5: v_a3, v6: v_a2, v7: v_a1, v8: v_a4)
                         }
                     }
+                    // MC5_5
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 3) {
                         if (a2 == 1 && a4 == 1 && b3 == 1) {
                             getMC5_5(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
@@ -964,6 +973,7 @@ class MarchingCubesAlgo {
                         }
                     }
                     else if (a1 + a2 + a3 + a4 + b1 + b2 + b3 + b4 == 2){
+                        // MC2_1N
                         if (a2 == 1 && b1 == 1) {
                             getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
                                       v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
@@ -1016,6 +1026,7 @@ class MarchingCubesAlgo {
                             getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_b2,
                                       v3: v_a2, v4: v_b3, v5: v_a4, v6: v_b1, v7: v_a1, v8: v_b4)
                         }
+                        // MC2_2N
                         else if (b3 == 1 && b4 == 1) {
                             getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
                                       v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
@@ -1064,6 +1075,7 @@ class MarchingCubesAlgo {
                             getMC2_2N(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_b4,
                                       v3: v_a3, v4: v_b3, v5: v_a2, v6: v_b2, v7: v_a1, v8: v_b1)
                         }
+                        // MC2_3N
                         else if (a1 == 1 && b3 == 1) {
                             getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
                                       v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
@@ -1092,6 +1104,9 @@ class MarchingCubesAlgo {
                         // Create geometry
                         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
                         
+                        // Create a material and make it double-sided
+                        let material = SCNMaterial()
+                        material.isDoubleSided = true
                         // Assign the material to the geometry
                         geometry.materials = [material]
                         

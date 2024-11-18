@@ -4,10 +4,14 @@
 //
 //  Created by Mingxin Hou on 11/9/24.
 //
+
 import SceneKit
+
+// Class implementing the 2D Marching Cubes algorithm
 class MarchingCubes2D {
-    var scale: Float = 0.8
+    var scale: Float = 0.8 // Scale factor for geometry
     
+    // Main function to perform the 2D Marching Cubes algorithm on the input data
     func marchingCubes2D(data: [[Int]]) -> SCNNode {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
         let xDim = data.count - 1
@@ -18,11 +22,13 @@ class MarchingCubes2D {
         for i in 0..<xDim {
             for j in 0..<yDim {
                 
+                // Retrieve the values of the corners of the current cell
                 let a = data[i][j]
                 let b = data[i+1][j]
                 let c = data[i+1][j+1]
                 let d = data[i][j+1]
                 
+                // Define the vertices of the cell
                 let v1 = SCNVector3(Float(i), 0,  Float(j))
                 let v2 = SCNVector3(Float(i+1), 0,  Float(j))
                 let v3 = SCNVector3(Float(i+1), 0,  Float(j+1))
@@ -33,6 +39,7 @@ class MarchingCubes2D {
                 //            parentNode.addChildNode(createBall(at: v3, radius: 0.05, color: UIColor.blue))
                 //            parentNode.addChildNode(createBall(at: v4, radius: 0.05, color: UIColor.yellow))
                 
+                // Determine the case
                 if (a + b + c + d == 4){
                     let node = getBlue(vertices: &vertices, indices: &indices,
                                        v1: v1, v2: v2, v3: v3, v4: v4)
@@ -126,6 +133,7 @@ class MarchingCubes2D {
     // + - +
     // |   |
     // + - +
+    // Generate geometry for a fully filled cell (case: all corners filled)
     func getBlue(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                  v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
@@ -150,7 +158,7 @@ class MarchingCubes2D {
         return node
     }
     
-    
+    // Generate geometry for a cell with three filled corners (case: one corner empty)
     func getRed(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                 v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
@@ -178,6 +186,7 @@ class MarchingCubes2D {
         return node
     }
     
+    // Generate geometry for a cell with two diagonally filled corners (case: opposite corners filled)
     func getPurple(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
@@ -207,6 +216,7 @@ class MarchingCubes2D {
         return node
     }
     
+    // Generate geometry for a cell with two adjacent filled corners (case: adjacent corners filled)
     func getOrange(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let v5 = (v1 + v4) / 2
@@ -236,6 +246,7 @@ class MarchingCubes2D {
         return node
     }
     
+    // Generate geometry for a cell with one filled corner (case: one corner filled)
     func getYellow(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let v5 = (v1 + v2) / 2

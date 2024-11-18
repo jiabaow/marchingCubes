@@ -5,6 +5,9 @@
 //  Created by Mingxin Hou on 10/31/24.
 //
 
+// lookupTable for the marching cubes algorithm
+// the index is one case of cubes
+// the value is the triangulars to form the cube object
 let lookupTable: [[[Int]]] = [
     [],
     [[1, 9, 4]],
