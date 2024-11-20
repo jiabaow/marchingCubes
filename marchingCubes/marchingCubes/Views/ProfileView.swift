@@ -8,65 +8,122 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("isDarkMode") static var isDarkMode = false // State for Dark Mode
     @State private var avatarImage: UIImage? = nil
-    
+    @State private var userName: String = "Peter Johnson" // Mock data for the user name
+    @State private var projects: [ProjectModel] = [] // Array of projects
+
     var body: some View {
-        VStack {
-            Text("Profile Placeholder")
-                .font(.largeTitle)
-                .padding()
-            
-            // Circular Avatar
-            if let avatarImage = avatarImage {
-                Image(uiImage: avatarImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.black, lineWidth: 4))
-                    .shadow(radius: 10)
-                    .padding()
-            } else {
-                // Placeholder while loading
-                Circle()
-                    .fill(Color.gray)
-                    .frame(width: 100, height: 100)
-                    .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                    .shadow(radius: 10)
-                    .padding()
-            }
-            
-            // Sign-out button
-            Button(action: {
-                // Add your sign-out logic here
-                signOut()
-            }) {
-                Text("Sign Out")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.red)
-                    .cornerRadius(8)
+        ScrollView {
+            VStack(spacing: 20) {
+                // Dark Mode Toggle Button
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        ProfileView.isDarkMode.toggle()
+                    }) {
+                        Image(systemName: ProfileView.isDarkMode ? "sun.max.fill" : "moon.fill")
+                            .foregroundColor(ProfileView.isDarkMode ? .yellow : .blue)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(.trailing, 20)
+                .padding(.top, 20)
+                
+                // User avatar and name
+                VStack {
+                    if let avatarImage = avatarImage {
+                        Image(uiImage: avatarImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                            .shadow(radius: 10)
+                    } else {
+                        Circle()
+                            .fill(Color.gray)
+                            .frame(width: 120, height: 120)
+                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                            .shadow(radius: 10)
+                    }
+
+                    Text(userName)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                }
+                .padding(.top, 20)
+
+                // My Favorites section
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("My Favorites")
+                        .font(.headline)
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 16) {
+                            ForEach(projects.filter { $0.isFavorite }, id: \.id) { project in
+                                VStack {
+                                    if let image = UIImage(named: project.image) {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 150, height: 150)
+                                            .cornerRadius(12)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(Color.white, lineWidth: 2)
+                                            )
+                                    } else {
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                            .frame(width: 150, height: 150)
+                                            .cornerRadius(12)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(Color.white, lineWidth: 2)
+                                            )
+                                    }
+                                    Text(project.title)
+                                        .font(.caption)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, 20)
+
+                Spacer()
             }
             .padding()
-        }.onAppear {
-            fetchSVGBase64 { image in
-                DispatchQueue.main.async {
-                    self.avatarImage = loadSVGImage(from: image ?? "")
-                }
+            .background(ProfileView.isDarkMode ? Color.black : Color.white)
+            .onAppear {
+                loadUserData()
             }
         }
+        .preferredColorScheme(ProfileView.isDarkMode ? .dark : .light) // Set the color scheme
     }
-    
-    // Function to handle sign-out logic
+
+    private func loadUserData() {
+        // Simulate fetching user data
+        self.userName = "Peter Johnson" // Example data
+        self.projects = [
+            ProjectModel(title: "Project 1", image: "placeholder", isFavorite: true),
+            ProjectModel(title: "Project 2", image: "placeholder", isFavorite: false),
+            ProjectModel(title: "Project 3", image: "placeholder", isFavorite: true)
+        ] // Replace with real data
+        self.avatarImage = UIImage(named: "placeholder") // Replace with actual image loading logic
+    }
+
     func signOut() {
-        // Implement your sign-out logic here
-        print("User signed out")
         isAuthenticated = false
+        print("User signed out")
     }
 }
 
-
-struct Profile_Previews: PreviewProvider {
+struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
     }

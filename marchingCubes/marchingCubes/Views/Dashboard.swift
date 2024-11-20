@@ -55,7 +55,7 @@
 //                    showDocumentPicker = true
 //                }) {
 //                    Text("Add Item")
-//                        .padding()
+//                        .padbding()
 //                        .frame(maxWidth: .infinity)
 //                        .background(Color.blue)
 //                        .foregroundColor(.white)
@@ -89,7 +89,6 @@ struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
-//    @EnvironmentObject var viewModel: ProjectViewModel
     @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 
@@ -98,7 +97,7 @@ struct Dashboard: View {
             VStack(alignment: .leading) {
                 // Welcome text
                 Text("Welcome back")
-                .font(.system(size: 28, weight: .bold))
+                    .font(.system(size: 28, weight: .bold))
                     .padding(.top)
 
                 // Search bar
@@ -110,30 +109,44 @@ struct Dashboard: View {
 
                 // Recent Creations
                 Text("Recent Creations")
-                .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
                     .padding(.leading)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(viewModel.models.prefix(2)) { model in
-                            VStack {
-                                Image(uiImage: UIImage(named: model.image ?? "") ?? UIImage())
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(10)
-                                Text(model.title)
+                        VStack {
+                            Image(uiImage: UIImage(named: model.image ?? "") ?? UIImage())
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(10)
+                            Text(model.title)
                                 .font(.system(size: 16, weight: .medium))
-                                    .lineLimit(1)
+                                .lineLimit(1)
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    if let index = viewModel.models.firstIndex(where: { $0.id == model.id }) {
+                                        viewModel.models[index].isFavorite.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: model.isFavorite ? "heart.fill" : "heart")
+                                        .foregroundColor(model.isFavorite ? .red : .gray)
+                                }
+                                .padding(.top, 5)
                             }
-                            .frame(width: 120)
-                            .background(Color(UIColor.systemGray6))
-                            .cornerRadius(10)
                         }
+                        .frame(width: 120)
+                        .background(Color(UIColor.systemGray6))
+                        .cornerRadius(10)
+                    }
                     }
                     .padding(.horizontal)
                 }
                 .padding(.vertical)
+
+                // Uploads Section
                 Text("Uploads")
-                .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
                     .padding(.leading)
 
                 List {
@@ -222,13 +235,7 @@ struct Dashboard: View {
                         .foregroundColor(Color.gray)
                 }
                 Spacer()
-                Button(action: {
-                    print("Upload action for \(model.title)")
-                }) {
-                    Image(systemName: "icloud.and.arrow.up")
-                        .font(.system(size: 24))
-                        .foregroundColor(.blue)
-                }
+                
             }
             .padding()
             .background(Color.white)
@@ -254,6 +261,7 @@ struct Dashboard_Previews: PreviewProvider {
         Dashboard()
     }
 }
+
 
 
 

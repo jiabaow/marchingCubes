@@ -12,8 +12,8 @@
 		5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */; };
 		5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 5B0CCF8E2CDC072700C2DBBD /* AWSS3 */; };
 		5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */ = {isa = PBXBuildFile; productRef = 5B83D9E82CCEFAC400328931 /* Voxels */; };
-		5BF17B082CE02A17002B6325 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5BF17B072CE02A17002B6325 /* SVGKit */; };
-		5BF17B0A2CE02A17002B6325 /* SVGKitSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5BF17B092CE02A17002B6325 /* SVGKitSwift */; };
+		FCB6C3412CE69E9500878E81 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = FCB6C3402CE69E9500878E81 /* SVGKit */; };
+		FCB6C3432CE69E9500878E81 /* SVGKitSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FCB6C3422CE69E9500878E81 /* SVGKitSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,11 +62,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BF17B082CE02A17002B6325 /* SVGKit in Frameworks */,
+				FCB6C3412CE69E9500878E81 /* SVGKit in Frameworks */,
 				5B0CCF8F2CDC072700C2DBBD /* AWSS3 in Frameworks */,
 				5B0CCF8D2CDC072700C2DBBD /* AWSDynamoDB in Frameworks */,
 				5B0CCF892CDC072700C2DBBD /* AWSCognitoIdentity in Frameworks */,
-				5BF17B0A2CE02A17002B6325 /* SVGKitSwift in Frameworks */,
+				FCB6C3432CE69E9500878E81 /* SVGKitSwift in Frameworks */,
 				5B83D9E92CCEFAC400328931 /* Voxels in Frameworks */,
 				5B0CCF8B2CDC072700C2DBBD /* AWSCognitoIdentityProvider in Frameworks */,
 			);
@@ -134,8 +134,8 @@
 				5B0CCF8A2CDC072700C2DBBD /* AWSCognitoIdentityProvider */,
 				5B0CCF8C2CDC072700C2DBBD /* AWSDynamoDB */,
 				5B0CCF8E2CDC072700C2DBBD /* AWSS3 */,
-				5BF17B072CE02A17002B6325 /* SVGKit */,
-				5BF17B092CE02A17002B6325 /* SVGKitSwift */,
+				FCB6C3402CE69E9500878E81 /* SVGKit */,
+				FCB6C3422CE69E9500878E81 /* SVGKitSwift */,
 			);
 			productName = marchingCubes;
 			productReference = E800433C2CC86C5300190DF4 /* marchingCubes.app */;
@@ -222,7 +222,7 @@
 			packageReferences = (
 				5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */,
 				5B0CCF872CDC072700C2DBBD /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
-				5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */,
+				FCB6C33F2CE69DF900878E81 /* XCRemoteSwiftPackageReference "SVGKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E800433D2CC86C5300190DF4 /* Products */;
@@ -425,7 +425,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"marchingCubes/Preview Content\"";
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -454,7 +454,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"marchingCubes/Preview Content\"";
-				DEVELOPMENT_TEAM = L94V8YX54Q;
+				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -605,7 +605,7 @@
 				minimumVersion = 0.2.4;
 			};
 		};
-		5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
+		FCB6C33F2CE69DF900878E81 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
 			requirement = {
@@ -641,14 +641,14 @@
 			package = 5B83D9E72CCEFAC400328931 /* XCRemoteSwiftPackageReference "voxels" */;
 			productName = Voxels;
 		};
-		5BF17B072CE02A17002B6325 /* SVGKit */ = {
+		FCB6C3402CE69E9500878E81 /* SVGKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			package = FCB6C33F2CE69DF900878E81 /* XCRemoteSwiftPackageReference "SVGKit" */;
 			productName = SVGKit;
 		};
-		5BF17B092CE02A17002B6325 /* SVGKitSwift */ = {
+		FCB6C3422CE69E9500878E81 /* SVGKitSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5BF17B062CE02A17002B6325 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			package = FCB6C33F2CE69DF900878E81 /* XCRemoteSwiftPackageReference "SVGKit" */;
 			productName = SVGKitSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
