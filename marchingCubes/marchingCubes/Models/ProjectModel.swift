@@ -13,10 +13,12 @@ class ProjectModel: Identifiable {
     var id: UUID
     var title: String
     var image: String
+    var isFavorite: Bool
 
-    init(id: UUID = UUID(), title: String, image: String) {
+    init(id: UUID = UUID(), title: String, image: String, isFavorite: Bool = false) {
         self.id = id
         self.title = title
         self.image = image
+        self.isFavorite = isFavorite
     }
 }
