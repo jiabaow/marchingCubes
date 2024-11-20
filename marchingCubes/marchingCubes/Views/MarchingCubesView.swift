@@ -72,18 +72,19 @@ struct MarchingCubesView: View {
                 .font(.headline)
                 .padding(.top)
 
-            ForEach(dataLoader.cumulativeCaseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
-                VStack {
-                    // call sceneView with key.obj, load the obj with name key and voxelize it
+            ScrollView { // Add a ScrollView
+                ForEach(dataLoader.cumulativeCaseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
+                    VStack {
+                        // Call sceneView with key.obj, load the obj with name key and voxelize it
 
-                    HStack {
-                        Text("\(key):")
-                            .font(.subheadline)
-                        Spacer()
-                        Text("\(count)")
-                            .font(.subheadline)
+                        HStack {
+                            SceneView(scnNodes: [getCube(cube: key)]).frame(width: 200, height: 200)
+                            Text("x\(count)")
+                                .font(.subheadline)
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    .padding(.bottom) // Optional: Add some padding between items
                 }
             }
         }
