@@ -15,6 +15,7 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var errorMessage: String? = nil
     var onUnconfirmedAccount: ((String) -> Void)? = nil
+    @State private var showConfirmSignupView = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -72,6 +73,11 @@ struct LoginView: View {
             .padding(.horizontal)
         }
         .padding()
+        .fullScreenCover(isPresented: $showConfirmSignupView) {
+            ConfirmSignupView(username: username.lowercased()) {
+                showConfirmSignupView = false
+            }
+        }
     }
 
     func continueAsGuest() {
@@ -85,7 +91,18 @@ struct LoginView: View {
         }
 
         do {
-//            try await CognitoAuthManager().login(username: username, password: password)
+            try await CognitoAuthManager().login(username: username, password: password) {
+                result in
+                switch result {
+                    case .success:
+                        isAuthenticated = true
+                case .failure(let error):
+                    if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
+                        print("user not confirmed")
+                        showConfirmSignupView = true
+                    }
+                }
+            }
             isAuthenticated = true
             errorMessage = nil
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {

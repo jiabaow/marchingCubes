@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ConfirmSignupView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("currentUser") private var currentUser = ""
     @State private var confirmationCode: String = ""
     @State private var errorMessage: String? = nil
     @State private var isConfirmationSuccessful = false
@@ -73,12 +74,14 @@ struct ConfirmSignupView: View {
         }
 
         do {
+            print("CHARLES ------")
             print(username)
             try await CognitoAuthManager().confirmSignUp(username: username, confirmationCode: confirmationCode)
             isConfirmationSuccessful = true
             errorMessage = nil
             onConfirmationComplete?()
             isAuthenticated = true
+            currentUser = username
         } catch {
             print("Confirmation failed: \(error)")
             errorMessage = "Failed to confirm signup. Please check your code and try again."
@@ -88,7 +91,7 @@ struct ConfirmSignupView: View {
     func resendConfirmationCode() {
         Task {
             do {
-//                try await CognitoAuthManager().resendConfirmationCode(for: username)
+                try await CognitoAuthManager().resendConfirmationCode(username: username)
                 errorMessage = nil
                 print("Confirmation code resent successfully.")
             } catch {

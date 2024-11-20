@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 
 struct SignUpView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("currentUser") private var currentUser = ""
     @Binding var isLoginView: Bool
     var onSignUpSuccess: (() -> Void)? = nil
     @State private var email: String = ""

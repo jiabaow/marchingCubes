@@ -30,8 +30,7 @@ class CognitoAuthManager {
                 clientId: "91t5sp3jgildqv5n4e5c4ncd6"
             )
             
-//            let response = try await cognitoClient.initiateAuth(input: request)
-//            cognitoClient.initiateAuth(input: )
+            try await self.client.initiateAuth(input: request)
             completion(.success(()))
         } catch {
             print(error)
@@ -69,6 +68,15 @@ class CognitoAuthManager {
         
         do {
             try await self.client.confirmSignUp(input: confirmSignUpInput)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func resendConfirmationCode(username: String) async {
+        do {
+            let resend = ResendConfirmationCodeInput(clientId: "91t5sp3jgildqv5n4e5c4ncd6", username: username)
+            try await self.client.resendConfirmationCode(input: resend)
         } catch {
             print(error)
         }
