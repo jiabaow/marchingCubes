@@ -73,10 +73,12 @@ struct ConfirmSignupView: View {
         }
 
         do {
-//            try await CognitoAuthManager().confirmSignUp(username: username, confirmationCode: confirmationCode)
+            print(username)
+            try await CognitoAuthManager().confirmSignUp(username: username, confirmationCode: confirmationCode)
             isConfirmationSuccessful = true
             errorMessage = nil
             onConfirmationComplete?()
+            isAuthenticated = true
         } catch {
             print("Confirmation failed: \(error)")
             errorMessage = "Failed to confirm signup. Please check your code and try again."

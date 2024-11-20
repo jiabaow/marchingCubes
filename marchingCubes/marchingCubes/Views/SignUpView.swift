@@ -9,6 +9,7 @@ import SwiftUI
 import AWSCognitoIdentityProvider
 
 struct SignUpView: View {
+    @AppStorage("isAuthenticated") private var isAuthenticated = false
     @Binding var isLoginView: Bool
     var onSignUpSuccess: (() -> Void)? = nil
     @State private var email: String = ""
@@ -68,13 +69,27 @@ struct SignUpView: View {
             .padding(.top, 10)
 
             Spacer()
+
+            Button(action: continueAsGuest) {
+                Text("Continue as Guest")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding(.horizontal)
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(username: pendingUsername) {
+            ConfirmSignupView(username: email.lowercased()) {
                 showConfirmSignupView = false
             }
         }
+    }
+    
+    func continueAsGuest() {
+        isAuthenticated = true
     }
 
     func validateInputs() {

@@ -14,6 +14,30 @@ class CognitoAuthManager {
         // Initialize the Cognito client with your region
         self.client = try CognitoIdentityProviderClient(region: "us-east-2") // Replace with your region
     }
+    
+    func login(username: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) async {
+        
+        // Create a sign-up request
+        do {
+            let authParameters: [String:String] = [
+                "USERNAME": username,
+                "PASSWORD": password
+            ]
+            
+            let request = InitiateAuthInput(
+                authFlow: .userPasswordAuth,
+                authParameters: authParameters,
+                clientId: "91t5sp3jgildqv5n4e5c4ncd6"
+            )
+            
+//            let response = try await cognitoClient.initiateAuth(input: request)
+//            cognitoClient.initiateAuth(input: )
+            completion(.success(()))
+        } catch {
+            print(error)
+            completion(.failure(error))
+        }
+    }
 
     func signUp(username: String, password: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) async {
         let signUpInput = SignUpInput(
@@ -34,7 +58,19 @@ class CognitoAuthManager {
             completion(.failure(error))
         }
         
-        // Call the confirm sign-up API
-        // self.client.confirmSignUp(input: <#T##ConfirmSignUpInput#>)
+    }
+    
+    func confirmSignUp(username: String, confirmationCode: String) async {
+        let confirmSignUpInput = ConfirmSignUpInput(
+            clientId: "91t5sp3jgildqv5n4e5c4ncd6",
+            confirmationCode: confirmationCode,
+            username: username
+        )
+        
+        do {
+            try await self.client.confirmSignUp(input: confirmSignUpInput)
+        } catch {
+            print(error)
+        }
     }
 }
