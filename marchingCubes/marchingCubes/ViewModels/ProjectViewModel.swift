@@ -24,6 +24,13 @@ class ProjectViewModel: ObservableObject {
         }
     }
     
+    // Add a func to toggle favorite status
+    func toggleFavorite(for model: ProjectModel) {
+            if let index = models.firstIndex(where: { $0.id == model.id }) {
+                models[index].isFavorite.toggle()
+            }
+        }
+    
     // Fetch all models from the SwiftData store
     func fetchData(modelContext: ModelContext) {
         let request = FetchDescriptor<ProjectModel>()

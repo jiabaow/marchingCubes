@@ -84,12 +84,13 @@
 //}
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
-    @StateObject var viewModel = ProjectViewModel()
+    @EnvironmentObject var viewModel: ProjectViewModel
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
@@ -256,8 +257,10 @@ struct Dashboard: View {
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
         Dashboard()
+            .environmentObject(ProjectViewModel())
     }
 }
+
 
 
 

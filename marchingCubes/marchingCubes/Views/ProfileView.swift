@@ -4,14 +4,17 @@
 //
 //  Created by 温嘉宝 on 22.10.2024.
 //
+
 import SwiftUI
+import UIKit
+
 
 struct ProfileView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
-    @AppStorage("isDarkMode") static var isDarkMode = false // State for Dark Mode
+    @AppStorage("isDarkMode") static var isDarkMode = false
+    @EnvironmentObject var viewModel: ProjectViewModel
     @State private var avatarImage: UIImage? = nil
-    @State private var userName: String = "Peter Johnson" // Mock data for the user name
-    @State private var projects: [ProjectModel] = [] // Array of projects
+    @State private var userName: String = "Peter Johnson"
 
     var body: some View {
         ScrollView {
@@ -63,7 +66,7 @@ struct ProfileView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 16) {
-                            ForEach(projects.filter { $0.isFavorite }, id: \.id) { project in
+                            ForEach(viewModel.models.filter { $0.isFavorite }, id: \.id) { project in
                                 VStack {
                                     if let image = UIImage(named: project.image) {
                                         Image(uiImage: image)
@@ -103,28 +106,18 @@ struct ProfileView: View {
                 loadUserData()
             }
         }
-        .preferredColorScheme(ProfileView.isDarkMode ? .dark : .light) // Set the color scheme
+        .preferredColorScheme(ProfileView.isDarkMode ? .dark : .light)
     }
 
     private func loadUserData() {
-        // Simulate fetching user data
-        self.userName = "Peter Johnson" // Example data
-        self.projects = [
-            ProjectModel(title: "Project 1", image: "placeholder", isFavorite: true),
-            ProjectModel(title: "Project 2", image: "placeholder", isFavorite: false),
-            ProjectModel(title: "Project 3", image: "placeholder", isFavorite: true)
-        ] // Replace with real data
-        self.avatarImage = UIImage(named: "placeholder") // Replace with actual image loading logic
-    }
-
-    func signOut() {
-        isAuthenticated = false
-        print("User signed out")
+        self.userName = "Peter Johnson"
+        self.avatarImage = UIImage(named: "placeholder")
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
+            .environmentObject(ProjectViewModel())
     }
 }

@@ -10,15 +10,18 @@ import SwiftData
 
 @main
 struct MyAppApp: App {
+    @StateObject private var viewModel = ProjectViewModel()
+
     init() {
-//        testRabbitModel()
+        // testRabbitModel()
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for: ProjectModel.self)  // Setup SwiftData for the model
-//                .environmentObject(ProjectViewModel())
+                .modelContainer(for: ProjectModel.self)
+                .environmentObject(viewModel) 
         }
     }
 }
+
