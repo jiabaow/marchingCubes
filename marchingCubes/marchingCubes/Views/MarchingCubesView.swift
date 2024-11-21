@@ -15,56 +15,56 @@ struct MarchingCubesView: View {
     }
     
     var body: some View {
-            ZStack {
-                if dataLoader.isLoading {
-                    LoadingView(filename: filename)
-                } else {
-                    ScrollView {
-                        VStack {
-                            headerView
-                            
-                            SceneView(scnNodes: dataLoader.scnNodesByLayer[0])
-                                .frame(width: 300, height: 300)
-                                .edgesIgnoringSafeArea(.all)
+        ZStack {
+            if dataLoader.isLoading {
+                LoadingView(filename: filename)
+            } else {
+                ScrollView {
+                    VStack {
+                        headerView
+                        
+                        SceneView(scnNodes: dataLoader.scnNodesByLayer[0])
+                            .frame(width: 300, height: 300)
+                            .edgesIgnoringSafeArea(.all)
 
-                            TabView {
-                                unitsCountView
-                                    .tag(0)
-                                
-                                layersView
-                                    .tag(1)
-                                
-                            }
-                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-                            .frame(height: 350)
+                        TabView {
+                            unitsCountView
+                                .tag(0)
+                            
+                            layersView
+                                .tag(1)
+                            
                         }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                        .frame(height: 350)
                     }
                 }
             }
-            .onAppear {
-                dataLoader.loadVoxelData(filename: filename, divisions: divisions)
-            }
         }
-        
-        private var headerView: some View {
-            Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
-                .font(.largeTitle)
-                .padding()
+        .onAppear {
+            dataLoader.loadVoxelData(filename: filename, divisions: divisions)
         }
-        
-        private var layersView: some View {
-            ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
-                VStack {
-                    Text("Layer \(iLayer)")
-                        .font(.headline)
+    }
+    
+    private var headerView: some View {
+        Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
+            .font(.largeTitle)
+            .padding()
+    }
+    
+    private var layersView: some View {
+        ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
+            VStack {
+                Text("Layer \(iLayer)")
+                    .font(.headline)
 //                        .padding(.top)
 
-                    SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
-                        .frame(width: 300, height: 300)
-                        .edgesIgnoringSafeArea(.all)
-                }
+                SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
+                    .frame(width: 300, height: 300)
+                    .edgesIgnoringSafeArea(.all)
             }
         }
+    }
     
     private var unitsCountView: some View {
         VStack {
