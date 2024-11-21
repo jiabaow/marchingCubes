@@ -28,7 +28,7 @@ struct MarchingCubesView: View {
                             .edgesIgnoringSafeArea(.all)
 
                         TabView {
-                            unitsCountView
+                            unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
                                 .tag(0)
                             
                             layersView
@@ -54,29 +54,33 @@ struct MarchingCubesView: View {
     
     private var layersView: some View {
         ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
-            VStack {
-                Text("Layer \(iLayer)")
-                    .font(.headline)
-//                        .padding(.top)
+            ScrollView {
+                VStack {
+                    Text("Layer \(iLayer)")
+                        .font(.headline)
 
-                SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
-                    .frame(width: 300, height: 300)
-                    .edgesIgnoringSafeArea(.all)
+                    SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
+                        .frame(width: 300, height: 300)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    if let layerCounts = dataLoader.layerCaseCounts[iLayer] {
+                        unitsCountView(caseCounts: layerCounts)
+                    }
+                }
+                .padding()
             }
         }
     }
     
-    private var unitsCountView: some View {
+    private func unitsCountView(caseCounts: [String: Int]) -> some View {
         VStack {
             Text("Units Count")
                 .font(.headline)
                 .padding(.top)
 
-            ScrollView { // Add a ScrollView
-                ForEach(dataLoader.cumulativeCaseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
+            ScrollView {
+                ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
                     VStack {
-                        // Call sceneView with key.obj, load the obj with name key and voxelize it
-
                         HStack {
                             SceneView(scnNodes: [getCube(cube: key)]).frame(width: 200, height: 200)
                             Text("x\(count)")
@@ -84,7 +88,7 @@ struct MarchingCubesView: View {
                         }
                         .padding(.horizontal)
                     }
-                    .padding(.bottom) // Optional: Add some padding between items
+                    .padding(.bottom)
                 }
             }
         }
