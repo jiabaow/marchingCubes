@@ -230,9 +230,6 @@ struct Dashboard: View {
                         .font(.headline)
                         .lineLimit(1)
                         .truncationMode(.tail)
-                    Text("Status unknown")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(Color.gray)
                 }
                 Spacer()
                 
