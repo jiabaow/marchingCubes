@@ -16,7 +16,7 @@ class ProjectViewModel: ObservableObject {
     init() {
         if let fileUrls = getCachedFiles() {
             for fileUrl in fileUrls {
-                print("filename init load: \(fileUrl.lastPathComponent)")
+//                print("filename init load: \(fileUrl.lastPathComponent)")
                 if (fileUrl.lastPathComponent.hasSuffix(".obj")) {
                     self.models.append(ProjectModel(id: NSUUID() as UUID, title: fileUrl.lastPathComponent, image: "\(fileUrl.lastPathComponent).png"))
                 }
