@@ -25,8 +25,8 @@ struct MarchingCubesView: View {
                     VStack {
                         headerView
                         SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
-                                  labelText: " ", backgroundColor: .white)
-                            .frame(width: 350, height: 400)
+                                  labelText: " ", backgroundColor: lightPurple)
+                            .frame(width: 320, height: 400)
                             .clipShape(InvertedCornerShape(cornerRadius: 20))
                             .edgesIgnoringSafeArea(.all)
                         
@@ -61,7 +61,7 @@ struct MarchingCubesView: View {
                 VStack {
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
                               labelText: "Layer \(iLayer)", backgroundColor: lightPurple)
-                        .frame(width: 300, height: 300)
+                        .frame(width: 320, height: 300)
                         .clipShape(InvertedCornerShape(cornerRadius: 20))
                         .edgesIgnoringSafeArea(.all)
                     
@@ -81,7 +81,7 @@ struct MarchingCubesView: View {
         ]
 
         return VStack(alignment: .leading) { // Align the entire VStack to the leading edge
-            Text("Units Count")
+            Text("Units")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading) // Align text to the left
                 .padding(.leading, 25) // Add left padding
@@ -91,7 +91,7 @@ struct MarchingCubesView: View {
                     ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
                         SceneView(scnNodes: [getCube(cube: key)], labelText: "\(count) x", backgroundColor: lightPurple)
                             .frame(width: 150, height: 150)
-                            .clipShape(InvertedCornerShape(cornerRadius: 10))
+                            .clipShape(InvertedCornerShape(cornerRadius: 15))
                             .padding()
                     }
                 }
