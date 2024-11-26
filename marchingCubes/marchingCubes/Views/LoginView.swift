@@ -8,29 +8,82 @@
 import SwiftUI
 import AWSCognitoIdentityProvider
 
+import SwiftUI
+import AWSCognitoIdentityProvider
+
 struct LoginView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @Binding var isLoginView: Bool
     @State private var username: String = ""
     @State private var password: String = ""
+    @State private var isPasswordVisible: Bool = false
     @State private var errorMessage: String? = nil
     var onUnconfirmedAccount: ((String, String) -> Void)? = nil
     @State private var showConfirmSignupView = false
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Login")
-                .font(.largeTitle)
-                .padding()
+            
+            HStack() {
+                // Title
+                Text("Login")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.primaryBlue)
+                    .padding(.top, 20)
+                    .padding(.leading, 15)
+                Spacer()
+                Image(systemName: "cube.fill") // Replace with your logo
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.primaryBlue)
+                    .padding(.trailing, 15)
 
+            }
+
+            // Email Field
             TextField("Email", text: $username)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textFieldStyle(PlainTextFieldStyle())
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
                 .padding(.horizontal)
+                .autocapitalization(.none)
 
-            SecureField("Password", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
+            // Password Field with Visibility Toggle
+            HStack {
+                if isPasswordVisible {
+                    TextField("Password", text: $password)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding()
+                        .autocapitalization(.none)
+                } else {
+                    SecureField("Password", text: $password)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding()
+                        .autocapitalization(.none)
+                }
+                Button(action: { isPasswordVisible.toggle() }) {
+                    Image(systemName: isPasswordVisible ? "eye" : "eye.slash")
+                        .foregroundColor(.gray)
+                }
+                .padding(.trailing, 10)
+            }
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .padding(.horizontal)
 
+            // Forgot Password Link
+            Button(action: {
+                // Handle forgot password logic here
+            }) {
+                Text("Forgot Password?")
+                    .foregroundColor(.gray)
+                    .font(.caption)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, 20)
+            }
+
+            // Error Message
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
@@ -38,39 +91,38 @@ struct LoginView: View {
                     .padding(.horizontal)
             }
 
+            // Login Button
             Button(action: {
                 Task {
                     await performLogin()
                 }
             }) {
-                Text("Log In")
+                Text("Login")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.green)
+                    .background(Color.primaryBlue)
                     .foregroundColor(.white)
-                    .cornerRadius(8)
+                    .cornerRadius(10)
             }
             .padding(.horizontal)
 
-            Button(action: {
-                isLoginView.toggle()
-            }) {
-                Text("Don't have an account? Sign Up")
-                    .foregroundColor(.blue)
+            // Login Prompt
+            HStack {
+                Button(action: {
+                    isLoginView.toggle()
+                }) {
+                    Text("Don't have an Account?")
+                        .foregroundColor(.gray)
+                }
+                
+                Button(action: {
+                    isLoginView.toggle()
+                }) {
+                    Text("Sign Up")
+                        .fontWeight(.bold)
+                        .foregroundColor(.primaryBlue)
+                }
             }
-            .padding(.top, 10)
-
-//            Spacer()
-//
-//            Button(action: continueAsGuest) {
-//                Text("Continue as Guest")
-//                    .frame(maxWidth: .infinity)
-//                    .padding()
-//                    .background(Color.gray)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(8)
-//            }
-//            .padding(.horizontal)
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
@@ -80,16 +132,11 @@ struct LoginView: View {
         }
     }
 
-    func continueAsGuest() {
-        isAuthenticated = true
-    }
-
     func performLogin() async {
         guard !username.isEmpty, !password.isEmpty else {
             errorMessage = "Please enter both username and password."
             return
         }
-        
 
         do {
             let cognitoManager = try CognitoAuthManager()
@@ -101,20 +148,19 @@ struct LoginView: View {
                         isAuthenticated = true
                     case .failure(let error):
                         if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
-                            print("user not confirmed")
+                            print("User not confirmed")
                             showConfirmSignupView = true
                         }
                 }
             }
-            if (isAuthenticated) {
+            if isAuthenticated {
                 let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
-                setenv("AWS_ACCESS_KEY_ID",accessKeySecretKeySession[0],1)
-                setenv("AWS_SECRET_ACCESS_KEY",accessKeySecretKeySession[1],1)
-                setenv("AWS_SESSION_TOKEN",accessKeySecretKeySession[2],1)
+                setenv("AWS_ACCESS_KEY_ID", accessKeySecretKeySession[0], 1)
+                setenv("AWS_SECRET_ACCESS_KEY", accessKeySecretKeySession[1], 1)
+                setenv("AWS_SESSION_TOKEN", accessKeySecretKeySession[2], 1)
                 errorMessage = nil
             }
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {
-            // Redirect to ConfirmSignupView
             errorMessage = "Account not confirmed. Please confirm your account."
             onUnconfirmedAccount?(username, password)
         } catch {
