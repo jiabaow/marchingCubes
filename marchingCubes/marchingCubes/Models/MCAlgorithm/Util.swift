@@ -241,7 +241,8 @@ func getCube(cube: String) -> SCNNode {
         let node4Lines = SCNNode(geometry: geometry4Lines)
         parentNode.addChildNode(node4Lines)
     }
-    
+    parentNode.addChildNode(createBall(at: SCNVector3(-0.5, -0.5, -0.5), radius: 0.001, color: .white))
+    parentNode.addChildNode(createBall(at: SCNVector3(1.5, 1.5, 1.5), radius: 0.001, color: .white))
     return parentNode
 }
 
