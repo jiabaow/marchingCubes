@@ -4,11 +4,12 @@ import SceneKit
 struct SceneView: UIViewRepresentable {
     let scnNodes: [SCNNode?]?
     let labelText: String?
+    let backgroundColor: UIColor
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
-        scnView.backgroundColor = UIColor(red: 0.0, green: 0.4, blue: 0.65, alpha: 1.0) // UCI Blue
+        scnView.backgroundColor = backgroundColor
 
         let scene = SCNScene()
         scnView.scene = scene
@@ -40,10 +41,10 @@ struct SceneView: UIViewRepresentable {
         if let text = labelText {
             let label = UILabel()
             label.text = text
-            label.textColor = .white
+            label.textColor = .black
             label.backgroundColor = UIColor.clear
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            label.font = UIFont.systemFont(ofSize: 20)
             label.translatesAutoresizingMaskIntoConstraints = false
 
             scnView.addSubview(label)
@@ -101,7 +102,12 @@ struct SceneView: UIViewRepresentable {
         keyLight1.type = .directional
         keyLight1.intensity = 500
         keyLight1.castsShadow = false
-        
+
+//        // Adjust shadow properties for a soft shadow effect
+//        keyLight1.shadowRadius = 300 // Increase the radius for softer edges
+//        keyLight1.shadowSampleCount = 200 // Increase the sample count for smoother shadows
+//        keyLight1.shadowBias = 5.0 // Adjust bias to reduce shadow artifacts
+
         keyLightNode1.light = keyLight1
         keyLightNode1.eulerAngles = SCNVector3(-Float.pi / 4, -Float.pi / 4, 0)
         scene.rootNode.addChildNode(keyLightNode1)
@@ -110,7 +116,7 @@ struct SceneView: UIViewRepresentable {
         let keyLight2 = SCNLight()
         keyLight2.type = .directional
         keyLight2.intensity = 500
-        keyLight2.castsShadow = false
+//        keyLight2.castsShadow = false
 
         keyLightNode2.light = keyLight2
         keyLightNode2.eulerAngles = SCNVector3(Float.pi / 4, Float.pi / 4, 0)
@@ -131,10 +137,21 @@ struct SceneView_Previews: PreviewProvider {
         let cubeGeometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
         cubeGeometry.firstMaterial?.diffuse.contents = UIColor.white
         let cubeNode = SCNNode(geometry: cubeGeometry)
-        cubeNode.position = SCNVector3(0, 0, 0)
+        cubeNode.position = SCNVector3(0, 0.5, 0) // Raise cube to sit on the plane
 
-        // Pass the cube node to the SceneView
-        return SceneView(scnNodes: [cubeNode], labelText: "label text")
-            .frame(width: 300, height: 500)
+        // Create a plane node
+        let planeGeometry = SCNPlane(width: 5.0, height: 3.0) // Adjust size as needed
+        planeGeometry.firstMaterial?.diffuse.contents = UIColor.white // Plane color
+        let planeNode = SCNNode(geometry: planeGeometry)
+        planeNode.position = SCNVector3(0, 0, 0) // Position the plane under the cube
+        planeNode.eulerAngles.x = -.pi / 2 // Rotate plane to lie flat
+
+        // Pass the cube and plane nodes to the SceneView
+        return SceneView(
+            scnNodes: [cubeNode, planeNode],
+            labelText: "label text",
+            backgroundColor: .white
+        )
+        .frame(width: 300, height: 500)
     }
 }
