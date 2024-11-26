@@ -11,16 +11,18 @@ struct AuthSwitcherView: View {
     @State private var isLoginView: Bool = true
     @State private var isConfirmSignupView: Bool = false
     @State private var pendingUsername: String = ""
+    @State private var pendingPassword: String = ""
 
     var body: some View {
         VStack {
             if isLoginView {
-                LoginView(isLoginView: $isLoginView, onUnconfirmedAccount: { username in
+                LoginView(isLoginView: $isLoginView, onUnconfirmedAccount: { username, password in
                     pendingUsername = username
+                    pendingPassword = password
                     isConfirmSignupView = true
                 })
             } else if isConfirmSignupView {
-                ConfirmSignupView(username: pendingUsername) {
+                ConfirmSignupView(email: pendingUsername, password: pendingPassword) {
                     isConfirmSignupView = false
                     isLoginView = true
                 }

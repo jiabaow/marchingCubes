@@ -21,6 +21,14 @@ struct ProfileView: View {
             VStack(spacing: 20) {
                 // Dark Mode Toggle Button
                 HStack {
+                    Button(action: {
+                        signOut()
+                    }) {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .clipShape(Circle())
+                    }
                     Spacer()
                     Button(action: {
                         ProfileView.isDarkMode.toggle()

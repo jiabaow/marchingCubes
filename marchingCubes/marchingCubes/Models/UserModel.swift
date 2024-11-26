@@ -14,13 +14,15 @@ import Foundation
 class UserModel: Identifiable {
     var id: String
     var email: String
+    var username: String
     var profile_image: String
     var projects: [String]
     var favorites: [String]
     var created_timestamp: Int
     
-    init(id: String, email: String, profile_image: String, projects: [String], favorites: [String], created_timestamp: Int) {
+    init(id: String, email: String, username: String, profile_image: String, projects: [String], favorites: [String], created_timestamp: Int) {
         self.id = id
+        self.username = username
         self.email = email
         self.profile_image = profile_image
         self.projects = projects

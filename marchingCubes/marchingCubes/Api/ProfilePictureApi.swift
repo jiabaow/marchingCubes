@@ -35,7 +35,7 @@ func fetchSVGBase64(from urlString: String = "https://api.dicebear.com/9.x/lorel
     task.resume()
 }
 
-func fetchSVGBase64Async(from urlString: String = "https://api.dicebear.com/9.x/lorelei/svg?seed=\(generateRandomString())") async -> String? {
+func fetchSVGBase64Async(from urlString: String = "https://api.dicebear.com/9.x/lorelei/svg?seed=\(generateRandomString())&size=300") async -> String? {
     guard let url = URL(string: urlString) else {
         return nil
     }

@@ -4,9 +4,11 @@
 //
 //  Created by Charles Weng on 11/16/24.
 //
-
+import ClientRuntime
 import SwiftUI
 import AWSCognitoIdentityProvider
+import AWSCognitoIdentity
+
 
 struct SignUpView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
@@ -19,6 +21,7 @@ struct SignUpView: View {
     @State private var passwordError: String? = nil
     @State private var showConfirmSignupView = false
     @State private var pendingUsername: String = ""
+    @State private var pendingPassword: String = ""
 
     var body: some View {
         VStack(spacing: 20) {
@@ -69,21 +72,21 @@ struct SignUpView: View {
             }
             .padding(.top, 10)
 
-            Spacer()
+//            Spacer()
 
-            Button(action: continueAsGuest) {
-                Text("Continue as Guest")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
+//            Button(action: continueAsGuest) {
+//                Text("Continue as Guest")
+//                    .frame(maxWidth: .infinity)
+//                    .padding()
+//                    .background(Color.gray)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//            }
             .padding(.horizontal)
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(username: email.lowercased()) {
+            ConfirmSignupView(email: email.lowercased(), password: password) {
                 showConfirmSignupView = false
             }
         }
@@ -118,11 +121,13 @@ struct SignUpView: View {
 
         do {
             // Perform the signup operation
-            try await CognitoAuthManager().signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
+            let cognitoManager = try CognitoAuthManager()
+            let authResult = await cognitoManager.signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
                 switch result {
                 case .success:
                     print("Sign-up successful!")
                     pendingUsername = email.lowercased()
+                    pendingPassword = password
                     showConfirmSignupView = true
                 case .failure(let error):
                     print("Sign-up failed with error: \(error)")
@@ -147,15 +152,5 @@ struct SignUpView: View {
         } else {
             print("Unknown error: \(error)")
         }
-    }
-    
-    func configureAWSService() {
-        // TODO:: grab special token for marching-cubes-user-role for temporary privilege
-        // and save it in AWSCognitoIdentityProvider credential service somewhere
-    }
-    
-    func fetchTemporaryCredentials() {
-        // TODO:: fetch the AWS access key id and secret key so that we can do operations
-        // on S3 and DynamoDB
     }
 }
