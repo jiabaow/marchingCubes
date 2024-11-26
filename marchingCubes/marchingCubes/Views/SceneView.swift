@@ -3,6 +3,7 @@ import SceneKit
 
 struct SceneView: UIViewRepresentable {
     let scnNodes: [SCNNode?]?
+    let labelText: String?
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
@@ -35,6 +36,23 @@ struct SceneView: UIViewRepresentable {
         let doubleTapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.handleDoubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
         scnView.addGestureRecognizer(doubleTapGesture)
+
+        if let text = labelText {
+            let label = UILabel()
+            label.text = text
+            label.textColor = .white
+            label.backgroundColor = UIColor.clear
+            label.textAlignment = .center
+            label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            scnView.addSubview(label)
+
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: scnView.leadingAnchor, constant: 10),
+                label.topAnchor.constraint(equalTo: scnView.topAnchor, constant: 10)
+            ])
+        }
 
         return scnView
     }
@@ -116,7 +134,7 @@ struct SceneView_Previews: PreviewProvider {
         cubeNode.position = SCNVector3(0, 0, 0)
 
         // Pass the cube node to the SceneView
-        return SceneView(scnNodes: [cubeNode])
+        return SceneView(scnNodes: [cubeNode], labelText: "label text")
             .frame(width: 300, height: 500)
     }
 }

@@ -22,11 +22,11 @@ struct MarchingCubesView: View {
                 ScrollView {
                     VStack {
                         headerView
-                        
-                        SceneView(scnNodes: dataLoader.scnNodesByLayer[0])
+                        SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
+                                  labelText: filename)
                             .frame(width: 300, height: 300)
                             .edgesIgnoringSafeArea(.all)
-
+                        
                         TabView {
                             unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
                                 .tag(0)
@@ -36,7 +36,7 @@ struct MarchingCubesView: View {
                             
                         }
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-                        .frame(height: 350)
+                        .frame(minHeight: 700)
                     }
                 }
             }
@@ -56,10 +56,8 @@ struct MarchingCubesView: View {
         ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
             ScrollView {
                 VStack {
-                    Text("Layer \(iLayer)")
-                        .font(.headline)
-
-                    SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer])
+                    SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
+                              labelText: "Layer \(iLayer)")
                         .frame(width: 300, height: 300)
                         .edgesIgnoringSafeArea(.all)
                     
@@ -71,25 +69,27 @@ struct MarchingCubesView: View {
             }
         }
     }
-    
+
     private func unitsCountView(caseCounts: [String: Int]) -> some View {
-        VStack {
+        let columns = [
+            GridItem(.flexible()),
+            GridItem(.flexible())
+        ]
+
+        return VStack {
             Text("Units Count")
                 .font(.headline)
                 .padding(.top)
 
             ScrollView {
-                ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
-                    VStack {
-                        HStack {
-                            SceneView(scnNodes: [getCube(cube: key)]).frame(width: 200, height: 200)
-                            Text("x\(count)")
-                                .font(.subheadline)
-                        }
-                        .padding(.horizontal)
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
+                        SceneView(scnNodes: [getCube(cube: key)], labelText: "\(count) X")
+                            .frame(width: 150, height: 150)
+                            .padding()
                     }
-                    .padding(.bottom)
                 }
+                .padding(.horizontal)
             }
         }
         .padding()
