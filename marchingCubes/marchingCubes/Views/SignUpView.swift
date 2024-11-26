@@ -9,7 +9,6 @@ import SwiftUI
 import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
 
-
 struct SignUpView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
@@ -22,33 +21,124 @@ struct SignUpView: View {
     @State private var showConfirmSignupView = false
     @State private var pendingUsername: String = ""
     @State private var pendingPassword: String = ""
+    @State private var name: String = ""
+    @State private var confirmPassword: String = ""
+    @State private var isPasswordVisible: Bool = false // Password toggle state
+    @State private var isConfirmPasswordVisible: Bool = false // Confirm Password toggle state
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Sign Up")
-                .font(.largeTitle)
+            // Header with Title and Logo
+            VStack(spacing: 10) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Welcome to")
+                            .font(.title2)
+                            .foregroundColor(Color(.systemGray))
+
+                        Text("Marching Cubes!")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primaryBlue) // Replace with your primary color
+                            .padding(.bottom, 20)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "cube.fill") // Replace with your logo
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.primaryBlue) // Replace with your primary color
+                }
+            }
+            .padding(.horizontal)
+
+            // Input Fields
+            Group {
+                TextField("Name", text: $name)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+
+                TextField("Email", text: $email)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                if let emailError = emailError {
+                    Text(emailError)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.horizontal)
+                }
+
+                // Password Field with Toggle
+                HStack {
+                    if isPasswordVisible {
+                        TextField("Password", text: $password)
+                    } else {
+                        SecureField("Password", text: $password)
+                    }
+                    Button(action: {
+                        isPasswordVisible.toggle()
+                    }) {
+                        Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                            .foregroundColor(.gray)
+                    }
+                }
                 .padding()
-
-            TextField("Email", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
                 .padding(.horizontal)
-            if let emailError = emailError {
-                Text(emailError)
-                    .foregroundColor(.red)
-                    .font(.caption)
-                    .padding(.horizontal)
+
+                if let passwordError = passwordError {
+                    Text(passwordError)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.horizontal)
+                }
+
+                // Confirm Password Field with Toggle
+                HStack {
+                    if isConfirmPasswordVisible {
+                        TextField("Confirm Password", text: $confirmPassword)
+                    } else {
+                        SecureField("Confirm Password", text: $confirmPassword)
+                    }
+                    Button(action: {
+                        isConfirmPasswordVisible.toggle()
+                    }) {
+                        Image(systemName: isConfirmPasswordVisible ? "eye.slash" : "eye")
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .padding(.horizontal)
             }
 
-            SecureField("Password", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-            if let passwordError = passwordError {
-                Text(passwordError)
-                    .foregroundColor(.red)
-                    .font(.caption)
-                    .padding(.horizontal)
-            }
+            // Login Prompt
+            HStack {
+                Button(action: {
+                    isLoginView.toggle()
+                }) {
+                    Text("Have an Account?")
+                        .foregroundColor(.gray)
+                }
 
+                Button(action: {
+                    isLoginView.toggle()
+                }) {
+                    Text("Login")
+                        .fontWeight(.bold)
+                        .foregroundColor(.primaryBlue) // Replace with your primary color
+                }
+            }
+            .padding(.top, 10)
+
+            // Sign Up Button
             Button(action: {
                 validateInputs()
                 Task {
@@ -58,30 +148,10 @@ struct SignUpView: View {
                 Text("Sign Up")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.primaryBlue) // Replace with your primary color
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
-            .padding(.horizontal)
-
-            Button(action: {
-                isLoginView.toggle()
-            }) {
-                Text("Already have an account? Log In")
-                    .foregroundColor(.blue)
-            }
-            .padding(.top, 10)
-
-//            Spacer()
-
-//            Button(action: continueAsGuest) {
-//                Text("Continue as Guest")
-//                    .frame(maxWidth: .infinity)
-//                    .padding()
-//                    .background(Color.gray)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(8)
-//            }
             .padding(.horizontal)
         }
         .padding()
@@ -90,10 +160,6 @@ struct SignUpView: View {
                 showConfirmSignupView = false
             }
         }
-    }
-    
-    func continueAsGuest() {
-        isAuthenticated = true
     }
 
     func validateInputs() {
@@ -110,6 +176,10 @@ struct SignUpView: View {
             if password.count < 6 {
                 self.passwordError = "Password must be at least 6 characters."
             }
+        }
+
+        if password != confirmPassword {
+            self.passwordError = "Passwords do not match."
         }
     }
 
@@ -143,11 +213,9 @@ struct SignUpView: View {
     func handleSignUpError(_ error: Error) {
         if let cognitoError = error as? AWSCognitoIdentityProvider.UsernameExistsException {
             emailError = "An account with this email already exists."
-        } else if let cognitoError = error as?
-                    AWSCognitoIdentityProvider.InvalidPasswordException {
+        } else if let cognitoError = error as? AWSCognitoIdentityProvider.InvalidPasswordException {
             passwordError = "Invalid password format."
-        } else if let cognitoError = error as?
-                    AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException {
+        } else if let cognitoError = error as? AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException {
             emailError = "Invalid email address."
         } else {
             print("Unknown error: \(error)")
