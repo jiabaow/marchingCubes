@@ -39,9 +39,22 @@
 		E80043562CC86C5700190DF4 /* marchingCubesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = marchingCubesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5BC1D3582CF691AE004C7638 /* Exceptions for "marchingCubes" folder in "marchingCubes" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E800433B2CC86C5300190DF4 /* marchingCubes */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E800433E2CC86C5300190DF4 /* marchingCubes */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5BC1D3582CF691AE004C7638 /* Exceptions for "marchingCubes" folder in "marchingCubes" target */,
+			);
 			path = marchingCubes;
 			sourceTree = "<group>";
 		};
@@ -428,6 +441,7 @@
 				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = marchingCubes/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -457,6 +471,7 @@
 				DEVELOPMENT_TEAM = WUWR6G83PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = marchingCubes/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

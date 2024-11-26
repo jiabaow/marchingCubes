@@ -48,10 +48,10 @@ struct SceneView: UIViewRepresentable {
         if let text = labelText {
             let label = UILabel()
             label.text = text
-            label.textColor = .gray
+            label.textColor = .darkGray
             label.backgroundColor = UIColor.clear
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 20)
+            label.font = UIFont(name: "Poppins-Regular", size: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
 
             scnView.addSubview(label)

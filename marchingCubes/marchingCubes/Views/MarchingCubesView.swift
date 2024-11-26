@@ -48,7 +48,7 @@ struct MarchingCubesView: View {
     
     private var headerView: some View {
         Text("\(filename.replacingOccurrences(of: ".obj", with: "").capitalized)")
-            .font(.largeTitle)
+            .font(.custom("Poppins-SemiBold", size: 30))
             .padding()
     }
     
@@ -57,7 +57,7 @@ struct MarchingCubesView: View {
             ScrollView {
                 VStack {
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
-                              labelText: "Layer \(iLayer)", backgroundColor: .lightPurple)
+                              labelText: "  Layer \(iLayer)", backgroundColor: .lightPurple)
                         .frame(width: 320, height: 300)
                         .clipShape(InvertedCornerShape(cornerRadius: 20))
                         .edgesIgnoringSafeArea(.all)
@@ -79,7 +79,7 @@ struct MarchingCubesView: View {
 
         return VStack(alignment: .leading) { // Align the entire VStack to the leading edge
             Text("Units")
-                .font(.headline)
+                .font(.custom("Poppins-SemiBold", size: 20))
                 .frame(maxWidth: .infinity, alignment: .leading) // Align text to the left
                 .padding(.leading, 25) // Add left padding
 
