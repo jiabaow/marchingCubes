@@ -22,7 +22,7 @@ struct AuthSwitcherView: View {
                     isConfirmSignupView = true
                 })
             } else if isConfirmSignupView {
-                ConfirmSignupView(email: pendingUsername, password: pendingPassword) {
+                ConfirmSignupView(email: $pendingUsername, password: $pendingPassword) {
                     isConfirmSignupView = false
                     isLoginView = true
                 }

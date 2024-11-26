@@ -79,7 +79,8 @@ class CognitoAuthManager {
                 throw NSError(domain: "AuthManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "AWS Credentials not found"])
             }
             
-            return [credentials.accessKeyId!, credentials.secretKey!, accessToken]
+            
+            return [credentials.accessKeyId!, credentials.secretKey!, credentials.sessionToken!]
         } catch (let error) {
             print(error)
         }

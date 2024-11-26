@@ -126,7 +126,7 @@ struct LoginView: View {
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(email: username.lowercased(), password: password) {
+            ConfirmSignupView(email: $username, password: $password) {
                 showConfirmSignupView = false
             }
         }
@@ -149,14 +149,16 @@ struct LoginView: View {
                     case .failure(let error):
                         if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
                             print("User not confirmed")
+                            print("password before confirmed: \(password)")
                             showConfirmSignupView = true
+                            print("password after confirmed: \(password)")
                         } else if error is AWSCognitoIdentityProvider.NotAuthorizedException {
                             print("Incorrect username or password")
                             errorMessage = "Incorrect username or password"
                         }
                 }
             }
-            if isAuthenticated {
+            if (isAuthenticated) {
                 let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
                 setenv("AWS_ACCESS_KEY_ID", accessKeySecretKeySession[0], 1)
                 setenv("AWS_SECRET_ACCESS_KEY", accessKeySecretKeySession[1], 1)
