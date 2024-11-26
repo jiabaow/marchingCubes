@@ -8,19 +8,19 @@ import Foundation
 import SwiftUI
 import SceneKit
 
-struct UploadView: View {
+struct AddModelView: View {
     @State private var selectedFileURL: URL?
     @State private var showDocumentPicker = false
     @State private var scene: SCNScene? = nil
     @State private var zoomLevel: Float = 20.0 // Initial zoom level
-//    @EnvironmentObject var viewModel: ProjectViewModel
-    @StateObject var viewModel = ProjectViewModel()
+    @EnvironmentObject var viewModel: ProjectViewModel
+//    @StateObject var viewModel = ProjectViewModel()
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
         VStack {
             // Upload title
-            Text("Upload Your File")
+            Text("Add Your Model")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
@@ -199,7 +199,7 @@ struct SCNViewWrapper: UIViewRepresentable {
 
 struct Upload_Previews: PreviewProvider {
     static var previews: some View {
-        UploadView()
+        AddModelView()
     }
 }
 

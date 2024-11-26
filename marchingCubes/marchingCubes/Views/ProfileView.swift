@@ -113,6 +113,10 @@ struct ProfileView: View {
         self.userName = "Peter Johnson"
         self.avatarImage = UIImage(named: "placeholder")
     }
+    
+    private func signOut() {
+        self.isAuthenticated = false
+    }
 }
 
 struct ProfileView_Previews: PreviewProvider {

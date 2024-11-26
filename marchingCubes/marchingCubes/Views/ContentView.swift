@@ -50,7 +50,7 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
                 }
-            UploadView()
+            AddModelView()
                 .tabItem {
                     Label("Upload", systemImage: "arrow.up")
                 }

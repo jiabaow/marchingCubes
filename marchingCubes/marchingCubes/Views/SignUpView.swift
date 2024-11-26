@@ -148,4 +148,14 @@ struct SignUpView: View {
             print("Unknown error: \(error)")
         }
     }
+    
+    func configureAWSService() {
+        // TODO:: grab special token for marching-cubes-user-role for temporary privilege
+        // and save it in AWSCognitoIdentityProvider credential service somewhere
+    }
+    
+    func fetchTemporaryCredentials() {
+        // TODO:: fetch the AWS access key id and secret key so that we can do operations
+        // on S3 and DynamoDB
+    }
 }
