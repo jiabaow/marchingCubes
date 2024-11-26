@@ -14,7 +14,7 @@ struct LoginView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var errorMessage: String? = nil
-    var onUnconfirmedAccount: ((String) -> Void)? = nil
+    var onUnconfirmedAccount: ((String, String) -> Void)? = nil
     @State private var showConfirmSignupView = false
 
     var body: some View {
@@ -23,7 +23,7 @@ struct LoginView: View {
                 .font(.largeTitle)
                 .padding()
 
-            TextField("Username", text: $username)
+            TextField("Email", text: $username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
 
@@ -60,21 +60,21 @@ struct LoginView: View {
             }
             .padding(.top, 10)
 
-            Spacer()
-
-            Button(action: continueAsGuest) {
-                Text("Continue as Guest")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .padding(.horizontal)
+//            Spacer()
+//
+//            Button(action: continueAsGuest) {
+//                Text("Continue as Guest")
+//                    .frame(maxWidth: .infinity)
+//                    .padding()
+//                    .background(Color.gray)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//            }
+//            .padding(.horizontal)
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(username: username.lowercased()) {
+            ConfirmSignupView(email: username.lowercased(), password: password) {
                 showConfirmSignupView = false
             }
         }
@@ -89,26 +89,34 @@ struct LoginView: View {
             errorMessage = "Please enter both username and password."
             return
         }
+        
 
         do {
-            try await CognitoAuthManager().login(username: username, password: password) {
+            let cognitoManager = try CognitoAuthManager()
+
+            let authResult = await cognitoManager.login(username: username, password: password) {
                 result in
                 switch result {
                     case .success:
                         isAuthenticated = true
-                case .failure(let error):
-                    if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
-                        print("user not confirmed")
-                        showConfirmSignupView = true
-                    }
+                    case .failure(let error):
+                        if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
+                            print("user not confirmed")
+                            showConfirmSignupView = true
+                        }
                 }
             }
-            isAuthenticated = true
-            errorMessage = nil
+            if (isAuthenticated) {
+                let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
+                setenv("AWS_ACCESS_KEY_ID",accessKeySecretKeySession[0],1)
+                setenv("AWS_SECRET_ACCESS_KEY",accessKeySecretKeySession[1],1)
+                setenv("AWS_SESSION_TOKEN",accessKeySecretKeySession[2],1)
+                errorMessage = nil
+            }
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {
             // Redirect to ConfirmSignupView
             errorMessage = "Account not confirmed. Please confirm your account."
-            onUnconfirmedAccount?(username)
+            onUnconfirmedAccount?(username, password)
         } catch {
             print("Login failed: \(error)")
             errorMessage = "Login failed. Check your credentials and try again."

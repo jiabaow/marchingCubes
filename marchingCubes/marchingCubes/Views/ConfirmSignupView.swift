@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AWSCognitoIdentityProvider
 
 struct ConfirmSignupView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
@@ -13,7 +14,8 @@ struct ConfirmSignupView: View {
     @State private var confirmationCode: String = ""
     @State private var errorMessage: String? = nil
     @State private var isConfirmationSuccessful = false
-    var username: String
+    var email: String
+    var password: String
     var onConfirmationComplete: (() -> Void)? = nil
 
     var body: some View {
@@ -72,14 +74,59 @@ struct ConfirmSignupView: View {
             errorMessage = "Please enter the confirmation code."
             return
         }
+        
+        guard !email.isEmpty else {
+            errorMessage = "Make sure username/email is passed."
+            return
+        }
+        
+//        guard !password.isEmpty else {
+//            errorMessage = "Make sure password is passed."
+//            return
+//        }
 
         do {
-            try await CognitoAuthManager().confirmSignUp(username: username, confirmationCode: confirmationCode)
-            isConfirmationSuccessful = true
-            errorMessage = nil
-            onConfirmationComplete?()
-            isAuthenticated = true
-            currentUser = username
+            let cognitoManager = try CognitoAuthManager()
+
+            isConfirmationSuccessful = await cognitoManager.confirmSignUp(username: email, confirmationCode: confirmationCode)
+            if (isConfirmationSuccessful) {
+                errorMessage = nil
+                onConfirmationComplete?()
+                currentUser = email
+                
+                
+                
+                // perform login
+//                let authResult = await cognitoManager.login(username: email, password: password) {
+//                    result in
+//                    switch result {
+//                    case .success:
+//                        isAuthenticated = true
+//                    case .failure(let error):
+//                        if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
+//                            print("user not confirmed")
+//                        }
+//                    }
+//                }
+//                
+//                if (isAuthenticated) {
+//                    let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
+//                    setenv("AWS_ACCESS_KEY_ID",accessKeySecretKeySession[0],1)
+//                    setenv("AWS_SECRET_ACCESS_KEY",accessKeySecretKeySession[1],1)
+//                    setenv("AWS_SESSION_TOKEN",accessKeySecretKeySession[2],1)
+//                    errorMessage = nil
+//                    
+//                    let authRes = authResult?.authenticationResult
+//                    let dynamoManager = try await DynamoDBManager()
+//                    await dynamoManager.createTable()
+//                    if let idToken = authRes?.idToken {
+//                        try await dynamoManager.insertUserModel(userModel: UserModel(
+//                            id: idToken, email: email, username: Randoms.randomFakeName(), profile_image: fetchSVGBase64Async()!, projects: [], favorites: [], created_timestamp: Int(Date().timeIntervalSince1970)
+//                        ))
+//                    }
+//                }
+                isAuthenticated = true
+            }
         } catch {
             print("Confirmation failed: \(error)")
             errorMessage = "Failed to confirm signup. Please check your code and try again."
@@ -89,7 +136,7 @@ struct ConfirmSignupView: View {
     func resendConfirmationCode() {
         Task {
             do {
-                try await CognitoAuthManager().resendConfirmationCode(username: username)
+                try await CognitoAuthManager().resendConfirmationCode(username: email)
                 errorMessage = nil
                 print("Confirmation code resent successfully.")
             } catch {
