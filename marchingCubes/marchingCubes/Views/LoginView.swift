@@ -150,6 +150,9 @@ struct LoginView: View {
                         if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
                             print("User not confirmed")
                             showConfirmSignupView = true
+                        } else if error is AWSCognitoIdentityProvider.NotAuthorizedException {
+                            print("Incorrect username or password")
+                            errorMessage = "Incorrect username or password"
                         }
                 }
             }
@@ -163,6 +166,8 @@ struct LoginView: View {
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {
             errorMessage = "Account not confirmed. Please confirm your account."
             onUnconfirmedAccount?(username, password)
+        } catch let error as AWSCognitoIdentityProvider.NotAuthorizedException {
+            errorMessage = "Incorrect username or password."
         } catch {
             print("Login failed: \(error)")
             errorMessage = "Login failed. Check your credentials and try again."
