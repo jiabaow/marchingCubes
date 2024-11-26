@@ -25,9 +25,9 @@ struct MarchingCubesView: View {
                     VStack {
                         headerView
                         SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
-                                  labelText: " ", backgroundColor: lightPurple)
+                                  labelText: " ", backgroundColor: .white)
                             .frame(width: 320, height: 400)
-                            .clipShape(InvertedCornerShape(cornerRadius: 20))
+//                            .clipShape(InvertedCornerShape(cornerRadius: 20))
                             .edgesIgnoringSafeArea(.all)
                         
                         TabView {

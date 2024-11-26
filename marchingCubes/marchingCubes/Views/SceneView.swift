@@ -9,10 +9,17 @@ struct SceneView: UIViewRepresentable {
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
-        scnView.backgroundColor = backgroundColor
 
         let scene = SCNScene()
         scnView.scene = scene
+
+        if backgroundColor == .white {
+            let backgroundImage = UIImage(named: "purple_background.jpg")
+            scene.background.contents = backgroundImage
+            scene.background.contentsTransform = SCNMatrix4MakeScale(0.8, 1, 0.8)
+        } else {
+            scnView.backgroundColor = backgroundColor
+        }
 
         // Add all nodes to the scene's rootNode
         if let nodes = scnNodes {
@@ -41,7 +48,7 @@ struct SceneView: UIViewRepresentable {
         if let text = labelText {
             let label = UILabel()
             label.text = text
-            label.textColor = .black
+            label.textColor = .gray
             label.backgroundColor = UIColor.clear
             label.textAlignment = .center
             label.font = UIFont.systemFont(ofSize: 20)
@@ -103,11 +110,6 @@ struct SceneView: UIViewRepresentable {
         keyLight1.intensity = 500
         keyLight1.castsShadow = false
 
-//        // Adjust shadow properties for a soft shadow effect
-//        keyLight1.shadowRadius = 300 // Increase the radius for softer edges
-//        keyLight1.shadowSampleCount = 200 // Increase the sample count for smoother shadows
-//        keyLight1.shadowBias = 5.0 // Adjust bias to reduce shadow artifacts
-
         keyLightNode1.light = keyLight1
         keyLightNode1.eulerAngles = SCNVector3(-Float.pi / 4, -Float.pi / 4, 0)
         scene.rootNode.addChildNode(keyLightNode1)
@@ -116,7 +118,6 @@ struct SceneView: UIViewRepresentable {
         let keyLight2 = SCNLight()
         keyLight2.type = .directional
         keyLight2.intensity = 500
-//        keyLight2.castsShadow = false
 
         keyLightNode2.light = keyLight2
         keyLightNode2.eulerAngles = SCNVector3(Float.pi / 4, Float.pi / 4, 0)
@@ -152,6 +153,6 @@ struct SceneView_Previews: PreviewProvider {
             labelText: "label text",
             backgroundColor: .white
         )
-        .frame(width: 300, height: 500)
+        .frame(width: 320, height: 400)
     }
 }
