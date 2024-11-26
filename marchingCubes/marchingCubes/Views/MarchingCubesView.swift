@@ -7,8 +7,6 @@ struct MarchingCubesView: View {
     let divisions: Int
 
     @StateObject private var dataLoader = VoxelDataLoader()
-    
-    private let lightPurple = UIColor(red: 229/255.0, green: 230/255.0, blue: 246/255.0, alpha: 1.0)
 
     // Optional initializer
     init(filename: String = "rabbit", divisions: Int = 5) {
@@ -27,7 +25,6 @@ struct MarchingCubesView: View {
                         SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
                                   labelText: " ", backgroundColor: .white)
                             .frame(width: 320, height: 400)
-//                            .clipShape(InvertedCornerShape(cornerRadius: 20))
                             .edgesIgnoringSafeArea(.all)
                         
                         TabView {
@@ -60,7 +57,7 @@ struct MarchingCubesView: View {
             ScrollView {
                 VStack {
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
-                              labelText: "Layer \(iLayer)", backgroundColor: lightPurple)
+                              labelText: "Layer \(iLayer)", backgroundColor: .lightPurple)
                         .frame(width: 320, height: 300)
                         .clipShape(InvertedCornerShape(cornerRadius: 20))
                         .edgesIgnoringSafeArea(.all)
@@ -89,7 +86,7 @@ struct MarchingCubesView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
-                        SceneView(scnNodes: [getCube(cube: key)], labelText: "\(count) x", backgroundColor: lightPurple)
+                        SceneView(scnNodes: [getCube(cube: key)], labelText: "\(count) x", backgroundColor: .lightPurple)
                             .frame(width: 150, height: 150)
                             .clipShape(InvertedCornerShape(cornerRadius: 15))
                             .padding()

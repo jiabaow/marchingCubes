@@ -151,7 +151,7 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor(red: 79/255, green: 151/255, blue: 211/255, alpha: 1.0) // (79,151,211)
+        material.diffuse.contents = UIColor.cubitBlue
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -179,7 +179,7 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor(red: 225/255, green: 82/255, blue: 75/255, alpha: 1.0) // (225,82,75)
+        material.diffuse.contents = UIColor.cubitRed
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -209,7 +209,7 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor(red: 194/255, green: 178/255, blue: 228/255, alpha: 1.0) // (194,178,228)
+        material.diffuse.contents = UIColor.cubitPurple
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -239,7 +239,7 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor(red: 247/255, green: 164/255, blue: 116/255, alpha: 1.0) // (247,164,116)
+        material.diffuse.contents = UIColor.cubitOrange
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -270,7 +270,7 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor(red: 254/255, green: 223/255, blue: 111/255, alpha: 1.0) // (254,223,111)
+        material.diffuse.contents = UIColor.cubitYellow
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
