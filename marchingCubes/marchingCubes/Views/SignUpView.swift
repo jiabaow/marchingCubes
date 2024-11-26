@@ -23,12 +23,11 @@ struct SignUpView: View {
     @State private var pendingPassword: String = ""
     @State private var name: String = ""
     @State private var confirmPassword: String = ""
-    @State private var isPasswordVisible: Bool = false // Password toggle state
-    @State private var isConfirmPasswordVisible: Bool = false // Confirm Password toggle state
+    @State private var isPasswordVisible: Bool = false
+    @State private var isConfirmPasswordVisible: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
-            // Header with Title and Logo
             VStack(spacing: 10) {
                 HStack {
                     VStack(alignment: .leading) {
@@ -39,21 +38,20 @@ struct SignUpView: View {
                         Text("Marching Cubes!")
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                            .foregroundColor(.primaryBlue) // Replace with your primary color
+                            .foregroundColor(.primaryBlue)
                             .padding(.bottom, 20)
                     }
 
                     Spacer()
 
-                    Image(systemName: "cube.fill") // Replace with your logo
+                    Image(systemName: "cube.fill")
                         .resizable()
                         .frame(width: 50, height: 50)
-                        .foregroundColor(.primaryBlue) // Replace with your primary color
+                        .foregroundColor(.primaryBlue)
                 }
             }
             .padding(.horizontal)
 
-            // Input Fields
             Group {
                 TextField("Name", text: $name)
                     .padding()
@@ -73,7 +71,6 @@ struct SignUpView: View {
                         .padding(.horizontal)
                 }
 
-                // Password Field with Toggle
                 HStack {
                     if isPasswordVisible {
                         TextField("Password", text: $password)
@@ -99,7 +96,6 @@ struct SignUpView: View {
                         .padding(.horizontal)
                 }
 
-                // Confirm Password Field with Toggle
                 HStack {
                     if isConfirmPasswordVisible {
                         TextField("Confirm Password", text: $confirmPassword)
@@ -119,7 +115,6 @@ struct SignUpView: View {
                 .padding(.horizontal)
             }
 
-            // Login Prompt
             HStack {
                 Button(action: {
                     isLoginView.toggle()
@@ -133,12 +128,11 @@ struct SignUpView: View {
                 }) {
                     Text("Login")
                         .fontWeight(.bold)
-                        .foregroundColor(.primaryBlue) // Replace with your primary color
+                        .foregroundColor(.primaryBlue)
                 }
             }
             .padding(.top, 10)
 
-            // Sign Up Button
             Button(action: {
                 validateInputs()
                 Task {
@@ -148,7 +142,7 @@ struct SignUpView: View {
                 Text("Sign Up")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.primaryBlue) // Replace with your primary color
+                    .background(Color.primaryBlue)
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
@@ -156,7 +150,7 @@ struct SignUpView: View {
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(email: email.lowercased(), password: password) {
+            ConfirmSignupView(email: $pendingUsername, password: $pendingPassword) { // Pass password directly
                 showConfirmSignupView = false
             }
         }
@@ -184,13 +178,11 @@ struct SignUpView: View {
     }
 
     func performSignUp() async {
-        // Ensure inputs are valid before attempting sign-up
         guard emailError == nil, passwordError == nil else {
             return
         }
 
         do {
-            // Perform the signup operation
             let cognitoManager = try CognitoAuthManager()
             let authResult = await cognitoManager.signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
                 switch result {
@@ -198,6 +190,9 @@ struct SignUpView: View {
                     print("Sign-up successful!")
                     pendingUsername = email.lowercased()
                     pendingPassword = password
+                    print("CHARLES2---")
+                    print(pendingUsername)
+                    print(pendingPassword)
                     showConfirmSignupView = true
                 case .failure(let error):
                     print("Sign-up failed with error: \(error)")

@@ -20,15 +20,16 @@ class DynamoDBManager {
             var awsCred: AWSCredentialIdentity? = nil
 //            let creds = (CredentialsProvider.Source.static(accessKey: ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"]!, secret: ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"]!))
             if let accessKeyId = ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"],
-               let secretKey = ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"] {
+               let secretKey = ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"],
+               let sessionToken = ProcessInfo.processInfo.environment["AWS_SESSION_TOKEN"] {
                 awsCred = AWSCredentialIdentity(
                     accessKey: accessKeyId,
                     secret: secretKey,
                     expiration: nil,
-                    sessionToken: nil
+                    sessionToken: sessionToken
                 )
-                print("AWS Access Key: \(accessKeyId)")
-                print("AWS Secret Key: \(secretKey)")
+//                print("AWS Access Key: \(accessKeyId)")
+//                print("AWS Secret Key: \(secretKey)")
             } else {
                 print("Cannot find AWS keys.")
                 throw NSError(domain: "Cannot find AWS keys.", code: -1)
@@ -112,7 +113,7 @@ class DynamoDBManager {
             let dynamoItem = try await getUserAsItem(userModel: userModel)
             let input = PutItemInput(
                 item: dynamoItem,
-                tableName: "marchingcubes"
+                tableName: "marchingcubesusers"
             )
             _ = try await client.putItem(input: input)
         } catch {
