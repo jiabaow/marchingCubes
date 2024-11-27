@@ -18,7 +18,10 @@ class ProjectViewModel: ObservableObject {
             for fileUrl in fileUrls {
 //                print("filename init load: \(fileUrl.lastPathComponent)")
                 if (fileUrl.lastPathComponent.hasSuffix(".obj")) {
-                    self.models.append(ProjectModel(id: NSUUID() as UUID, title: fileUrl.lastPathComponent, image: "\(fileUrl.lastPathComponent).png"))
+                    let projModel = ProjectModel(id: NSUUID() as UUID, title: fileUrl.lastPathComponent, image: "\(fileUrl.lastPathComponent).png")
+                    if (!self.models.contains(projModel)) {
+                        self.models.append(projModel)
+                    }
                 }
             }
         }
@@ -44,11 +47,14 @@ class ProjectViewModel: ObservableObject {
     // Add a new model to the SwiftData store
     func addModel(title: String, image: String, modelContext: ModelContext) {
         let newModel = ProjectModel(title: title, image: image)
+        if (models.contains(newModel)) {
+            print("Model with title: \(title) already exists")
+            return
+        }
         modelContext.insert(newModel)
         models.append(newModel)
         saveContext(modelContext: modelContext)
         fetchData(modelContext: modelContext)
-        print(models)
     }
 
     // Save changes to the SwiftData context

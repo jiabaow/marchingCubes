@@ -36,7 +36,8 @@ struct AddModelView: View {
                                 let fileName = self.selectedFileURL?.lastPathComponent ?? "Unknown File"
                                 LoadingView(filename: fileName)
                             } else if let scnNodes = dataLoader.scnNodesByLayer[0] {
-                                SceneView(scnNodes: scnNodes, labelText: "Add Model", backgroundColor:  UIColor(red: 0.0, green: 0.4, blue: 0.65, alpha: 1.0)) { scnScene in
+                                let fileName = self.selectedFileURL?.lastPathComponent ?? "Unknown File"
+                                SceneView(scnNodes: scnNodes, labelText: fileName, backgroundColor:  UIColor(red: 0.0, green: 0.4, blue: 0.65, alpha: 1.0)) { scnScene in
                                     self.scene = scnScene
                                 }
                                 .frame(height: 200)
@@ -119,6 +120,7 @@ struct AddModelView: View {
                     selectedFileURL = nil
                     dataLoader.isLoading = true
                     dataLoader.isActive = false
+                    dataLoader.scnNodesByLayer = [:]
                     // scene = nil // Clear the scene after saving
                 }) {
                     Image(systemName: "square.and.arrow.down")

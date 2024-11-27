@@ -22,3 +22,9 @@ class ProjectModel: Identifiable {
         self.isFavorite = isFavorite
     }
 }
+
+extension ProjectModel: Equatable {
+    static func == (lhs: ProjectModel, rhs: ProjectModel) -> Bool {
+        return lhs.title == rhs.title
+    }
+}
