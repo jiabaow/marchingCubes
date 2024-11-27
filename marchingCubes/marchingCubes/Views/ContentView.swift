@@ -58,10 +58,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-            MarchingCubesView()
-                .tabItem {
-                    Label("Test", systemImage: "square.fill")
-                }
+//            MarchingCubesView()
+//                .tabItem {
+//                    Label("Test", systemImage: "square.fill")
+//                }
         }
     }
 }

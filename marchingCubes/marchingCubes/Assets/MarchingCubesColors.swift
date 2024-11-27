@@ -21,4 +21,5 @@ extension UIColor {
     static let cubitPurple = UIColor(red: 194/255, green: 178/255, blue: 228/255, alpha: 1.0)
     static let cubitOrange = UIColor(red: 247/255, green: 164/255, blue: 116/255, alpha: 1.0)
     static let cubitYellow = UIColor(red: 254/255, green: 223/255, blue: 111/255, alpha: 1.0)
+    static let primaryBlue = UIColor(red: 90 / 255, green: 103 / 255, blue: 216 / 255, alpha: 1.0)
 }

@@ -1,17 +1,8 @@
-//
-//  ProfileView.swift
-//  marchingCubes
-//
-//  Created by 温嘉宝 on 22.10.2024.
-//
-
 import SwiftUI
 import UIKit
 
-
 struct ProfileView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
-    @AppStorage("isDarkMode") static var isDarkMode = false
     @EnvironmentObject var viewModel: ProjectViewModel
     @State private var avatarImage: UIImage? = nil
     @State private var userName: String = "Peter Johnson"
@@ -19,7 +10,7 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Dark Mode Toggle Button
+                // Sign Out Button
                 HStack {
                     Button(action: {
                         signOut()
@@ -30,15 +21,6 @@ struct ProfileView: View {
                             .clipShape(Circle())
                     }
                     Spacer()
-                    Button(action: {
-                        ProfileView.isDarkMode.toggle()
-                    }) {
-                        Image(systemName: ProfileView.isDarkMode ? "sun.max.fill" : "moon.fill")
-                            .foregroundColor(ProfileView.isDarkMode ? .yellow : .blue)
-                            .padding()
-                            .background(Color.gray.opacity(0.2))
-                            .clipShape(Circle())
-                    }
                 }
                 .padding(.trailing, 20)
                 .padding(.top, 20)
@@ -109,12 +91,11 @@ struct ProfileView: View {
                 Spacer()
             }
             .padding()
-            .background(ProfileView.isDarkMode ? Color.black : Color.white)
+            .background(Color.white) // Fixed background color
             .onAppear {
                 loadUserData()
             }
         }
-        .preferredColorScheme(ProfileView.isDarkMode ? .dark : .light)
     }
 
     private func loadUserData() {

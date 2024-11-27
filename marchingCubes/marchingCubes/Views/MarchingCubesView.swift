@@ -12,6 +12,10 @@ struct MarchingCubesView: View {
     init(filename: String = "rabbit", divisions: Int = 5) {
         self.filename = filename
         self.divisions = divisions
+        
+        // Customize the appearance of the page control dots
+        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.primaryBlue
+        UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray
     }
     
     var body: some View {
@@ -19,26 +23,25 @@ struct MarchingCubesView: View {
             if dataLoader.isLoading {
                 LoadingView(filename: filename)
             } else {
-                ScrollView {
-                    VStack {
-                        headerView
-                        SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
-                                  labelText: " ", backgroundColor: .white)
-                            .frame(width: 320, height: 400)
-                            .edgesIgnoringSafeArea(.all)
-                        
-                        TabView {
+                TabView {
+                    ScrollView {
+                        VStack {
+                            headerView
+                            SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
+                                      labelText: " ", backgroundColor: .white)
+                                .frame(width: 320, height: 400)
+                                .edgesIgnoringSafeArea(.all)
                             unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
-                                .tag(0)
-                            
-                            layersView
-                                .tag(1)
-                            
                         }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-                        .frame(minHeight: 500)
                     }
+                    .tag(0)
+                    
+                    layersView
+                        .tag(1)
+                    
                 }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                .frame(minHeight: 500)
             }
         }
         .onAppear {
@@ -56,9 +59,12 @@ struct MarchingCubesView: View {
         ForEach(1...dataLoader.numLayer, id: \.self) { iLayer in
             ScrollView {
                 VStack {
+                    Text("Layer \(iLayer)")
+                        .font(.custom("Poppins-SemiBold", size: 30))
+                        .padding()
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
-                              labelText: "  Layer \(iLayer)", backgroundColor: .lightPurple)
-                        .frame(width: 320, height: 300)
+                              labelText: " ", backgroundColor: .lightPurple)
+                        .frame(width: 320, height: 320)
                         .clipShape(InvertedCornerShape(cornerRadius: 20))
                         .edgesIgnoringSafeArea(.all)
                     
@@ -66,7 +72,6 @@ struct MarchingCubesView: View {
                         unitsCountView(caseCounts: layerCounts)
                     }
                 }
-                .padding()
             }
         }
     }
