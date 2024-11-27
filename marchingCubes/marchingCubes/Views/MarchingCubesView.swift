@@ -63,7 +63,7 @@ struct MarchingCubesView: View {
                         .font(.custom("Poppins-SemiBold", size: 30))
                         .padding()
                     SceneView(scnNodes: dataLoader.scnNodesByLayer[iLayer],
-                              labelText: " ", backgroundColor: .white)
+                              labelText: " ", backgroundColor: .lightPurple)
                         .frame(width: 320, height: 320)
                         .clipShape(InvertedCornerShape(cornerRadius: 20))
                         .edgesIgnoringSafeArea(.all)
