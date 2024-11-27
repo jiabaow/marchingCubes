@@ -16,12 +16,16 @@ class VoxelDataLoader: ObservableObject {
     var cumulativeCaseCounts: [String: Int] = [:]
     
     func loadVoxelData(filename: String, divisions: Int) {
-        let jsonFilename = filename.replacingOccurrences(of: ".obj", with: "_voxel_data.json")
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(jsonFilename)
+        let baseFilename = (filename as NSString).deletingPathExtension
+        let jsonFilename = "\(baseFilename)_\(divisions)_voxel_data.json"
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(jsonFilename)
+        
+        print("jsonFilename is: ", jsonFilename)
         
         // Check if the JSON file exists
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            print("JSON file exists. Loading voxel data from \(fileURL.path).")
+            print("JSON file exists. Loading voxel data.")
             do {
                 let data = try Data(contentsOf: fileURL)
                 if let loadedVoxelData = deserializeVoxelData(from: data) {
@@ -36,7 +40,7 @@ class VoxelDataLoader: ObservableObject {
                 print("Error loading voxel data from JSON file: \(error)")
             }
         }
-        print("not cashed, need to voxelize the model")
+        print("Not cached, need to voxelize the model")
         
         DispatchQueue.global(qos: .userInitiated).async {
             guard let (loadedVoxelData, loadedNumLayer) = MarchingCubesView.loadVoxelData(filename: filename, divisions: divisions) else {
@@ -54,15 +58,14 @@ class VoxelDataLoader: ObservableObject {
                 self.loadSCNNodesForAllLayers()
                 
                 if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
-                    self.saveVoxelDataToFile(data: jsonData, filename: filename)
-                    print("cached Voxel data")
+                    self.saveVoxelDataToFile(data: jsonData, fileURL: fileURL)
+                    print("Cached voxel data")
                 }
             }
         }
     }
     
     private func loadSCNNodesForAllLayers() {
-        
         for layer in 0...numLayer {
             let isTopLayer = (layer == numLayer)
             let nodes = loadSCNNodesByLayer(numLayer: layer + 1, voxelData: voxelData, isTopLayer: isTopLayer, cumulativeCaseCounts: &cumulativeCaseCounts)
@@ -115,12 +118,10 @@ class VoxelDataLoader: ObservableObject {
     }
 
     // Save the serialized data to a file
-    func saveVoxelDataToFile(data: Data, filename: String) {
-        let jsonFilename = filename.replacingOccurrences(of: ".obj", with: "_voxel_data.json")
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(jsonFilename)
+    func saveVoxelDataToFile(data: Data, fileURL: URL) {
         do {
             try data.write(to: fileURL)
-            print("Voxel data saved to \(fileURL.path)")
+            print("Voxel data saved.")
         } catch {
             print("Error saving voxel data to file: \(error)")
         }
