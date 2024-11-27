@@ -5,7 +5,8 @@ struct SceneView: UIViewRepresentable {
     let scnNodes: [SCNNode?]?
     let labelText: String?
     let backgroundColor: UIColor
-
+    var onSceneCreated: ((SCNScene) -> Void)?
+    
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
@@ -44,6 +45,11 @@ struct SceneView: UIViewRepresentable {
         let doubleTapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.handleDoubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
         scnView.addGestureRecognizer(doubleTapGesture)
+        
+        // Notify the parent that the scene is ready
+        DispatchQueue.main.async {
+            onSceneCreated?(scene)
+        }
 
         if let text = labelText {
             let label = UILabel()
@@ -129,6 +135,10 @@ struct SceneView: UIViewRepresentable {
         fillLight.intensity = 600
         fillLightNode.light = fillLight
         scene.rootNode.addChildNode(fillLightNode)
+    }
+    
+    func getUIView(_ context: Context) -> SCNView {
+        makeUIView(context: context)
     }
 }
 

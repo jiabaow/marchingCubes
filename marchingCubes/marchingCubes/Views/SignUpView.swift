@@ -190,9 +190,7 @@ struct SignUpView: View {
                     print("Sign-up successful!")
                     pendingUsername = email.lowercased()
                     pendingPassword = password
-                    print("CHARLES2---")
-                    print(pendingUsername)
-                    print(pendingPassword)
+                    currentUser = name
                     showConfirmSignupView = true
                 case .failure(let error):
                     print("Sign-up failed with error: \(error)")
