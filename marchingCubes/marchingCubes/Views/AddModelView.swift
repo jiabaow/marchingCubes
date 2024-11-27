@@ -62,6 +62,9 @@ struct AddModelView: View {
                 DocumentPicker { url in
                     self.selectedFileURL = url
                     dataLoader.isActive = true
+//                    print("CHARLES----")
+//                    print("isActive \(dataLoader.isActive)")
+//                    print("isLoading \(dataLoader.isLoading)")
                     saveDocumentToCache(from: url)
                     if let fileUrl = self.selectedFileURL {
                         dataLoader.loadVoxelData2(filename: fileUrl.lastPathComponent, divisions: 5)
