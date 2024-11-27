@@ -105,7 +105,7 @@ class DynamoDBManager {
         return item
     }
     
-    func insertUserModel(userModel: UserModel) async throws {
+    func insertUserModel(userModel: UserModel) async -> Bool {
         let client = self.dynamoDB
         
         // Convert UserModel to a dictionary
@@ -118,8 +118,17 @@ class DynamoDBManager {
             _ = try await client.putItem(input: input)
         } catch {
             print("Error insertUserModel: ", dump(error))
-            throw error
+            return false
         }
+        return true
+    }
+    
+    func getUserModel(idToken: String) async -> Bool {
+        return true
+    }
+    
+    func putUserModel(idToken: String) async -> Bool {
+        return true
     }
 }
 
