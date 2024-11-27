@@ -16,7 +16,7 @@ struct SceneView: UIViewRepresentable {
         if backgroundColor == .white {
             let backgroundImage = UIImage(named: "purple_background.jpg")
             scene.background.contents = backgroundImage
-            scene.background.contentsTransform = SCNMatrix4MakeScale(0.8, 1, 0.8)
+            scene.background.contentsTransform = SCNMatrix4MakeScale(0.7, 0.85, 1)
         } else {
             scnView.backgroundColor = backgroundColor
         }

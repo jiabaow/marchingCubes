@@ -29,7 +29,7 @@ struct MarchingCubesView: View {
                             headerView
                             SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
                                       labelText: " ", backgroundColor: .white)
-                                .frame(width: 320, height: 400)
+                                .frame(width: 320, height: 380)
                                 .edgesIgnoringSafeArea(.all)
                             unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
                         }
