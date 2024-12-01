@@ -9,7 +9,7 @@ struct MarchingCubesView: View {
     @StateObject private var dataLoader = VoxelDataLoader()
 
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 5) {
+    init(filename: String = "dolphine", divisions: Int = 8) {
         self.filename = filename
         self.divisions = divisions
         
@@ -103,29 +103,6 @@ struct MarchingCubesView: View {
         .padding()
     }
     
-    // Helper function to load and voxelize the model
-     static func loadVoxelData(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
-         var voxArray: MDLVoxelArray? = nil
-         if let fileURL = get3DModelURL(filename: filename) {
-             guard let obj = loadObjAsset(filename: fileURL),
-                   let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                 print("Failed to load or voxelize the model.")
-                 return nil
-             }
-             voxArray = voxarr
-         } else {
-             guard let obj = loadOBJ(filename: filename),
-                   let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
-                 print("Failed to load or voxelize the model.")
-                 return nil
-             }
-             voxArray = voxarr
-         }
-         let voxelGrid = convertTo3DArray(voxelArray: voxArray!)
-         let voxelData = getAllLayers(data: voxelGrid)
-         let numLayer = voxelData[0].count - 1
-         return (voxelData, numLayer)
-     }
 }
 
 struct MarchingCubes_Previews: PreviewProvider {

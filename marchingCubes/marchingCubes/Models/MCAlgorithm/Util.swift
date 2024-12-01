@@ -246,13 +246,37 @@ func getCube(cube: String) -> SCNNode {
     return parentNode
 }
 
-// Convert a MDLVoxelArray to a 3D array of integers
+
 func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
-    let extent = voxelArray.boundingBox
-    let sizeX = Int((extent.maxBounds.x - extent.minBounds.x) * 4)
-    let sizeY = Int((extent.maxBounds.y - extent.minBounds.y) * 4)
-    let sizeZ = Int((extent.maxBounds.z - extent.minBounds.z) * 4)
-    
+    // Retrieve the voxel indices
+    guard let voxelData = voxelArray.voxelIndices() else {
+        return []
+    }
+
+    let voxelCount = voxelData.count / MemoryLayout<MDLVoxelIndex>.stride
+    var minX = Int.max, minY = Int.max, minZ = Int.max
+    var maxX = Int.min, maxY = Int.min, maxZ = Int.min
+
+    // Calculate the minimum and maximum indices to determine the grid size
+    voxelData.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) in
+        let voxelIndices = pointer.bindMemory(to: MDLVoxelIndex.self)
+        for i in 0..<voxelCount {
+            let voxelIndex = voxelIndices[i]
+            minX = min(minX, Int(voxelIndex.x) - 1)
+            minY = min(minY, Int(voxelIndex.y) - 1)
+            minZ = min(minZ, Int(voxelIndex.z) - 1)
+            maxX = max(maxX, Int(voxelIndex.x) + 1)
+            maxY = max(maxY, Int(voxelIndex.y) + 1)
+            maxZ = max(maxZ, Int(voxelIndex.z) + 1)
+        }
+    }
+
+    // Calculate the size of the grid
+    let sizeX = maxX - minX + 1
+    let sizeY = maxY - minY + 1
+    let sizeZ = maxZ - minZ + 1
+
+    // Initialize the 3D array
     var voxelGrid = Array(
         repeating: Array(
             repeating: Array(repeating: 0, count: sizeZ),
@@ -261,21 +285,15 @@ func convertTo3DArray(voxelArray: MDLVoxelArray) -> [[[Int]]] {
         count: sizeX
     )
 
-    if let voxelData = voxelArray.voxelIndices() {
-        let voxelCount = voxelData.count / MemoryLayout<MDLVoxelIndex>.stride
-        voxelData.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) in
-            let voxelIndices = pointer.bindMemory(to: MDLVoxelIndex.self)
-            for i in 0..<voxelCount {
-                let voxelIndex = voxelIndices[i]
-                let x = Int(voxelIndex.x)
-                let y = Int(voxelIndex.y)
-                let z = Int(voxelIndex.z)
-                if x >= 0 && x < sizeX && y >= 0 && y < sizeY && z >= 0 && z < sizeZ {
-                    voxelGrid[x][y][z] = 1
-                } else {
-                    print("Index out of bounds: (\(x), \(y), \(z))")
-                }
-            }
+    // Populate the 3D array with voxel data
+    voxelData.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) in
+        let voxelIndices = pointer.bindMemory(to: MDLVoxelIndex.self)
+        for i in 0..<voxelCount {
+            let voxelIndex = voxelIndices[i]
+            let x = Int(voxelIndex.x) - minX
+            let y = Int(voxelIndex.y) - minY
+            let z = Int(voxelIndex.z) - minZ
+            voxelGrid[x][y][z] = 1
         }
     }
 
