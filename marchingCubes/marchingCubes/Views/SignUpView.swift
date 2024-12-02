@@ -81,7 +81,7 @@ struct SignUpView: View {
                     Button(action: {
                         isPasswordVisible.toggle()
                     }) {
-                        Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                        Image(systemName: isPasswordVisible ? "eye" : "eye.slash")
                             .foregroundColor(.gray)
                     }
                 }
@@ -106,7 +106,7 @@ struct SignUpView: View {
                     Button(action: {
                         isConfirmPasswordVisible.toggle()
                     }) {
-                        Image(systemName: isConfirmPasswordVisible ? "eye.slash" : "eye")
+                        Image(systemName: isConfirmPasswordVisible ? "eye" : "eye.slash")
                             .foregroundColor(.gray)
                     }
                 }
