@@ -14,9 +14,9 @@ class ProjectViewModel: ObservableObject {
     
     // autoload all files in
     init() {
+        models = []
         if let fileUrls = getCachedFiles() {
             for fileUrl in fileUrls {
-//                print("filename init load: \(fileUrl.lastPathComponent)")
                 if (fileUrl.lastPathComponent.hasSuffix(".obj")) {
                     let projModel = ProjectModel(id: NSUUID() as UUID, title: fileUrl.lastPathComponent, image: "\(fileUrl.lastPathComponent).png")
                     if (!self.models.contains(projModel)) {
@@ -29,10 +29,10 @@ class ProjectViewModel: ObservableObject {
     
     // Add a func to toggle favorite status
     func toggleFavorite(for model: ProjectModel) {
-            if let index = models.firstIndex(where: { $0.id == model.id }) {
-                models[index].isFavorite.toggle()
-            }
+        if let index = models.firstIndex(where: { $0.id == model.id }) {
+            models[index].isFavorite.toggle()
         }
+    }
     
     // Fetch all models from the SwiftData store
     func fetchData(modelContext: ModelContext) {
@@ -46,6 +46,11 @@ class ProjectViewModel: ObservableObject {
 
     // Add a new model to the SwiftData store
     func addModel(title: String, image: String, modelContext: ModelContext) {
+        if models.contains(where: { $0.title == title }) {
+            print("Model with title '\(title)' already exists. Skipping addition.")
+            return
+        }
+        
         let newModel = ProjectModel(title: title, image: image)
         if (models.contains(newModel)) {
             print("Model with title: \(title) already exists")

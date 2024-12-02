@@ -13,7 +13,9 @@ import AWSCognitoIdentityProvider
 
 struct LoginView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("currentUser") private var currentUser = ""
     @Binding var isLoginView: Bool
+    @State private var name: String = Randoms.randomFakeName()
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isPasswordVisible: Bool = false
@@ -126,7 +128,7 @@ struct LoginView: View {
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(email: $username, password: $password) {
+            ConfirmSignupView(name: $name, email: $username, password: $password) {
                 showConfirmSignupView = false
             }
         }
@@ -164,6 +166,19 @@ struct LoginView: View {
                 setenv("AWS_SECRET_ACCESS_KEY", accessKeySecretKeySession[1], 1)
                 setenv("AWS_SESSION_TOKEN", accessKeySecretKeySession[2], 1)
                 errorMessage = nil
+                
+                let authRes = authResult?.authenticationResult
+                let dynamoManager = try await DynamoDBManager()
+                await dynamoManager.createTable()
+                if let idToken = authRes?.idToken {
+                    // Parse the idToken to extract `sub`
+                    if let subValue = extractSubFromIDToken(idToken) {
+                        print("Extracted sub: \(subValue)")
+                        currentUser = "\(subValue):\(username)"
+                    } else {
+                        print("Failed to extract sub from idToken")
+                    }
+                } // idToken
             }
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {
             errorMessage = "Account not confirmed. Please confirm your account."

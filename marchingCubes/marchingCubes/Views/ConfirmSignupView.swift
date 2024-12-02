@@ -15,6 +15,7 @@ struct ConfirmSignupView: View {
     @State private var confirmationCode: String = ""
     @State private var errorMessage: String? = nil
     @State private var isConfirmationSuccessful = false
+    @Binding var name: String
     @Binding var email: String
     @Binding var password: String
     var onConfirmationComplete: (() -> Void)? = nil
@@ -138,17 +139,19 @@ struct ConfirmSignupView: View {
                             try await dynamoManager.insertUserModel(userModel: UserModel(
                                 id: subValue, // Use `sub` as the ID
                                 email: email,
-                                username: Randoms.randomFakeName(),
+                                username: name ?? Randoms.randomFakeName(),
                                 profile_image: fetchSVGBase64Async()!,
                                 projects: [],
                                 favorites: [],
                                 created_timestamp: Int(Date().timeIntervalSince1970)
                             ))
+                            
+                            currentUser = "\(subValue):\(email)"
                         } else {
                             print("Failed to extract sub from idToken")
                         }
-                    }                }
-                isAuthenticated = true
+                    } // idToken
+                } // isAuthenticated
             }
         } catch {
             print("Confirmation failed: \(error)")
@@ -167,45 +170,5 @@ struct ConfirmSignupView: View {
                 errorMessage = "Failed to resend the confirmation code. Try again later."
             }
         }
-    }
-}
-
-func extractSubFromIDToken(_ idToken: String) -> String? {
-    // Split the JWT into its three parts
-    let segments = idToken.split(separator: ".")
-    guard segments.count == 3 else {
-        print("Invalid JWT format")
-        return nil
-    }
-    
-    // Get the payload segment (second part of the JWT)
-    let payloadSegment = segments[1]
-    
-    // Add padding if necessary
-    var base64String = String(payloadSegment)
-        .replacingOccurrences(of: "-", with: "+") // URL-safe to standard Base64
-        .replacingOccurrences(of: "_", with: "/") // URL-safe to standard Base64
-    while base64String.count % 4 != 0 { // Add padding if necessary
-        base64String.append("=")
-    }
-    
-    // Decode the Base64 payload
-    guard let payloadData = Data(base64Encoded: base64String) else {
-        print("Failed to decode Base64")
-        return nil
-    }
-    
-    // Convert to JSON and extract the `sub` field
-    do {
-        if let payloadJson = try JSONSerialization.jsonObject(with: payloadData, options: []) as? [String: Any],
-           let subValue = payloadJson["sub"] as? String {
-            return subValue
-        } else {
-            print("Failed to parse JSON or find 'sub' key")
-            return nil
-        }
-    } catch {
-        print("Failed to parse JSON: \(error)")
-        return nil
     }
 }

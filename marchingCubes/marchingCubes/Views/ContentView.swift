@@ -10,7 +10,9 @@ import SwiftUI
 struct ContentView: View {
     // Use @AppStorage to persist authentication state across app launches
     @AppStorage("isAuthenticated") private var isAuthenticated = false
+    @AppStorage("currentUser") private var currentUser = ""
     @AppStorage("lastActiveTime") private var lastActiveTime: Date = Date()
+    @StateObject private var userViewModel: UserViewModel = UserViewModel()
     
     // Define the timeout duration (e.g., 7 days)
     private let timeoutInterval: TimeInterval = 7 * 3600 * 24
@@ -19,11 +21,22 @@ struct ContentView: View {
         Group {
             if isAuthenticated {
                 // Show the main content view if authenticated
-                MainTabView()
+                MainTabView(userViewModel: userViewModel)
+                    .onAppear {
+                        fetchUserDataIfAuthenticated()
+                    }
             } else {
                 // Show the sign-in view if not authenticated
                 AuthSwitcherView()
             }
+        }
+    }
+    
+    // Fetch user data if authenticated
+    private func fetchUserDataIfAuthenticated() {
+        guard !currentUser.isEmpty else { return }
+        Task {
+            await self.userViewModel.fetchUserData(idToken: currentUser)
         }
     }
     
@@ -44,17 +57,19 @@ struct ContentView: View {
 }
 
 struct MainTabView: View {
+    @ObservedObject var userViewModel: UserViewModel
+    
     var body: some View {
         TabView {
             Dashboard()
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
                 }
-            AddModelView()
-                .tabItem {
-                    Label("Upload", systemImage: "arrow.up")
-                }
-            ProfileView()
+//            AddModelView()
+//                .tabItem {
+//                    Label("Upload", systemImage: "arrow.up")
+//                }
+            ProfileView(userViewModel: userViewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
@@ -68,6 +83,6 @@ struct MainTabView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(ProjectViewModel())
     }
 }

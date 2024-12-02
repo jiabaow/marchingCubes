@@ -7,263 +7,343 @@
 import Foundation
 import SwiftUI
 import SceneKit
+import AWSS3
 
 struct AddModelView: View {
+    @Environment(\.presentationMode) var presentationMode
     @State private var selectedFileURL: URL?
     @State private var showDocumentPicker = false
     @State private var scene: SCNScene? = nil
-    @State private var zoomLevel: Float = 20.0 // Initial zoom level
+    @State private var translateZ: Float = 0.0 // Initial zoom level
+    @State private var translateX: Float = 0.0 // Initial X translation
+    @State private var translateY: Float = 0.0 // Initial Y translation
+    @State private var rotateX: Float = 0.0 // Rotation around X-axis
+    @State private var rotateY: Float = 0.0 // Rotation around Y-axis
+    @State private var rotateZ: Float = 0.0 // Rotation around Z-axis
+    @State public var downloadProgress: Double = 0.0
+    @State private var isDownloading = false // Tracks if downloading is in progress
     @EnvironmentObject var viewModel: ProjectViewModel
-    @StateObject private var dataLoader = VoxelDataLoader()
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
-        VStack {
-            Text("Add Your Model")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.top)
-
-            ZStack {
-                // Dashed rounded rectangle as placeholder
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [10, 5]))
-                    .frame(height: 200)
-                    .foregroundColor(.gray)
-                    .overlay(
-                        Group {
-                            if (dataLoader.isActive && dataLoader.isLoading) {
-                                let fileName = self.selectedFileURL?.lastPathComponent ?? "Unknown File"
-                                LoadingView(filename: fileName)
-                            } else if let scnNodes = dataLoader.scnNodesByLayer[0] {
-                                let fileName = self.selectedFileURL?.lastPathComponent ?? "Unknown File"
-                                SceneView(scnNodes: scnNodes, labelText: fileName, backgroundColor:  UIColor(red: 0.0, green: 0.4, blue: 0.65, alpha: 1.0)) { scnScene in
-                                    self.scene = scnScene
-                                }
-                                .frame(height: 200)
-                                .onAppear {
-                                    if let scene = scene {
-                                        takeScreenshot(scene: scene)
-                                    }
-                                }
-                            } else {
-                                Text("Choose file (.obj)")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                    )
-                    .padding(.horizontal)
+        NavigationView {
+            VStack {
+                // Upload title
+                Text("Add Your Model")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
                     .padding(.top)
-                    .onTapGesture {
-                        showDocumentPicker = true
+                
+                ZStack {
+                    // Dashed rounded rectangle as placeholder
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(style: StrokeStyle(lineWidth: 2, dash: [10, 5]))
+                        .frame(height: 400)
+                        .foregroundColor(.gray)
+                        .overlay(
+                            // 3D Scene View
+                            Group {
+                                if let scene = scene {
+                                    SCNViewWrapper(
+                                        scene: scene,
+                                        translateZ: $translateZ,
+                                        translateX: $translateX,
+                                        translateY: $translateY,
+                                        rotateX: $rotateX,
+                                        rotateY: $rotateY,
+                                        rotateZ: $rotateZ
+                                    )
+                                    .gesture(
+                                        DragGesture()
+                                            .onChanged { value in
+                                                translateX += Float(value.translation.width) / 10
+                                                translateY -= Float(value.translation.height) / 10
+                                            }
+                                    )
+                                    .gesture(
+                                        MagnificationGesture()
+                                            .onChanged { value in
+                                                let zoomFactor: Float = Float(value)
+                                                translateZ += (1.0 - zoomFactor) * 2.0 // Adjust sensitivity as needed
+                                            }
+                                    )
+                                    .frame(height: 400)
+                                } else {
+                                    Text("Choose file (.obj)")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        )
+                        .padding(.horizontal)
+                        .padding(.top)
+                        .onTapGesture {
+                            showDocumentPicker = true
+                        }
+                }
+                .sheet(isPresented: $showDocumentPicker) {
+                    DocumentPicker { url in
+                        self.selectedFileURL = url
+                        loadScene(from: url)
+                        showDocumentPicker = false
                     }
-            }
-            .sheet(isPresented: $showDocumentPicker) {
-                DocumentPicker { url in
-                    self.selectedFileURL = url
-                    dataLoader.isActive = true
-//                    print("CHARLES----")
-//                    print("isActive \(dataLoader.isActive)")
-//                    print("isLoading \(dataLoader.isLoading)")
-                    saveDocumentToCache(from: url)
-                    if let fileUrl = self.selectedFileURL {
-                        dataLoader.loadVoxelData2(filename: fileUrl.lastPathComponent, divisions: 5)
+                }
+                
+                Spacer()
+                
+                if let url = selectedFileURL {
+                    Text("File: " + url.lastPathComponent)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray)
+                        .cornerRadius(10)
+                }
+                
+                if (selectedFileURL == nil) {
+                    Button(action: {
+                        isDownloading = true // Block UI
+                        Task {
+                            await downloadFile(context: self)
+                            isDownloading = false // Unblock UI
+                        }
+                    }) {
+                        Text("Download Sample Files")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
-                    showDocumentPicker = false
+                    .padding(.horizontal)
+                }
+                
+                Spacer()
+                
+                // Conditional Button: Plus or Save
+                if let url = selectedFileURL {
+                    Button(action: {
+                        guard let fileURL = selectedFileURL else { return }
+                        viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
+                        saveDocumentToCache(from: fileURL)
+                        takeScreenshot()
+                        print("Model obj filename: ", fileURL.lastPathComponent)
+                        print("Models inside save: ", viewModel.models)
+                        selectedFileURL = nil
+                        scene = nil // Clear the scene after saving
+                        resetCameraValues()
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "square.and.arrow.down")
+                            .font(.system(size: 24))
+                            .padding()
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
+                    .padding(.bottom, 30)
+                } else {
+//                    Button(action: {
+//                        showDocumentPicker = true
+//                    }) {
+//                        Image(systemName: "plus")
+//                            .font(.system(size: 24))
+//                            .padding()
+//                            .background(Color.blue)
+//                            .foregroundColor(.white)
+//                            .clipShape(Circle())
+//                            .shadow(radius: 5)
+//                    }
+//                    .padding(.bottom, 30)
                 }
             }
-
-            Spacer()
-            
-            // Zoom controls
-//            HStack {
-//                Button(action: {
-//                    zoomLevel += 1.0 // Zoom in
-//                }) {
-//                    Image(systemName: "minus.magnifyingglass")
-//                        .padding()
-//                        .background(Color.blue)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(5)
-//                }
-//                Button(action: {
-//                    zoomLevel -= 1.0
-//                }) {
-//                    Image(systemName: "plus.magnifyingglass")
-//                        .padding()
-//                        .background(Color.red)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(5)
-//                }
-//            }
-//            .padding(.bottom, 30)
-
-            if let url = selectedFileURL {
-                Text("File: " + url.lastPathComponent)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.gray)
-                    .cornerRadius(10)
-            }
-
-            Spacer()
-
-
-            // Conditional Button: Plus or Save
-            if let url = selectedFileURL {
-                Button(action: {
-                    guard let fileURL = selectedFileURL else { return }
-                    viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
-                    saveDocumentToCache(from: fileURL)
-                    takeScreenshot(scene: scene)
-                    print("Model obj filename: ", fileURL.lastPathComponent)
-                    print("Models inside save: ", viewModel.models)
-                    selectedFileURL = nil
-                    dataLoader.isLoading = true
-                    dataLoader.isActive = false
-                    dataLoader.scnNodesByLayer = [:]
-                    // scene = nil // Clear the scene after saving
-                }) {
-                    Image(systemName: "square.and.arrow.down")
-                        .font(.system(size: 24))
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .clipShape(Circle())
-                        .shadow(radius: 5)
-                }
-                .padding(.bottom, 30)
-            } else {
-                Button(action: {
-                    showDocumentPicker = true
-                }) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 24))
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .clipShape(Circle())
-                        .shadow(radius: 5)
-                }
-                .padding(.bottom, 30)
-            }
+            .padding()
         }
-        .padding()
+//        .navigationBarItems(leading: Button("Cancel") {
+//            presentationMode.wrappedValue.dismiss()
+//        })
     }
     
-    private func loadScene(from url: URL) {
-        let sceneSource = SCNSceneSource(url: url, options: nil)
-        if let loadedScene = sceneSource?.scene(options: nil) {
-            // Calculate the bounding box of the model
-            let (minVec, maxVec) = loadedScene.rootNode.boundingBox
-            let center = SCNVector3(
-                (minVec.x + maxVec.x) / 2,
-                (minVec.y + maxVec.y) / 2,
-                (minVec.z + maxVec.z) / 2
-            )
-            let size = SCNVector3(
-                maxVec.x - minVec.x,
-                maxVec.y - minVec.y,
-                maxVec.z - minVec.z
-            )
+    private func calculateBoundingBox(for scene: SCNScene) -> (min: SCNVector3, max: SCNVector3) {
+        var minPoint = SCNVector3(Float.greatestFiniteMagnitude,
+                                  Float.greatestFiniteMagnitude,
+                                  Float.greatestFiniteMagnitude)
+        var maxPoint = SCNVector3(-Float.greatestFiniteMagnitude,
+                                  -Float.greatestFiniteMagnitude,
+                                  -Float.greatestFiniteMagnitude)
+        
+        // Recursively traverse all nodes in the scene
+        scene.rootNode.enumerateChildNodes { node, _ in
+            var localMin = SCNVector3Zero
+            var localMax = SCNVector3Zero
             
-            // Calculate the optimal camera position
-            let maxDimension = max(size.x, size.y, size.z)
-            let cameraDistance = maxDimension * 1.5 // Adjust multiplier as needed for zoom level
+            // Check if the node has a bounding box
+            if node.__getBoundingBoxMin(&localMin, max: &localMax) {
+                // Transform the local bounding box to world space
+                let transformedMin = node.convertPosition(localMin, to: nil)
+                let transformedMax = node.convertPosition(localMax, to: nil)
+                
+                // Update the global bounding box
+                minPoint.x = min(minPoint.x, transformedMin.x)
+                minPoint.y = min(minPoint.y, transformedMin.y)
+                minPoint.z = min(minPoint.z, transformedMin.z)
+                
+                maxPoint.x = max(maxPoint.x, transformedMax.x)
+                maxPoint.y = max(maxPoint.y, transformedMax.y)
+                maxPoint.z = max(maxPoint.z, transformedMax.z)
+            }
+        }
+        
+        return (min: minPoint, max: maxPoint)
+    }
 
-            // Add a camera node
-            let cameraNode = SCNNode()
-            cameraNode.camera = SCNCamera()
-            cameraNode.position = SCNVector3(
-                center.x + cameraDistance, // Diagonal from top-right
-                center.y + cameraDistance,
-                center.z + cameraDistance
-            )
-            cameraNode.look(at: center) // Ensure the camera points to the center of the model
-            loadedScene.rootNode.addChildNode(cameraNode)
-            
-            // Add a light source
+    private func resetCameraValues() {
+        self.translateX = 0
+        self.translateY = 0
+        self.translateZ = 0
+        self.rotateX = 0
+        self.rotateY = 0
+        self.rotateZ = 0
+    }
+    
+    private func addLights(to scene: SCNScene, center: SCNVector3, radius: Float) {
+        // Positions for lights around the model
+        let lightPositions: [SCNVector3] = [
+            SCNVector3(center.x + radius, center.y, center.z), // Right
+            SCNVector3(center.x - radius, center.y, center.z), // Left
+            SCNVector3(center.x, center.y + radius, center.z), // Top
+            SCNVector3(center.x, center.y - radius, center.z), // Bottom
+            SCNVector3(center.x, center.y, center.z + radius), // Front
+            SCNVector3(center.x, center.y, center.z - radius)  // Back
+        ]
+
+        for position in lightPositions {
             let lightNode = SCNNode()
             lightNode.light = SCNLight()
-            lightNode.light?.type = .omni
-            lightNode.position = SCNVector3(
-                center.x + cameraDistance / 2,
-                center.y + cameraDistance / 2,
-                center.z + cameraDistance / 2
-            )
-            loadedScene.rootNode.addChildNode(lightNode)
-            
-            // Add an ambient light for better visibility
-            let ambientLightNode = SCNNode()
-            ambientLightNode.light = SCNLight()
-            ambientLightNode.light?.type = .ambient
-            ambientLightNode.light?.color = UIColor(white: 0.8, alpha: 1.0)
-            loadedScene.rootNode.addChildNode(ambientLightNode)
+            lightNode.light?.type = .omni // Omni-directional light
+            lightNode.light?.intensity = 1000 // Adjust intensity as needed
+            lightNode.position = position
+            scene.rootNode.addChildNode(lightNode)
+        }
 
-            // Assign the loaded scene
+        // Add an ambient light for overall illumination
+        let ambientLightNode = SCNNode()
+        ambientLightNode.light = SCNLight()
+        ambientLightNode.light?.type = .ambient
+        ambientLightNode.light?.intensity = 500 // Adjust as needed
+        scene.rootNode.addChildNode(ambientLightNode)
+    }
+
+    // Load the scene from the selected .obj file
+    private func loadScene(from url: URL) {
+        // Define loading options
+        let options: [SCNSceneSource.LoadingOption: Any] = [
+            .checkConsistency: true,
+            .createNormalsIfAbsent: true,
+            .convertToYUp: true,
+            .convertUnitsToMeters: true
+        ]
+        
+        let sceneSource = SCNSceneSource(url: url, options: options)
+        
+        if let loadedScene = sceneSource?.scene(options: nil) {
+            // Add a camera if it doesn't exist
+            let cameraNode = SCNNode()
+            cameraNode.camera = SCNCamera()
+            cameraNode.position = SCNVector3(x: 0, y: 0, z: translateZ)
+            loadedScene.rootNode.addChildNode(cameraNode)
+
+            // Calculate bounding box for lighting positioning
+            let (min, max) = calculateBoundingBox(for: loadedScene)
+            let center = SCNVector3(
+                (min.x + max.x) / 2,
+                (min.y + max.y) / 2,
+                (min.z + max.z) / 2
+            )
+            let size = SCNVector3(
+                max.x - min.x,
+                max.y - min.y,
+                max.z - min.z
+            )
+            var curmax = (max.x > max.y) ? max.x : max.y
+            curmax = (max.z > curmax) ? max.z : curmax
+            let maxDimension = curmax
+
+            // Add lights
+            addLights(to: loadedScene, center: center, radius: maxDimension * 1.5)
+
             self.scene = loadedScene
         } else {
+            // Handle error loading the scene
             print("Failed to load the scene from URL: \(url)")
         }
     }
 
+    private func takeScreenshot(scene: SCNScene? = nil, size: CGSize = CGSize(width: 80, height: 80)) {
+        guard let currentScene = self.scene else { return }
+        guard let selectedFileURL = self.selectedFileURL else { return }
 
-    // Load the scene from the selected .obj file
-//    private func loadScene(from url: URL) {
-//        let sceneSource = SCNSceneSource(url: url, options: nil)
-//        if let loadedScene = sceneSource?.scene(options: nil) {
-//            // Add a camera if it doesn't exist
-//            let cameraNode = SCNNode()
-//            cameraNode.camera = SCNCamera()
-//            // Use zoomLevel for camera position
-//            cameraNode.position = SCNVector3(x: 0, y: 0, z: zoomLevel)
-//            loadedScene.rootNode.addChildNode(cameraNode)
-//
-//            // Add lighting
-//            let lightNode = SCNNode()
-//            lightNode.light = SCNLight()
-//            lightNode.light?.type = .omni
-//            lightNode.position = SCNVector3(x: 0, y: 0, z: 10) // Adjust position as needed
-//            loadedScene.rootNode.addChildNode(lightNode)
-//
-//            self.scene = loadedScene
-//        } else {
-//            // Handle error loading the scene
-//            print("Failed to load the scene from URL: \(url)")
-//        }
-//    }
-    
-    // Take a screenshot of the current scene
-    private func takeScreenshot(scene: SCNScene?, size: CGSize = CGSize(width: 80, height: 80)) {
-        guard let currentScene = scene else { return }
-        guard let selectedFileURL = selectedFileURL else { return }
-        
-        // Create an SCNView with the specified size
         let scnView = SCNView(frame: CGRect(origin: .zero, size: size))
         scnView.scene = currentScene
-        scnView.backgroundColor = UIColor(red: 0.0, green: 0.4, blue: 0.65, alpha: 1.0)
+        scnView.backgroundColor = UIColor.lightPurple
         
         // Ensure the scene's background is transparent
         currentScene.background.contents = UIColor.clear
-
-        // Add a camera node and adjust its position
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(x: 10, y: 10, z: 15) // Diagonal position (45 degrees)
-        cameraNode.look(at: SCNVector3(0, 0, 0)) // Look at the scene's origin
-        currentScene.rootNode.addChildNode(cameraNode)
-
-        // Ensure the SCNView is fully rendered
-        scnView.pointOfView = cameraNode // Use the newly added camera
-        scnView.layoutIfNeeded()
         
-        // Capture the screenshot
+        // Configure the camera node to match SCNViewWrapper's camera
+        if let cameraNode = currentScene.rootNode.childNodes.first(where: { $0.camera != nil }) {
+            // Apply transformations
+            let translation = SCNMatrix4MakeTranslation(translateX, translateY, translateZ)
+            let rotationX = SCNMatrix4MakeRotation(rotateX * .pi / 180, 1, 0, 0)
+            let rotationY = SCNMatrix4MakeRotation(rotateY * .pi / 180, 0, 1, 0)
+            let rotationZ = SCNMatrix4MakeRotation(rotateZ * .pi / 180, 0, 0, 1)
+            let combinedTransform = SCNMatrix4Mult(SCNMatrix4Mult(SCNMatrix4Mult(rotationX, rotationY), rotationZ), translation)
+            
+            cameraNode.transform = combinedTransform
+        }
+        
         let image = scnView.snapshot()
-        
-        // Save the image
+
         saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
+    }
+    
+    private func downloadFile(context: AddModelView) async {
+        do {
+            let fileManager = FileManager.default
+            // Get the Documents directory
+            let documentsURL = try fileManager.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: true
+            )
+            
+            // Define destination URLs for sample files
+            let destinationURL1 = documentsURL.appendingPathComponent("Mesh_Anteater.obj")
+            let destinationURL2 = documentsURL.appendingPathComponent("rabbit.obj")
+
+            // Start downloading files
+            let s3Service = try await S3ServiceHandler()
+
+            print("Downloading to \(destinationURL1)")
+            try await s3Service.downloadFile(
+                bucket: "marchingcubesmodels",
+                key: "samples/Mesh_Anteater.obj",
+                to: destinationURL1
+            )
+
+            print("Downloading to \(destinationURL2)")
+            try await s3Service.downloadFile(
+                bucket: "marchingcubesmodels",
+                key: "samples/rabbit.obj",
+                to: destinationURL2
+            )
+
+            print("Download completed successfully.")
+        } catch {
+            print("Error downloading files: \(error)")
+        }
     }
 
 }
@@ -271,22 +351,54 @@ struct AddModelView: View {
 // UIViewRepresentable for SCNView
 struct SCNViewWrapper: UIViewRepresentable {
     var scene: SCNScene
-    @Binding var zoomLevel: Float // Binding to zoom level
+    @Binding var translateZ: Float
+    @Binding var translateX: Float
+    @Binding var translateY: Float
+    @Binding var rotateX: Float
+    @Binding var rotateY: Float
+    @Binding var rotateZ: Float
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
-        scnView.showsStatistics = true
-        scnView.backgroundColor = UIColor.gray
+        scnView.cameraControlConfiguration.allowsTranslation = true
+        scnView.backgroundColor = UIColor.lightPurple
         return scnView
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
         uiView.scene = scene
         
-        // Ensure camera is not reset
+        // Update camera position based on zoom and translation
         if let cameraNode = scene.rootNode.childNodes.first(where: { $0.camera != nil }) {
-            cameraNode.position.z = zoomLevel // Update only the zoom level if needed
+            // Translation
+            let translation = SCNMatrix4MakeTranslation(translateX, translateY, translateZ)
+            
+            // Rotations
+            let rotationX = SCNMatrix4MakeRotation(rotateX * .pi / 180, 1, 0, 0) // X-axis rotation
+            let rotationY = SCNMatrix4MakeRotation(rotateY * .pi / 180, 0, 1, 0) // Y-axis rotation
+            let rotationZ = SCNMatrix4MakeRotation(rotateZ * .pi / 180, 0, 0, 1) // Z-axis rotation
+            
+            // Combine translation and rotations
+            let combinedTransform = SCNMatrix4Mult(SCNMatrix4Mult(SCNMatrix4Mult(rotationX, rotationY), rotationZ), translation)
+            
+            // Apply the combined transformation
+            cameraNode.transform = combinedTransform
+        }
+        
+        // Update lighting intensity based on translateZ
+//        updateLighting(for: scene)
+    }
+    
+    private func updateLighting(for scene: SCNScene) {
+        let baseIntensity: CGFloat = 1000
+        let zoomFactor = max(1.0, abs(translateZ) / 10.0) // Adjust scaling factor
+        let adjustedIntensity = baseIntensity * CGFloat(zoomFactor)
+        
+        scene.rootNode.enumerateChildNodes { node, _ in
+            if let light = node.light {
+                light.intensity = adjustedIntensity
+            }
         }
     }
 }
@@ -298,41 +410,159 @@ struct Upload_Previews: PreviewProvider {
 }
 
 
+//
+//struct AddModelView: View {
+//    @State private var selectedFileURL: URL?
+//    @State private var showDocumentPicker = false
+//    @State private var scene: SCNScene? = nil
+//    @State private var zoomLevel: Float = 20.0 // Initial zoom level
+//    @EnvironmentObject var viewModel: ProjectViewModel
+//    @StateObject private var dataLoader = VoxelDataLoader()
+//    @Environment(\.modelContext) var modelContext
 
-
-// Search Bar
-//            HStack {
-//                TextField("Search files...", text: $searchQuery)
-//                    .padding(10)
-//                    .background(Color(UIColor.systemGray5))
-//                    .cornerRadius(10)
-//                    .padding(.leading)
-//                Spacer()
-//                Image(systemName: "magnifyingglass")
-//                    .padding(.trailing)
-//            }
-//            .padding(.bottom, 10)
-
-
-
-// The new cached files list view
-//            List {
-//                ForEach(viewModel.models.filter { model in
-//                    searchQuery.isEmpty || model.title.lowercased().contains(searchQuery.lowercased())
-//                }) { model in
-//                    HStack {
-//                        VStack(alignment: .leading) {
-//                            Text(model.title)
-//                                .font(.headline)
+//
+//    var body: some View {
+//        ZStack {
+//            VStack {
+//                Text("Add Your Model")
+//                    .font(.largeTitle)
+//                    .fontWeight(.bold)
+//                    .padding(.top)
+//
+//                ZStack {
+//                    RoundedRectangle(cornerRadius: 10)
+//                        .stroke(style: StrokeStyle(lineWidth: 2, dash: [10, 5]))
+//                        .frame(height: 400)
+//                        .foregroundColor(.gray)
+//                        .overlay(
+//                            Group {
+//                                if dataLoader.isActive && dataLoader.isLoading {
+//                                    Text("Loading...")
+//                                        .foregroundColor(.gray)
+//                                } else if let scnNodes = dataLoader.scnNodesByLayer[0] {
+//                                    SceneView(scnNodes: scnNodes, labelText: "Preview", backgroundColor: UIColor.blue) { scnScene in
+//                                        self.scene = scnScene
+//                                    }
+//                                    .frame(height: 400)
+//                                    .onAppear {
+//                                        if let scene = scene {
+//                                            takeScreenshot(scene: scene)
+//                                        }
+//                                    }
+//                                } else {
+//                                    Text("Choose file (.obj)")
+//                                        .foregroundColor(.gray)
+//                                }
+//                            }
+//                        )
+//                        .padding(.horizontal)
+//                        .padding(.top)
+//                        .onTapGesture {
+//                            showDocumentPicker = true
 //                        }
-//                        Spacer()
-//                        Button(action: {
-//                            viewModel.removeModel(model, modelContext: modelContext)
-//                        }) {
-//                            Image(systemName: "trash")
-//                                .foregroundColor(.red)
+//                }
+//                .sheet(isPresented: $showDocumentPicker) {
+//                    DocumentPicker { url in
+//                        self.selectedFileURL = url
+//                        dataLoader.isActive = true
+//                        saveDocumentToCache(from: url)
+//                        if let fileUrl = self.selectedFileURL {
+//                            dataLoader.loadVoxelData2(filename: fileUrl.lastPathComponent, divisions: 5)
 //                        }
-//                        .buttonStyle(PlainButtonStyle())
+//                        showDocumentPicker = false
 //                    }
 //                }
+//
+//                Spacer()
+//
+//                Button(action: {
+//                    isDownloading = true // Block UI
+//                    Task {
+//                        await downloadFile(context: self)
+//                        isDownloading = false // Unblock UI
+//                    }
+//                }) {
+//                    Text("Download Sample Files")
+//                        .padding()
+//                        .frame(maxWidth: .infinity)
+//                        .background(Color.blue)
+//                        .foregroundColor(.white)
+//                        .cornerRadius(10)
+//                }
+//                .padding(.horizontal)
+//
+//                Spacer()
 //            }
+//            .disabled(isDownloading) // Disable user interaction during download
+//
+//            // Overlay when downloading
+//            if isDownloading {
+//                Color.black.opacity(0.5)
+//                    .ignoresSafeArea()
+//                VStack {
+//                    ProgressView("Downloading...")
+//                        .progressViewStyle(CircularProgressViewStyle())
+//                        .padding()
+//                    Text("\(Int(downloadProgress * 100))% completed")
+//                        .font(.subheadline)
+//                        .foregroundColor(.white)
+//                }
+//            }
+//            
+//            Spacer()
+//            
+//            // Conditional Button: Plus or Save
+//            if let url = selectedFileURL {
+//                Button(action: {
+//                    guard let fileURL = selectedFileURL else { return }
+//                    viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
+//                    saveDocumentToCache(from: fileURL)
+//                    takeScreenshot(scene: scene)
+//                    print("Model obj filename: ", fileURL.lastPathComponent)
+//                    print("Models inside save: ", viewModel.models)
+//                    selectedFileURL = nil
+//                    dataLoader.isLoading = true
+//                    dataLoader.isActive = false
+//                    dataLoader.scnNodesByLayer = [:]
+//                    // scene = nil // Clear the scene after saving
+//                }) {
+//                    Image(systemName: "square.and.arrow.down")
+//                        .font(.system(size: 24))
+//                        .padding()
+//                        .background(Color.green)
+//                        .foregroundColor(.white)
+//                        .clipShape(Circle())
+//                        .shadow(radius: 5)
+//                }
+//                .padding(.bottom, 30)
+//            } else {
+//                Button(action: {
+//                    showDocumentPicker = true
+//                }) {
+//                    Image(systemName: "plus")
+//                        .font(.system(size: 24))
+//                        .padding()
+//                        .background(Color.blue)
+//                        .foregroundColor(.white)
+//                        .clipShape(Circle())
+//                        .shadow(radius: 5)
+//                }
+//                .padding(.bottom, 30)
+//            }
+//        }
+//        .padding()
+//        }
+//
+//
+//    private func takeScreenshot(scene: SCNScene?, size: CGSize = CGSize(width: 80, height: 80)) {
+//        guard let currentScene = scene else { return }
+//        guard let selectedFileURL = self.selectedFileURL else { return }
+//
+//        let scnView = SCNView(frame: CGRect(origin: .zero, size: size))
+//        scnView.scene = currentScene
+//        scnView.backgroundColor = UIColor.clear
+//        let image = scnView.snapshot()
+//
+//        saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
+//    }
+//}

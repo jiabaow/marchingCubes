@@ -19,6 +19,7 @@ struct SignUpView: View {
     @State private var emailError: String? = nil
     @State private var passwordError: String? = nil
     @State private var showConfirmSignupView = false
+    @State private var pendingName: String = ""
     @State private var pendingUsername: String = ""
     @State private var pendingPassword: String = ""
     @State private var name: String = ""
@@ -150,7 +151,7 @@ struct SignUpView: View {
         }
         .padding()
         .fullScreenCover(isPresented: $showConfirmSignupView) {
-            ConfirmSignupView(email: $pendingUsername, password: $pendingPassword) { // Pass password directly
+            ConfirmSignupView(name: $pendingName, email: $pendingUsername, password: $pendingPassword) { // Pass password directly
                 showConfirmSignupView = false
             }
         }
@@ -190,7 +191,7 @@ struct SignUpView: View {
                     print("Sign-up successful!")
                     pendingUsername = email.lowercased()
                     pendingPassword = password
-                    currentUser = name
+                    pendingName = name
                     showConfirmSignupView = true
                 case .failure(let error):
                     print("Sign-up failed with error: \(error)")
