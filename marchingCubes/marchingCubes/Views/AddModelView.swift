@@ -297,10 +297,10 @@ struct AddModelView: View {
 
         let scnView = SCNView(frame: CGRect(origin: .zero, size: size))
         scnView.scene = currentScene
-        scnView.backgroundColor = UIColor.lightPurple
         
         // Ensure the scene's background is transparent
         currentScene.background.contents = UIColor.clear
+        scnView.backgroundColor = UIColor.lightPurple
         
         // Configure the camera node to match SCNViewWrapper's camera
         if let cameraNode = currentScene.rootNode.childNodes.first(where: { $0.camera != nil }) {

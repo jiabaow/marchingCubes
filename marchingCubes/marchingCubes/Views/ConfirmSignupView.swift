@@ -128,25 +128,25 @@ struct ConfirmSignupView: View {
                     errorMessage = nil
                     
                     let authRes = authResult?.authenticationResult
-                    let dynamoManager = try await DynamoDBManager()
-                    await dynamoManager.createTable()
                     if let idToken = authRes?.idToken {
-                        // Parse the idToken to extract `sub`
                         if let subValue = extractSubFromIDToken(idToken) {
                             print("Extracted sub: \(subValue)")
+                            // Parse the idToken to extract `sub`
+                            currentUser = "\(subValue):\(email)"
+
+                            let dynamoManager = try await DynamoDBManager()
+                            await dynamoManager.createTable()
                             
                             // Use the `sub` value as the ID in the UserModel
-                            try await dynamoManager.insertUserModel(userModel: UserModel(
+                            _ = await dynamoManager.insertUserModel(userModel: UserModel(
                                 id: subValue, // Use `sub` as the ID
                                 email: email,
-                                username: name ?? Randoms.randomFakeName(),
+                                username: (!name.isEmpty) ? name : Randoms.randomFakeName(),
                                 profile_image: fetchSVGBase64Async()!,
                                 projects: [],
                                 favorites: [],
                                 created_timestamp: Int(Date().timeIntervalSince1970)
                             ))
-                            
-                            currentUser = "\(subValue):\(email)"
                         } else {
                             print("Failed to extract sub from idToken")
                         }
