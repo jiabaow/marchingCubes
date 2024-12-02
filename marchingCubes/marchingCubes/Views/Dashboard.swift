@@ -8,6 +8,9 @@ import SwiftData
 import UIKit
 
 struct Dashboard: View {
+    @State private var division: Double = 5.0
+    @State private var showDivisionSlider = false
+    @State private var navigateToMarchingCubes = false
     @State private var showAddModelView = false
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
@@ -137,62 +140,78 @@ struct Dashboard: View {
         }
     }
 
-    // Extract Upload Row into a separate function
     @ViewBuilder
     private func uploadRow(model: ProjectModel) -> some View {
-        NavigationLink(destination: MarchingCubesView(filename: model.title)) {
-            HStack {
-                // AsyncImage for loading image from URL
-                if !model.image.isEmpty, let url = get3DModelURL(filename: model.image) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            // You can show a placeholder image or spinner while loading
-                            ProgressView()
-                                .frame(width: 50, height: 50)
-                                .cornerRadius(5)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .cornerRadius(5)
-                        case .failure:
-                            // Fallback to a default image if loading fails
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .cornerRadius(5)
-                        @unknown default:
-                            EmptyView()
-                        }
+        HStack {
+            // AsyncImage for loading image from URL
+            if !model.image.isEmpty, let url = get3DModelURL(filename: model.image) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 50, height: 50)
+                            .cornerRadius(5)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .cornerRadius(5)
+                    case .failure:
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .cornerRadius(5)
+                    @unknown default:
+                        EmptyView()
                     }
-                } else {
-                    // Default image if model.image is nil or invalid URL
-                    Image(systemName: "photo")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                        .cornerRadius(5)
                 }
-                
-                VStack(alignment: .leading) {
-                    Text(model.title)
-                        .font(.headline)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
-                Spacer()
-                
+            } else {
+                Image(systemName: "photo")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .cornerRadius(5)
             }
-            .padding()
-            .background(Color.white)
-            .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray, lineWidth: 1)
-            )
+            
+            VStack(alignment: .leading) {
+                Text(model.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+            Spacer()
+            
+            // Button to show the division slider
+            Button(action: {
+                showDivisionSlider = true
+            }) {
+                Image(systemName: "slider.horizontal.3")
+                    .foregroundColor(.blue)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .clipShape(Circle())
+            }
+            
+            if navigateToMarchingCubes {
+                NavigationLink(
+                    destination: MarchingCubesView(filename: model.title, divisions: Int(division)),
+                    isActive: $navigateToMarchingCubes
+                ) {
+                    EmptyView()
+                }
+            }
+            
         }
-        .buttonStyle(PlainButtonStyle())
+        .padding()
+        .background(Color.purple)
+        .cornerRadius(10)
+        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
+        .sheet(isPresented: $showDivisionSlider) {
+            DivisionSliderView(division: $division) {
+                showDivisionSlider = false
+                navigateToMarchingCubes = true
+            }
+        }
         .swipeActions {
             Button(role: .destructive) {
                 viewModel.removeModel(model, modelContext: modelContext)
@@ -207,5 +226,31 @@ struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
         Dashboard()
             .environmentObject(ProjectViewModel())
+    }
+}
+
+struct DivisionSliderView: View {
+    @Binding var division: Double
+    var onDismiss: () -> Void
+    
+    var body: some View {
+        VStack {
+            Text("Choose Divisions")
+                .font(.headline)
+                .padding()
+            
+            Slider(value: $division, in: 1...50, step: 1)
+                .padding()
+            
+            Text("Divisions: \(Int(division))")
+                .font(.subheadline)
+                .padding()
+            
+            Button("Done") {
+                onDismiss()
+            }
+            .padding()
+        }
+        .presentationDetents([.medium, .fraction(0.3)])
     }
 }
