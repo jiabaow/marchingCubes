@@ -12,7 +12,6 @@ struct ContentView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
     @AppStorage("lastActiveTime") private var lastActiveTime: Date = Date()
-    @StateObject private var userViewModel: UserViewModel = UserViewModel()
     
     // Define the timeout duration (e.g., 7 days)
     private let timeoutInterval: TimeInterval = 7 * 3600 * 24
@@ -21,10 +20,7 @@ struct ContentView: View {
         Group {
             if isAuthenticated {
                 // Show the main content view if authenticated
-                MainTabView(userViewModel: userViewModel)
-                    .onAppear {
-                        fetchUserDataIfAuthenticated()
-                    }
+                MainTabView()
             } else {
                 // Show the sign-in view if not authenticated
                 AuthSwitcherView()
@@ -32,13 +28,6 @@ struct ContentView: View {
         }
     }
     
-    // Fetch user data if authenticated
-    private func fetchUserDataIfAuthenticated() {
-        guard !currentUser.isEmpty else { return }
-        Task {
-            await self.userViewModel.fetchUserData(idToken: currentUser)
-        }
-    }
     
     // Start a timer to check for inactivity
     private func startInactivityTimer() {
@@ -57,8 +46,10 @@ struct ContentView: View {
 }
 
 struct MainTabView: View {
-    @ObservedObject var userViewModel: UserViewModel
+    @AppStorage("currentUser") private var currentUser = ""
+    @StateObject private var userViewModel: UserViewModel = UserViewModel()
     
+
     var body: some View {
         TabView {
             Dashboard()
@@ -72,11 +63,21 @@ struct MainTabView: View {
             ProfileView(userViewModel: userViewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
+                }.onAppear {
+                    fetchUserDataIfAuthenticated()
                 }
 //            MarchingCubesView()
 //                .tabItem {
 //                    Label("Test", systemImage: "square.fill")
 //                }
+        }
+    }
+    
+    // Fetch user data if authenticated
+    private func fetchUserDataIfAuthenticated() {
+        guard !currentUser.isEmpty else { return }
+        Task {
+            await self.userViewModel.fetchUserData(idToken: currentUser)
         }
     }
 }
