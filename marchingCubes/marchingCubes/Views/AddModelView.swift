@@ -14,7 +14,7 @@ struct AddModelView: View {
     @State private var selectedFileURL: URL?
     @State private var showDocumentPicker = false
     @State private var scene: SCNScene? = nil
-    @State private var translateZ: Float = 0.0 // Initial zoom level
+    @State private var translateZ: Float = 100.0 // Initial zoom level
     @State private var translateX: Float = 0.0 // Initial X translation
     @State private var translateY: Float = 0.0 // Initial Y translation
     @State private var rotateX: Float = 0.0 // Rotation around X-axis
