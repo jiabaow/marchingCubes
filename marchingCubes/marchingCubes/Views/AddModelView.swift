@@ -20,7 +20,6 @@ struct AddModelView: View {
     @State private var rotateX: Float = 0.0 // Rotation around X-axis
     @State private var rotateY: Float = 0.0 // Rotation around Y-axis
     @State private var rotateZ: Float = 0.0 // Rotation around Z-axis
-    @State public var downloadProgress: Double = 0.0
     @State private var isDownloading = false // Tracks if downloading is in progress
     @EnvironmentObject var viewModel: ProjectViewModel
     @Environment(\.modelContext) var modelContext
@@ -87,6 +86,7 @@ struct AddModelView: View {
                         showDocumentPicker = false
                     }
                 }
+                .disabled(isDownloading)
                 
                 Spacer()
                 
@@ -156,6 +156,17 @@ struct AddModelView: View {
 //                            .shadow(radius: 5)
 //                    }
 //                    .padding(.bottom, 30)
+                }
+                
+                if isDownloading {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                    VStack {
+                        ProgressView("Loading...")
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding()
+                            .foregroundColor(.white)
+                    }
                 }
             }
             .padding()
