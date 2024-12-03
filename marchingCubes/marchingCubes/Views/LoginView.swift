@@ -174,21 +174,43 @@ struct LoginView: View {
                         print("Extracted sub: \(subValue)")
                         currentUser = "\(subValue):\(username)"
                         
-                        let dynamoManager = try await DynamoDBManager()
-//                        await dynamoManager.createTable()
+                        var retryCount = 0
+                        let maxRetries = 5
+                        var delay: UInt64 = 1 // Start with a 1-second delay
+                        var userModEx: UserModel? = nil
                         
-                        if (await dynamoManager.getUserModel(idToken: currentUser) == nil) {
-                            // Use the `sub` value as the ID in the UserModel
-                            _ = await dynamoManager.insertUserModel(userModel: UserModel(
-                                id: subValue, // Use `sub` as the ID
-                                email: username,
-                                username: name,
-                                profile_image: fetchSVGBase64Async()!,
-                                projects: [],
-                                favorites: [],
-                                created_timestamp: Int(Date().timeIntervalSince1970)
-                            ))
+                        while retryCount < maxRetries {
+                            let dynamoManager = try await DynamoDBManager()
+                            userModEx = await dynamoManager.getUserModel(idToken: currentUser) // Assign result to userModEx
+                            if userModEx != nil {
+                                print("User exists in DynamoDB.")
+                                return
+                            } else {
+                                if retryCount == maxRetries - 1 {
+                                    print("Maximum retries reached. User creation failed.")
+                                    throw NSError(domain: "DynamoDB", code: 1, userInfo: ["message": "Failed to verify or create user in DynamoDB."])
+                                }
+                                print("User not found. Retrying in \(delay) seconds...")
+                                try await Task.sleep(nanoseconds: delay * 1_000_000_000)
+                                delay *= 2 // Exponential backoff
+                                retryCount += 1
+                            }
+                            
+                            if (userModEx == nil) {
+                                // Use the `sub` value as the ID in the UserModel
+                                _ = await dynamoManager.insertUserModel(userModel: UserModel(
+                                    id: subValue, // Use `sub` as the ID
+                                    email: username,
+                                    username: name,
+                                    profile_image: fetchSVGBase64Async()!,
+                                    projects: [],
+                                    favorites: [],
+                                    created_timestamp: Int(Date().timeIntervalSince1970)
+                                ))
+                            }
                         }
+                        
+                        
                     } else {
                         print("Failed to extract sub from idToken")
                     }

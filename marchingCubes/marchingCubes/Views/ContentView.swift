@@ -49,6 +49,7 @@ struct ContentView: View {
 struct MainTabView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
+    @State private var hasTaskRun = false
     @ObservedObject var userViewModel: UserViewModel // Use @ObservedObject instead
     
     var body: some View {
@@ -57,12 +58,15 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
                 }.task{
-                    do {
-                        try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
-                    } catch (let error) {
-                        print("\(error)")
-                        currentUser = ""
-                        isAuthenticated = false
+                    if !hasTaskRun {
+                        hasTaskRun = true
+                        do {
+                            try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
+                        } catch (let error) {
+                            print("\(error)")
+                            currentUser = ""
+                            isAuthenticated = false
+                        }
                     }
                 }
             
