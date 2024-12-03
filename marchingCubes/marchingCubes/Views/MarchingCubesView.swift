@@ -8,9 +8,10 @@ struct MarchingCubesView: View {
     let colorScheme: ColorScheme
 
     @StateObject private var dataLoader = VoxelDataLoader()
+    @State private var isSceneLoading: Bool = true
 
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 25, colorScheme: ColorScheme = .scheme2) {
+    init(filename: String = "rabbit", divisions: Int = 5, colorScheme: ColorScheme = .scheme2) {
         self.filename = filename
         self.divisions = divisions
         self.colorScheme = colorScheme
@@ -29,10 +30,24 @@ struct MarchingCubesView: View {
                     ScrollView {
                         VStack {
                             headerView
-                            SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
-                                      labelText: " ", backgroundColor: .lighterLightGray)
-                                .frame(width: 320, height: 380)
-                                .edgesIgnoringSafeArea(.all)
+                            ZStack {
+                                if isSceneLoading {
+                                    Text("Building scene...")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background(Color.black.opacity(0.7))
+                                        .cornerRadius(10)
+                                        .transition(.opacity)
+                                        .animation(.easeInOut, value: true)
+                                }
+                                SceneView(scnNodes: dataLoader.scnNodesByLayer[0],
+                                          labelText: " ", backgroundColor: .lighterLightGray,
+                                          onLoadingComplete: { withAnimation { isSceneLoading = true }} // works with true but not false. to check
+                                )
+                                    .frame(width: 320, height: 380)
+                                    .edgesIgnoringSafeArea(.all)
+                            }
                             unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
                         }
                     }

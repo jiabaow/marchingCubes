@@ -6,6 +6,7 @@ struct SceneView: UIViewRepresentable {
     let labelText: String?
     let backgroundColor: UIColor
     var onSceneCreated: ((SCNScene) -> Void)?
+    var onLoadingComplete: (() -> Void)?
     
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
@@ -49,6 +50,7 @@ struct SceneView: UIViewRepresentable {
         // Notify the parent that the scene is ready
         DispatchQueue.main.async {
             onSceneCreated?(scene)
+            onLoadingComplete?()
         }
 
         if let text = labelText {
