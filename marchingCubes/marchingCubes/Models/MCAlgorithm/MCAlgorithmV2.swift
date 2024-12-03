@@ -222,7 +222,7 @@ class MarchingCubesAlgo {
                             getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
                                      v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
                         }
-                        else if (a4 == 0 && b3 == 0) {
+                        else if (a1 == 0 && b3 == 0) {
                             getMC2_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
                                      v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
                         }
@@ -1014,7 +1014,7 @@ class MarchingCubesAlgo {
                             getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b4,
                                       v3: v_b1, v4: v_a4, v5: v_a2, v6: v_b3, v7: v_b2, v8: v_a3)
                         }
-                        else if (a4 == 1 && b3 == 1) {
+                        else if (a1 == 1 && b3 == 1) {
                             getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a3,
                                       v3: v_a2, v4: v_a4, v5: v_b1, v6: v_b3, v7: v_b2, v8: v_b4)
                         }
