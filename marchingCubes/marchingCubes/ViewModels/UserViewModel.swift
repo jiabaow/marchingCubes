@@ -23,17 +23,16 @@ class UserViewModel: ObservableObject {
         self.favorites = nil
     }
     
+    @MainActor
     func fetchUserData(idToken: String) async throws {
         do {
             let dynamodbManager = try await DynamoDBManager()
             let userModel = await dynamodbManager.getUserModel(idToken: idToken)
-            DispatchQueue.main.async {
-                self.email = userModel?.email
-                self.username = userModel?.username
-                self.profileImage = userModel?.profile_image
-                self.projects = userModel?.projects
-                self.favorites = userModel?.favorites
-            }
+            self.email = userModel?.email
+            self.username = userModel?.username
+            self.profileImage = userModel?.profile_image
+            self.projects = userModel?.projects
+            self.favorites = userModel?.favorites
         } catch(let error) {
             print("\(error)")
             throw NSError(domain: "UserViewModel", code: -1, userInfo: ["fetchUserData": "\(error)"])

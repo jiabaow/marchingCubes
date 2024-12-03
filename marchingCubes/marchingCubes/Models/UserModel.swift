@@ -95,15 +95,13 @@ class UserModel: Identifiable, Codable {
                 throw NSError(domain: "UserModel", code: -1, userInfo: ["fetchUserData": "User not found."])
             }
             
-            DispatchQueue.main.async {
-                self.id = userModel.id
-                self.email = userModel.email
-                self.username = userModel.username
-                self.profile_image = userModel.profile_image
-                self.projects = userModel.projects
-                self.favorites = userModel.favorites
-                self.created_timestamp = userModel.created_timestamp
-            }
+            self.id = userModel.id
+            self.email = userModel.email
+            self.username = userModel.username
+            self.profile_image = userModel.profile_image
+            self.projects = userModel.projects
+            self.favorites = userModel.favorites
+            self.created_timestamp = userModel.created_timestamp
             
         } catch(let error) {
             print("\(error)")

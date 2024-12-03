@@ -6,125 +6,156 @@ struct ProfileView: View {
     @AppStorage("currentUser") private var currentUser = ""
     @EnvironmentObject var viewModel: ProjectViewModel
     @ObservedObject var userViewModel: UserViewModel
+    @State private var showDivisionSlider = false
+    @State private var selectedModelTitle: String? = nil // Track selected model title
     @State private var avatarImage: UIImage? = nil
     @State private var userName: String = "Peter Johnson"
+    @State private var navigateToMarchingCubes = false
+    @State private var division: Double = 5.0
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Sign Out Button
-                HStack {
-                    Button(action: {
-                        signOut()
-                    }) {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .padding()
-                            .background(Color.gray.opacity(0.2))
-                            .clipShape(Circle())
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Sign Out Button
+                    HStack {
+                        Button(action: {
+                            signOut()
+                        }) {
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .clipShape(Circle())
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                .padding(.trailing, 20)
-                .padding(.top, 20)
-                
-                // User avatar and name
-                VStack {
-                    if let avatarImage = avatarImage {
-                        Image(uiImage: avatarImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 120, height: 120)
-                            .clipShape(Circle())
-                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                            .shadow(radius: 10)
-                    } else {
-                        Circle()
-                            .fill(Color.gray)
-                            .frame(width: 120, height: 120)
-                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                            .shadow(radius: 10)
+                    .padding(.trailing, 20)
+                    .padding(.top, 20)
+                    
+                    // User avatar and name
+                    VStack {
+                        if let avatarImage = avatarImage {
+                            Image(uiImage: avatarImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 120, height: 120)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                                .shadow(radius: 10)
+                        } else {
+                            Circle()
+                                .fill(Color.gray)
+                                .frame(width: 120, height: 120)
+                                .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                                .shadow(radius: 10)
+                        }
+                        
+                        Text(userName)
+                            .font(.title2)
+                            .fontWeight(.bold)
                     }
-
-                    Text(userName)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                }
-                .padding(.top, 20)
-
-                // My Favorites section
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("My Favorites")
-                        .font(.headline)
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(viewModel.models.filter { $0.isFavorite }, id: \.id) { project in
-                                VStack {
-                                    // AsyncImage for loading image from URL
-                                    if !project.image.isEmpty, let url = get3DModelURL(filename: project.image) {
-                                        AsyncImage(url: url) { phase in
-                                            switch phase {
-                                            case .empty:
-                                                // You can show a placeholder image or spinner while loading
-                                                ProgressView()
-                                                    .frame(width: 100, height: 100)
-                                                    .cornerRadius(10)
-                                            case .success(let image):
-                                                image
-                                                    .resizable()
-                                                    .scaledToFill()
-                                                    .frame(width: 100, height: 100)
-                                                    .cornerRadius(10)
-                                            case .failure:
-                                                // Fallback to a default image if loading fails
-                                                Image(systemName: "cube")
-                                                    .resizable()
-                                                    .frame(width: 100, height: 100)
-                                                    .cornerRadius(10)
-                                            @unknown default:
-                                                EmptyView()
+                    .padding(.top, 20)
+                    
+                    // My Favorites section
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("My Favorites")
+                            .font(.headline)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(viewModel.models.filter { $0.isFavorite }, id: \.id) { project in
+                                    Button(action: {
+                                        showDivisionSlider = true
+                                        selectedModelTitle = project.title
+                                    }) {
+                                        VStack {
+                                            // AsyncImage for loading image from URL
+                                            if !project.image.isEmpty, let url = get3DModelURL(filename: project.image) {
+                                                AsyncImage(url: url) { phase in
+                                                    switch phase {
+                                                    case .empty:
+                                                        // You can show a placeholder image or spinner while loading
+                                                        ProgressView()
+                                                            .frame(width: 100, height: 100)
+                                                            .cornerRadius(10)
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                            .frame(width: 100, height: 100)
+                                                            .cornerRadius(10)
+                                                    case .failure:
+                                                        // Fallback to a default image if loading fails
+                                                        Image(systemName: "cube")
+                                                            .resizable()
+                                                            .frame(width: 100, height: 100)
+                                                            .cornerRadius(10)
+                                                    @unknown default:
+                                                        EmptyView()
+                                                    }
+                                                }
+                                            } else {
+                                                if let image = UIImage(named: project.image) {
+                                                    Image(uiImage: image)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 150, height: 150)
+                                                        .cornerRadius(12)
+                                                        .overlay(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .stroke(Color.white, lineWidth: 2)
+                                                        )
+                                                } else {
+                                                    Rectangle()
+                                                        .fill(Color.gray)
+                                                        .frame(width: 150, height: 150)
+                                                        .cornerRadius(12)
+                                                        .overlay(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .stroke(Color.white, lineWidth: 2)
+                                                        )
+                                                }
                                             }
-                                        }
-                                    } else {
-                                        if let image = UIImage(named: project.image) {
-                                            Image(uiImage: image)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(width: 150, height: 150)
-                                                .cornerRadius(12)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 12)
-                                                        .stroke(Color.white, lineWidth: 2)
-                                                )
-                                        } else {
-                                            Rectangle()
-                                                .fill(Color.gray)
-                                                .frame(width: 150, height: 150)
-                                                .cornerRadius(12)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 12)
-                                                        .stroke(Color.white, lineWidth: 2)
-                                                )
+                                            
+                                            Text(project.title)
+                                                .font(.caption)
                                         }
                                     }
-                                    
-                                    Text(project.title)
-                                        .font(.caption)
                                 }
                             }
                         }
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 20)
+                    
+                    Spacer()
+                    
+                    if navigateToMarchingCubes {
+                        NavigationLink(
+                            destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division)),
+                            isActive: $navigateToMarchingCubes
+                        ) {
+                            EmptyView()
+                        }
+                    }
                 }
-                .padding(.horizontal)
-                .padding(.top, 20)
-
-                Spacer()
-            }
-            .padding()
-            .background(Color.white) // Fixed background color
-            .onAppear {
-                Task {
+                .padding()
+                .background(Color.white) // Fixed background color
+                .sheet(isPresented: $showDivisionSlider) {
+                    DivisionSliderView(division: $division) {
+                        showDivisionSlider = false
+                        if let title = selectedModelTitle {
+                            selectedModelTitle = title
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                navigateToMarchingCubes = true
+                            }
+                        }
+                    }.onAppear {
+                        print("\(selectedModelTitle)")
+                    }
+                }
+                .task {
                     await loadUserData()
                 }
             }

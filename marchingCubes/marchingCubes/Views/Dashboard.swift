@@ -41,61 +41,66 @@ struct Dashboard: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(viewModel.models.prefix(2)) { model in
-                            VStack {
-                                // AsyncImage for loading image from URL
-                                if !model.image.isEmpty, let url = get3DModelURL(filename: model.image) {
-                                    AsyncImage(url: url) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            // You can show a placeholder image or spinner while loading
-                                            ProgressView()
-                                                .frame(width: 100, height: 100)
-                                                .cornerRadius(10)
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 100, height: 100)
-                                                .cornerRadius(10)
-                                        case .failure:
-                                            // Fallback to a default image if loading fails
-                                            Image(systemName: "cube")
-                                                .resizable()
-                                                .frame(width: 100, height: 100)
-                                                .cornerRadius(10)
-                                        @unknown default:
-                                            EmptyView()
+                            Button(action: {
+                                showDivisionSlider = true
+                                selectedModelTitle = model.title
+                            }) {
+                                VStack {
+                                    // AsyncImage for loading image from URL
+                                    if !model.image.isEmpty, let url = get3DModelURL(filename: model.image) {
+                                        AsyncImage(url: url) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                // You can show a placeholder image or spinner while loading
+                                                ProgressView()
+                                                    .frame(width: 100, height: 100)
+                                                    .cornerRadius(10)
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 100, height: 100)
+                                                    .cornerRadius(10)
+                                            case .failure:
+                                                // Fallback to a default image if loading fails
+                                                Image(systemName: "cube")
+                                                    .resizable()
+                                                    .frame(width: 100, height: 100)
+                                                    .cornerRadius(10)
+                                            @unknown default:
+                                                EmptyView()
+                                            }
                                         }
+                                    } else {
+                                        // Default image if model.image is nil or invalid URL
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .cornerRadius(10)
                                     }
-                                } else {
-                                    // Default image if model.image is nil or invalid URL
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .cornerRadius(10)
-                                }
-                                Text(model.title)
-                                    .font(.system(size: 16, weight: .medium))
-                                    .lineLimit(1)
-                                HStack {
-                                    Spacer()
-                                    Button(action: {
-                                        if let index = viewModel.models.firstIndex(where: { $0.id == model.id }) {
-                                            viewModel.models[index].isFavorite.toggle()
+                                    Text(model.title)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .lineLimit(1)
+                                    HStack {
+                                        Spacer()
+                                        Button(action: {
+                                            if let index = viewModel.models.firstIndex(where: { $0.id == model.id }) {
+                                                viewModel.models[index].isFavorite.toggle()
+                                            }
+                                        }) {
+                                            Image(systemName: model.isFavorite ? "heart.fill" : "heart")
+                                                .foregroundColor(model.isFavorite ? .red : .gray)
                                         }
-                                    }) {
-                                        Image(systemName: model.isFavorite ? "heart.fill" : "heart")
-                                            .foregroundColor(model.isFavorite ? .red : .gray)
+                                        .padding(.top, 5)
                                     }
-                                    .padding(.top, 5)
                                 }
+                                .frame(width: 120)
+                                .background(Color(UIColor.systemGray6))
+                                .cornerRadius(10)
                             }
-                            .frame(width: 120)
-                            .background(Color(UIColor.systemGray6))
-                            .cornerRadius(10)
                         }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                 }
                 .padding(.vertical)
                 
@@ -205,7 +210,7 @@ struct Dashboard: View {
             
         }
         .padding()
-        .background(Color.purple)
+        .background(Color.white)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
         .sheet(isPresented: $showDivisionSlider) {
