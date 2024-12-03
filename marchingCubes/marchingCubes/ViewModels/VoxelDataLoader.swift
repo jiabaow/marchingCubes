@@ -35,8 +35,8 @@ class VoxelDataLoader: ObservableObject {
                     // Use the loaded voxel data
                     self.voxelData = loadedVoxelData
                     self.numLayer = loadedVoxelData[0].count - 1
-                    self.isLoading = false
                     self.loadSCNNodesForAllLayers()
+                    self.isLoading = false
                     return
                 }
             } catch {
@@ -57,8 +57,8 @@ class VoxelDataLoader: ObservableObject {
             DispatchQueue.main.async {
                 self.voxelData = loadedVoxelData
                 self.numLayer = loadedNumLayer
-                self.isLoading = false
                 self.loadSCNNodesForAllLayers()
+                self.isLoading = false
                 
                 if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
                     self.saveVoxelDataToFile(data: jsonData, fileURL: fileURL)
