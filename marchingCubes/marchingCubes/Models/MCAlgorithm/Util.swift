@@ -179,7 +179,7 @@ func getCube(cube: String) -> SCNNode {
     case "MC3_1":
         algo.getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
                  v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
-    case "MC3_1N":
+    case "MC5_6":
         algo.getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
                        v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
     case "MC3_3":
