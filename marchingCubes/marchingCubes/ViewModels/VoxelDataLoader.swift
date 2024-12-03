@@ -15,8 +15,10 @@ class VoxelDataLoader: ObservableObject {
     @Published var scnNodesByLayer: [Int: [SCNNode?]] = [:]
     var layerCaseCounts: [Int: [String: Int]] = [:]
     var cumulativeCaseCounts: [String: Int] = [:]
-    
-    func loadVoxelData(filename: String, divisions: Int) {
+    var colorScheme: ColorScheme = .scheme1
+
+    func loadVoxelData(filename: String, divisions: Int, colorScheme: ColorScheme) {
+        self.colorScheme = colorScheme
         let baseFilename = (filename as NSString).deletingPathExtension
         let jsonFilename = "\(baseFilename)_\(divisions)_voxel_data.json"
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -146,7 +148,7 @@ class VoxelDataLoader: ObservableObject {
         }
 
         if !isTopLayer {
-            let algo2d = MarchingCubes2D()
+            let algo2d = MarchingCubes2D(colorScheme: colorScheme)
             let colorNode = algo2d.marchingCubes2D(data: get2DDataFromLayer(data: voxelData, numLayer: numLayer - 1))
             colorNode.position.y += Float(numLayer - 1) + 0.01
 

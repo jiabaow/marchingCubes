@@ -9,7 +9,12 @@ import SceneKit
 
 // Class implementing the 2D Marching Cubes algorithm
 class MarchingCubes2D {
+    var colorScheme: ColorScheme
     var scale: Float = 0.85 // Scale factor for geometry
+    
+    init(colorScheme: ColorScheme) {
+        self.colorScheme = colorScheme
+    }
     
     // Main function to perform the 2D Marching Cubes algorithm on the input data
     func marchingCubes2D(data: [[Int]]) -> SCNNode {
@@ -41,82 +46,82 @@ class MarchingCubes2D {
                 
                 // Determine the case
                 if (a + b + c + d == 4){
-                    let node = getBlue(vertices: &vertices, indices: &indices,
+                    let node = get0_1(vertices: &vertices, indices: &indices,
                                        v1: v1, v2: v2, v3: v3, v4: v4)
                     parentNode.addChildNode(node)
                 }
                 else if (a + b + c + d == 3){
                     if (a == 0) {
-                        let node = getRed(vertices: &vertices, indices: &indices,
+                        let node = get1_1(vertices: &vertices, indices: &indices,
                                           v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b == 0) {
-                        let node = getRed(vertices: &vertices, indices: &indices,
+                        let node = get1_1(vertices: &vertices, indices: &indices,
                                           v1: v2, v2: v1, v3: v4, v4: v3)
                         parentNode.addChildNode(node)
                     }
                     else if (c == 0) {
-                        let node = getRed(vertices: &vertices, indices: &indices,
+                        let node = get1_1(vertices: &vertices, indices: &indices,
                                           v1: v3, v2: v2, v3: v1, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (d == 0) {
-                        let node = getRed(vertices: &vertices, indices: &indices,
+                        let node = get1_1(vertices: &vertices, indices: &indices,
                                           v1: v4, v2: v3, v3: v2, v4: v1)
                         parentNode.addChildNode(node)
                     }
                 }
                 else if (a + b + c + d == 2){
                     if (a + b == 2) {
-                        let node = getOrange(vertices: &vertices, indices: &indices,
+                        let node = get2_2(vertices: &vertices, indices: &indices,
                                              v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b + c == 2) {
-                        let node = getOrange(vertices: &vertices, indices: &indices,
+                        let node = get2_2(vertices: &vertices, indices: &indices,
                                              v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (c + d == 2) {
-                        let node = getOrange(vertices: &vertices, indices: &indices,
+                        let node = get2_2(vertices: &vertices, indices: &indices,
                                              v1: v3, v2: v4, v3: v1, v4: v2)
                         parentNode.addChildNode(node)
                     }
                     else if (d + a == 2) {
-                        let node = getOrange(vertices: &vertices, indices: &indices,
+                        let node = get2_2(vertices: &vertices, indices: &indices,
                                              v1: v4, v2: v1, v3: v2, v4: v3)
                         parentNode.addChildNode(node)
                     }
                     else if (a + c == 2) {
-                        let node = getPurple(vertices: &vertices, indices: &indices,
+                        let node = get2_1(vertices: &vertices, indices: &indices,
                                              v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (b + d == 2) {
-                        let node = getPurple(vertices: &vertices, indices: &indices,
+                        let node = get2_1(vertices: &vertices, indices: &indices,
                                              v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                 }
                 else if (a + b + c + d == 1) {
                     if (a == 1) {
-                        let node = getYellow(vertices: &vertices, indices: &indices,
+                        let node = get3_1(vertices: &vertices, indices: &indices,
                                              v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b == 1) {
-                        let node = getYellow(vertices: &vertices, indices: &indices,
+                        let node = get3_1(vertices: &vertices, indices: &indices,
                                              v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (c == 1) {
-                        let node = getYellow(vertices: &vertices, indices: &indices,
+                        let node = get3_1(vertices: &vertices, indices: &indices,
                                              v1: v3, v2: v4, v3: v1, v4: v2)
                         parentNode.addChildNode(node)
                     }
                     else if (d == 1) {
-                        let node = getYellow(vertices: &vertices, indices: &indices,
+                        let node = get3_1(vertices: &vertices, indices: &indices,
                                              v1: v4, v2: v1, v3: v2, v4: v3)
                         parentNode.addChildNode(node)
                     }
@@ -134,9 +139,8 @@ class MarchingCubes2D {
     // |   |
     // + - +
     // Generate geometry for a fully filled cell (case: all corners filled)
-    func getBlue(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get0_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                  v3: SCNVector3, v4: SCNVector3) -> SCNNode {
-        var scale: Float = 0.85
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
         let scaled_v3 = v3 * scale + v1 * (1 - scale)
@@ -192,7 +196,12 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor.cubitBlue
+        if (colorScheme == .scheme1) {
+            material.diffuse.contents = UIColor.cubitBlue
+        }
+        else if (colorScheme == .scheme2) {
+            material.diffuse.contents = UIColor.cubitDarkBlue
+        }
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -200,7 +209,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with three filled corners (case: one corner empty)
-    func getRed(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get1_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                 v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
@@ -256,7 +265,12 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor.cubitRed
+        if (colorScheme == .scheme1) {
+            material.diffuse.contents = UIColor.cubitRed
+        }
+        else if (colorScheme == .scheme2) {
+            material.diffuse.contents = UIColor.cubitPurple
+        }
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -264,7 +278,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with two diagonally filled corners (case: opposite corners filled)
-    func getPurple(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get2_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
@@ -308,7 +322,12 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor.cubitPurple
+        if (colorScheme == .scheme1) {
+            material.diffuse.contents = UIColor.cubitPurple
+        }
+        else if (colorScheme == .scheme2) {
+            material.diffuse.contents = UIColor.cubitMagenta
+        }
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -316,7 +335,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with two adjacent filled corners (case: adjacent corners filled)
-    func getOrange(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get2_2(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let v_5 = (v1 + v4) / 2
         let v_6 = (v2 + v3) / 2
@@ -368,7 +387,12 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor.cubitOrange
+        if (colorScheme == .scheme1) {
+            material.diffuse.contents = UIColor.cubitOrange
+        }
+        else if (colorScheme == .scheme2) {
+            material.diffuse.contents = UIColor.cubitLightBlue
+        }
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
@@ -376,9 +400,8 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with one filled corner (case: one corner filled)
-    func getYellow(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get3_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
-        var scale: Float = 0.85
         let v5 = (v1 + v2) / 2
         let v6 = (v1 + v4) / 2
         let v7 = (v1 + v3) / 2
@@ -411,7 +434,12 @@ class MarchingCubes2D {
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
         let material = SCNMaterial()
         material.isDoubleSided = true
-        material.diffuse.contents = UIColor.cubitYellow
+        if (colorScheme == .scheme1) {
+            material.diffuse.contents = UIColor.cubitYellow
+        }
+        else if (colorScheme == .scheme2) {
+            material.diffuse.contents = UIColor.cubitPink
+        }
         geometry.materials = [material]
         let node = SCNNode(geometry: geometry)
         
