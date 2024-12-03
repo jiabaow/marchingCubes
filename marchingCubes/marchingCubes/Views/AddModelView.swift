@@ -259,30 +259,44 @@ struct AddModelView: View {
         let sceneSource = SCNSceneSource(url: url, options: options)
         
         if let loadedScene = sceneSource?.scene(options: nil) {
-            // Add a camera if it doesn't exist
-            let cameraNode = SCNNode()
-            cameraNode.camera = SCNCamera()
-            cameraNode.position = SCNVector3(x: 0, y: 0, z: translateZ)
-            loadedScene.rootNode.addChildNode(cameraNode)
-
-            // Calculate bounding box for lighting positioning
+            // Calculate bounding box for centering
             let (min, max) = calculateBoundingBox(for: loadedScene)
             let center = SCNVector3(
                 (min.x + max.x) / 2,
                 (min.y + max.y) / 2,
                 (min.z + max.z) / 2
             )
-            let size = SCNVector3(
-                max.x - min.x,
-                max.y - min.y,
-                max.z - min.z
-            )
-            var curmax = (max.x > max.y) ? max.x : max.y
-            curmax = (max.z > curmax) ? max.z : curmax
-            let maxDimension = curmax
+            
+            // Translate the root node to center the model
+            loadedScene.rootNode.enumerateChildNodes { node, _ in
+                node.position = SCNVector3(
+                    node.position.x - center.x,
+                    node.position.y - center.y,
+                    node.position.z - center.z
+                )
+            }
+            
+            // Apply a white material to all geometries in the scene
+            loadedScene.rootNode.enumerateChildNodes { node, _ in
+                if let geometry = node.geometry {
+                    let whiteMaterial = SCNMaterial()
+                    whiteMaterial.diffuse.contents = UIColor.white
+                    geometry.materials = [whiteMaterial]
+                }
+            }
+
+            // Add a camera if it doesn't exist
+            let cameraNode = SCNNode()
+            cameraNode.camera = SCNCamera()
+            cameraNode.position = SCNVector3(x: 0, y: 0, z: translateZ)
+            loadedScene.rootNode.addChildNode(cameraNode)
 
             // Add lights
-            addLights(to: loadedScene, center: center, radius: maxDimension * 1.5)
+            let size = SCNVector3(max.x - min.x, max.y - min.y, max.z - min.z)
+            var curmax = (max.x > max.y) ? max.x : max.y
+            curmax = (max.z > curmax) ? max.z : curmax
+            let radius = curmax
+            addLights(to: loadedScene, center: SCNVector3Zero, radius: radius)
 
             self.scene = loadedScene
         } else {
@@ -298,10 +312,10 @@ struct AddModelView: View {
         let scnView = SCNView(frame: CGRect(origin: .zero, size: size))
         scnView.scene = currentScene
         
-        // Ensure the scene's background is transparent
-        currentScene.background.contents = UIColor.clear
-        scnView.backgroundColor = UIColor.lightPurple
-        
+        // Set the background color for the scene
+        currentScene.background.contents = UIColor.lightGray
+        scnView.backgroundColor = UIColor.lightGray
+
         // Configure the camera node to match SCNViewWrapper's camera
         if let cameraNode = currentScene.rootNode.childNodes.first(where: { $0.camera != nil }) {
             // Apply transformations
@@ -314,10 +328,21 @@ struct AddModelView: View {
             cameraNode.transform = combinedTransform
         }
         
+        currentScene.rootNode.enumerateChildNodes { node, _ in
+            if let geometry = node.geometry {
+                let whiteMaterial = SCNMaterial()
+                whiteMaterial.diffuse.contents = UIColor.white
+                geometry.materials = [whiteMaterial]
+            }
+        }
+
+        // Take a snapshot
         let image = scnView.snapshot()
 
-        saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
+        // Save the image to the cache
+        _ = saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
     }
+
     
     private func downloadFile(context: AddModelView) async {
         do {
@@ -373,7 +398,7 @@ struct SCNViewWrapper: UIViewRepresentable {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
         scnView.cameraControlConfiguration.allowsTranslation = true
-        scnView.backgroundColor = UIColor.lightPurple
+        scnView.backgroundColor = UIColor.lightGray
         return scnView
     }
 

@@ -81,11 +81,33 @@ class UserModel: Identifiable, Codable {
         let projects = item["projects"]!
         self.projects = dynamoAttrToPrimitive(projects) as! [String]
         
-        let favorites = item["favorites"]
-        self.favorites = dynamoAttrToPrimitive(projects) as! [String]
+        let favorites = item["favorites"]!
+        self.favorites = dynamoAttrToPrimitive(favorites) as! [String]
         
         let createdTimeStamp = item["created_timestamp"]!
         self.created_timestamp = dynamoAttrToPrimitive(createdTimeStamp) as! Int
     }
     
+    func fetchUserData(idToken: String) async throws {
+        do {
+            let dynamodbManager = try await DynamoDBManager()
+            guard let userModel = await dynamodbManager.getUserModel(idToken: idToken) else {
+                throw NSError(domain: "UserModel", code: -1, userInfo: ["fetchUserData": "User not found."])
+            }
+            
+            DispatchQueue.main.async {
+                self.id = userModel.id
+                self.email = userModel.email
+                self.username = userModel.username
+                self.profile_image = userModel.profile_image
+                self.projects = userModel.projects
+                self.favorites = userModel.favorites
+                self.created_timestamp = userModel.created_timestamp
+            }
+            
+        } catch(let error) {
+            print("\(error)")
+            throw NSError(domain: "UserModel", code: -1, userInfo: ["fetchUserData": "\(error)"])
+        }
+    }
 }

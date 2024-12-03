@@ -8,6 +8,7 @@
 import SwiftData
 import Combine
 import Foundation
+import SwiftUICore
 
 class ProjectViewModel: ObservableObject {
     @Published var models: [ProjectModel] = []

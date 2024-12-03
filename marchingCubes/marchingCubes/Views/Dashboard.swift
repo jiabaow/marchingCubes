@@ -15,6 +15,7 @@ struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
+    @State private var selectedModel: ProjectModel? = nil
     @EnvironmentObject var viewModel: ProjectViewModel
     @Environment(\.modelContext) var modelContext
 
@@ -27,7 +28,7 @@ struct Dashboard: View {
                     .padding(.top)
                 
                 // Search bar
-                TextField("Search uploads...", text: $searchQuery)
+                TextField("Search Models...", text: $searchQuery)
                     .padding(10)
                     .background(Color(UIColor.systemGray5))
                     .cornerRadius(10)
@@ -58,7 +59,7 @@ struct Dashboard: View {
                                                 .cornerRadius(10)
                                         case .failure:
                                             // Fallback to a default image if loading fails
-                                            Image(systemName: "exclamationmark.triangle.fill")
+                                            Image(systemName: "cube")
                                                 .resizable()
                                                 .frame(width: 100, height: 100)
                                                 .cornerRadius(10)
@@ -99,7 +100,7 @@ struct Dashboard: View {
                 .padding(.vertical)
                 
                 // Uploads Section
-                Text("Uploads")
+                Text("Models")
                     .font(.system(size: 20, weight: .bold))
                     .padding(.leading)
                 
@@ -137,7 +138,7 @@ struct Dashboard: View {
             .onAppear {
                 viewModel.fetchData(modelContext: modelContext)
             }
-        }
+        } // Navigation View
     }
 
     @ViewBuilder
@@ -158,7 +159,7 @@ struct Dashboard: View {
                             .frame(width: 50, height: 50)
                             .cornerRadius(5)
                     case .failure:
-                        Image(systemName: "exclamationmark.triangle.fill")
+                        Image(systemName: "cube")
                             .resizable()
                             .frame(width: 50, height: 50)
                             .cornerRadius(5)
@@ -184,6 +185,7 @@ struct Dashboard: View {
             // Button to show the division slider
             Button(action: {
                 showDivisionSlider = true
+                selectedModelTitle = model.title
             }) {
                 Image(systemName: "slider.horizontal.3")
                     .foregroundColor(.blue)
@@ -194,7 +196,7 @@ struct Dashboard: View {
             
             if navigateToMarchingCubes {
                 NavigationLink(
-                    destination: MarchingCubesView(filename: model.title, divisions: Int(division)),
+                    destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division)),
                     isActive: $navigateToMarchingCubes
                 ) {
                     EmptyView()
@@ -210,6 +212,8 @@ struct Dashboard: View {
             DivisionSliderView(division: $division) {
                 showDivisionSlider = false
                 navigateToMarchingCubes = true
+            }.onAppear {
+                print("\(selectedModelTitle)")
             }
         }
         .swipeActions {

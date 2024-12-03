@@ -168,17 +168,33 @@ struct LoginView: View {
                 errorMessage = nil
                 
                 let authRes = authResult?.authenticationResult
-                let dynamoManager = try await DynamoDBManager()
-                await dynamoManager.createTable()
                 if let idToken = authRes?.idToken {
                     // Parse the idToken to extract `sub`
                     if let subValue = extractSubFromIDToken(idToken) {
                         print("Extracted sub: \(subValue)")
                         currentUser = "\(subValue):\(username)"
+                        
+                        let dynamoManager = try await DynamoDBManager()
+//                        await dynamoManager.createTable()
+                        
+                        if (await dynamoManager.getUserModel(idToken: currentUser) == nil) {
+                            // Use the `sub` value as the ID in the UserModel
+                            _ = await dynamoManager.insertUserModel(userModel: UserModel(
+                                id: subValue, // Use `sub` as the ID
+                                email: username,
+                                username: name,
+                                profile_image: fetchSVGBase64Async()!,
+                                projects: [],
+                                favorites: [],
+                                created_timestamp: Int(Date().timeIntervalSince1970)
+                            ))
+                        }
                     } else {
                         print("Failed to extract sub from idToken")
                     }
                 } // idToken
+
+                
             }
         } catch let error as AWSCognitoIdentityProvider.UserNotConfirmedException {
             errorMessage = "Account not confirmed. Please confirm your account."

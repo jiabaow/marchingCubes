@@ -13,16 +13,16 @@ class CognitoAuthManager {
     private let region = "us-east-2"
     private let identityPoolId = "us-east-2:f108dcc6-6b69-4b94-8f90-9fa7d1d317da"
     private let userPoolId = "us-east-2_dqxnTyaNK"
-
+    private let clientId = "91t5sp3jgildqv5n4e5c4ncd6"
+    private let accountId = "135808916851"
+    
     init() throws {
-        // Initialize the Cognito client with your region
-        self.client = try CognitoIdentityProviderClient(region: "us-east-2") // Replace with your region
+        self.client = try CognitoIdentityProviderClient(region: region) // Replace with your region
     }
     
     func login(username: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) async -> InitiateAuthOutput? {
         var response: InitiateAuthOutput? = nil
         
-        // Create a sign-up request
         do {
             let authParameters: [String:String] = [
                 "USERNAME": username,
@@ -32,7 +32,7 @@ class CognitoAuthManager {
             let request = InitiateAuthInput(
                 authFlow: .userPasswordAuth,
                 authParameters: authParameters,
-                clientId: "91t5sp3jgildqv5n4e5c4ncd6"
+                clientId: clientId
             )
             
             response = try await self.client.initiateAuth(input: request)
@@ -47,7 +47,7 @@ class CognitoAuthManager {
     }
     
     func getCredentials(authResult: CognitoIdentityProviderClientTypes.AuthenticationResultType?) async -> [String]? {
-        guard let accessToken = authResult!.accessToken else {
+        guard let _ = authResult!.accessToken else {
             print("access token not found")
             return nil
         }
@@ -59,7 +59,7 @@ class CognitoAuthManager {
         do {
             let cognitoIdentityClient = try CognitoIdentityClient(region: "us-east-2")
             let getIdInput = GetIdInput(
-                accountId: "135808916851",
+                accountId: accountId,
                 identityPoolId: identityPoolId,
                 logins: ["cognito-idp.\(region).amazonaws.com/\(userPoolId)": idToken]
             )
@@ -90,7 +90,7 @@ class CognitoAuthManager {
 
     func signUp(username: String, password: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) async -> SignUpOutput? {
         let signUpInput = SignUpInput(
-            clientId: "91t5sp3jgildqv5n4e5c4ncd6",
+            clientId: clientId,
             password: password,
             userAttributes: [
                 CognitoIdentityProviderClientTypes.AttributeType.init(name: "email", value: email)
@@ -113,13 +113,13 @@ class CognitoAuthManager {
     
     func confirmSignUp(username: String, confirmationCode: String) async -> Bool {
         let confirmSignUpInput = ConfirmSignUpInput(
-            clientId: "91t5sp3jgildqv5n4e5c4ncd6",
+            clientId: clientId,
             confirmationCode: confirmationCode,
             username: username
         )
         
         do {
-            try await self.client.confirmSignUp(input: confirmSignUpInput)
+            _ = try await self.client.confirmSignUp(input: confirmSignUpInput)
         } catch {
             print(error)
             return false
@@ -130,8 +130,8 @@ class CognitoAuthManager {
     
     func resendConfirmationCode(username: String) async {
         do {
-            let resend = ResendConfirmationCodeInput(clientId: "91t5sp3jgildqv5n4e5c4ncd6", username: username)
-            try await self.client.resendConfirmationCode(input: resend)
+            let resend = ResendConfirmationCodeInput(clientId: clientId, username: username)
+            _ = try await self.client.resendConfirmationCode(input: resend)
         } catch {
             print(error)
         }

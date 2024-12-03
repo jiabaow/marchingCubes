@@ -185,7 +185,7 @@ struct SignUpView: View {
 
         do {
             let cognitoManager = try CognitoAuthManager()
-            let authResult = await cognitoManager.signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
+            let _ = await cognitoManager.signUp(username: email.lowercased(), password: password, email: email.lowercased()) { result in
                 switch result {
                 case .success:
                     print("Sign-up successful!")

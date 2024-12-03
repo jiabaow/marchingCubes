@@ -12,15 +12,16 @@ struct ContentView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
     @AppStorage("lastActiveTime") private var lastActiveTime: Date = Date()
+    @StateObject private var userViewModel = UserViewModel() // Initialized once
     
     // Define the timeout duration (e.g., 7 days)
     private let timeoutInterval: TimeInterval = 7 * 3600 * 24
-
+    
     var body: some View {
         Group {
             if isAuthenticated {
                 // Show the main content view if authenticated
-                MainTabView()
+                MainTabView(userViewModel: userViewModel)
             } else {
                 // Show the sign-in view if not authenticated
                 AuthSwitcherView()
@@ -46,38 +47,59 @@ struct ContentView: View {
 }
 
 struct MainTabView: View {
+    @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
-    @StateObject private var userViewModel: UserViewModel = UserViewModel()
+    @ObservedObject var userViewModel: UserViewModel // Use @ObservedObject instead
     
-
     var body: some View {
         TabView {
             Dashboard()
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
+                }.task{
+                    do {
+                        try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
+                    } catch (let error) {
+                        print("\(error)")
+                        currentUser = ""
+                        isAuthenticated = false
+                    }
                 }
-//            AddModelView()
-//                .tabItem {
-//                    Label("Upload", systemImage: "arrow.up")
-//                }
+            
+            //            AddModelView()
+            //                .tabItem {
+            //                    Label("Upload", systemImage: "arrow.up")
+            //                }
             ProfileView(userViewModel: userViewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
-                }.onAppear {
-                    fetchUserDataIfAuthenticated()
+                }.task {
+                    do {
+                        try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
+                    } catch (let error) {
+                        print("\(error)")
+                        currentUser = ""
+                        isAuthenticated = false
+                    }
                 }
-//            MarchingCubesView()
-//                .tabItem {
-//                    Label("Test", systemImage: "square.fill")
-//                }
+            
+            //            MarchingCubesView()
+            //                .tabItem {
+            //                    Label("Test", systemImage: "square.fill")
+            //                }
         }
     }
     
     // Fetch user data if authenticated
-    private func fetchUserDataIfAuthenticated() {
-        guard !currentUser.isEmpty else { return }
-        Task {
-            await self.userViewModel.fetchUserData(idToken: currentUser)
+    private func fetchUserDataIfAuthenticated(currentUser: String = "", userViewModel: UserViewModel) async throws {
+        guard !currentUser.isEmpty else {
+            throw NSError(domain: "MainTabView", code: -1, userInfo: ["fetchUserDataIfAuthenticated": "User unauthenticated."])
+        }
+        do {
+            try await userViewModel.fetchUserData(idToken: currentUser)
+        } catch (let error) {
+            print("\(error)")
+            throw NSError(domain: "MainTabView", code: -1, userInfo: ["fetchUserDataIfAuthenticated": "\(error)"])
         }
     }
 }

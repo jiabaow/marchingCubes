@@ -104,7 +104,6 @@ struct ConfirmSignupView: View {
             isConfirmationSuccessful = await cognitoManager.confirmSignUp(username: email, confirmationCode: confirmationCode)
             if (isConfirmationSuccessful) {
                 errorMessage = nil
-//                onConfirmationComplete?()
                 currentUser = email
                 
                 // perform login

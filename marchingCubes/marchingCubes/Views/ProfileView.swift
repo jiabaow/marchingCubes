@@ -78,7 +78,7 @@ struct ProfileView: View {
                                                     .cornerRadius(10)
                                             case .failure:
                                                 // Fallback to a default image if loading fails
-                                                Image(systemName: "exclamationmark.triangle.fill")
+                                                Image(systemName: "cube")
                                                     .resizable()
                                                     .frame(width: 100, height: 100)
                                                     .cornerRadius(10)
@@ -133,8 +133,12 @@ struct ProfileView: View {
 
     private func loadUserData() async {
         // Use the existing userViewModel to fetch and update data
-        await userViewModel.fetchUserData(idToken: currentUser)
-        userName = userViewModel.username ?? "Peter Johnson"
+        do {
+            _ = try await userViewModel.fetchUserData(idToken: currentUser)
+        } catch (let error) {
+            print("\(error)")
+        }
+        userName = userViewModel.username ?? "Loading..."
         
         let profileImageData = userViewModel.profileImage ?? ""
         let loadedImage = loadSVGImage(from: profileImageData)
