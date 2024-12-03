@@ -97,6 +97,8 @@ struct ConfirmSignupView: View {
             errorMessage = "Make sure password is passed."
             return
         }
+        
+        var isAuthed = false
 
         do {
             let cognitoManager = try CognitoAuthManager()
@@ -104,6 +106,7 @@ struct ConfirmSignupView: View {
             isConfirmationSuccessful = await cognitoManager.confirmSignUp(username: email, confirmationCode: confirmationCode)
             if (isConfirmationSuccessful) {
                 errorMessage = nil
+//                onConfirmationComplete?()
                 currentUser = email
                 
                 // perform login
@@ -111,7 +114,7 @@ struct ConfirmSignupView: View {
                     result in
                     switch result {
                     case .success:
-                        isAuthenticated = true
+                        isAuthed = true
                     case .failure(let error):
                         if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
                             print("user not confirmed")
@@ -119,7 +122,7 @@ struct ConfirmSignupView: View {
                     }
                 }
                 
-                if (isAuthenticated) {
+                if (isAuthed) {
                     let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
                     setenv("AWS_ACCESS_KEY_ID",accessKeySecretKeySession[0],1)
                     setenv("AWS_SECRET_ACCESS_KEY",accessKeySecretKeySession[1],1)
@@ -128,24 +131,44 @@ struct ConfirmSignupView: View {
                     
                     let authRes = authResult?.authenticationResult
                     if let idToken = authRes?.idToken {
+                        // Parse the idToken to extract `sub`
                         if let subValue = extractSubFromIDToken(idToken) {
                             print("Extracted sub: \(subValue)")
-                            // Parse the idToken to extract `sub`
                             currentUser = "\(subValue):\(email)"
-
-                            let dynamoManager = try await DynamoDBManager()
-                            await dynamoManager.createTable()
                             
-                            // Use the `sub` value as the ID in the UserModel
-                            _ = await dynamoManager.insertUserModel(userModel: UserModel(
-                                id: subValue, // Use `sub` as the ID
-                                email: email,
-                                username: (!name.isEmpty) ? name : Randoms.randomFakeName(),
-                                profile_image: fetchSVGBase64Async()!,
-                                projects: [],
-                                favorites: [],
-                                created_timestamp: Int(Date().timeIntervalSince1970)
-                            ))
+                            var retryCount = 0
+                            let maxRetries = 5
+                            var delay: UInt64 = 1 // Start with a 1-second delay
+                            var userModEx: UserModel? = nil
+                            
+                            while retryCount < maxRetries {
+                                let dynamoManager = try await DynamoDBManager()
+                                userModEx = await dynamoManager.getUserModel(idToken: currentUser) // Assign result to userModEx
+                                if userModEx != nil {
+                                    print("User exists in DynamoDB.")
+                                    isAuthenticated = isAuthed
+                                    return
+                                } else {
+                                    _ = await dynamoManager.insertUserModel(userModel: UserModel(
+                                        id: subValue, // Use `sub` as the ID
+                                        email: email,
+                                        username: name,
+                                        profile_image: fetchSVGBase64Async()!,
+                                        projects: [],
+                                        favorites: [],
+                                        created_timestamp: Int(Date().timeIntervalSince1970)
+                                    ))
+                                    
+                                    if retryCount == maxRetries - 1 {
+                                        print("Maximum retries reached. User creation failed.")
+                                        throw NSError(domain: "DynamoDB", code: 1, userInfo: ["message": "Failed to verify or create user in DynamoDB."])
+                                    }
+                                    print("User not found. Retrying in \(delay) seconds...")
+                                    try await Task.sleep(nanoseconds: delay * 1_000_000_000)
+                                    delay *= 2 // Exponential backoff
+                                    retryCount += 1
+                                }
+                            }
                         } else {
                             print("Failed to extract sub from idToken")
                         }

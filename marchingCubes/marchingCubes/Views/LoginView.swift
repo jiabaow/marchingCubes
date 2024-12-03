@@ -139,6 +139,8 @@ struct LoginView: View {
             errorMessage = "Please enter both username and password."
             return
         }
+        
+        var isAuthed = false
 
         do {
             let cognitoManager = try CognitoAuthManager()
@@ -147,7 +149,7 @@ struct LoginView: View {
                 result in
                 switch result {
                     case .success:
-                        isAuthenticated = true
+                        isAuthed = true
                     case .failure(let error):
                         if error is AWSCognitoIdentityProvider.UserNotConfirmedException {
                             print("User not confirmed")
@@ -160,7 +162,7 @@ struct LoginView: View {
                         }
                 }
             }
-            if (isAuthenticated) {
+            if (isAuthed) {
                 let accessKeySecretKeySession = await cognitoManager.getCredentials(authResult: authResult?.authenticationResult)!
                 setenv("AWS_ACCESS_KEY_ID", accessKeySecretKeySession[0], 1)
                 setenv("AWS_SECRET_ACCESS_KEY", accessKeySecretKeySession[1], 1)
@@ -184,19 +186,9 @@ struct LoginView: View {
                             userModEx = await dynamoManager.getUserModel(idToken: currentUser) // Assign result to userModEx
                             if userModEx != nil {
                                 print("User exists in DynamoDB.")
+                                isAuthenticated = isAuthed
                                 return
                             } else {
-                                if retryCount == maxRetries - 1 {
-                                    print("Maximum retries reached. User creation failed.")
-                                    throw NSError(domain: "DynamoDB", code: 1, userInfo: ["message": "Failed to verify or create user in DynamoDB."])
-                                }
-                                print("User not found. Retrying in \(delay) seconds...")
-                                try await Task.sleep(nanoseconds: delay * 1_000_000_000)
-                                delay *= 2 // Exponential backoff
-                                retryCount += 1
-                            }
-                            
-                            if (userModEx == nil) {
                                 // Use the `sub` value as the ID in the UserModel
                                 _ = await dynamoManager.insertUserModel(userModel: UserModel(
                                     id: subValue, // Use `sub` as the ID
@@ -207,6 +199,15 @@ struct LoginView: View {
                                     favorites: [],
                                     created_timestamp: Int(Date().timeIntervalSince1970)
                                 ))
+
+                                if retryCount == maxRetries - 1 {
+                                    print("Maximum retries reached. User creation failed.")
+                                    throw NSError(domain: "DynamoDB", code: 1, userInfo: ["message": "Failed to verify or create user in DynamoDB."])
+                                }
+                                print("User not found. Retrying in \(delay) seconds...")
+                                try await Task.sleep(nanoseconds: delay * 1_000_000_000)
+                                delay *= 2 // Exponential backoff
+                                retryCount += 1
                             }
                         }
                         
