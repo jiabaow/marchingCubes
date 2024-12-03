@@ -46,6 +46,7 @@ struct MarchingCubesView: View {
                                           onLoadingComplete: { withAnimation { isSceneLoading = true }} // works with true but not false. to check
                                 )
                                     .frame(width: 320, height: 380)
+                                    .clipShape(InvertedCornerShape(cornerRadius: 20))
                                     .edgesIgnoringSafeArea(.all)
                             }
                             unitsCountView(caseCounts: dataLoader.cumulativeCaseCounts)
