@@ -36,7 +36,6 @@ class VoxelDataLoader: ObservableObject {
                     self.voxelData = loadedVoxelData
                     self.numLayer = loadedVoxelData[0].count - 1
                     self.loadSCNNodesForAllLayers()
-                    self.isLoading = false
                     return
                 }
             } catch {
@@ -58,7 +57,6 @@ class VoxelDataLoader: ObservableObject {
                 self.voxelData = loadedVoxelData
                 self.numLayer = loadedNumLayer
                 self.loadSCNNodesForAllLayers()
-                self.isLoading = false
                 
                 if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
                     self.saveVoxelDataToFile(data: jsonData, fileURL: fileURL)
@@ -83,7 +81,6 @@ class VoxelDataLoader: ObservableObject {
                     // Use the loaded voxel data
                     self.voxelData = loadedVoxelData
                     self.numLayer = loadedVoxelData[0].count - 1
-                    self.isLoading = false
                     self.loadSCNNodesForAllLayers()
                     return
                 }
@@ -105,7 +102,6 @@ class VoxelDataLoader: ObservableObject {
             DispatchQueue.main.async {
                 self.voxelData = loadedVoxelData
                 self.numLayer = loadedNumLayer
-                self.isLoading = false
                 self.loadSCNNodesForAllLayers()
                 
                 if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
@@ -117,13 +113,25 @@ class VoxelDataLoader: ObservableObject {
     }
     
     private func loadSCNNodesForAllLayers() {
-        for layer in 0...numLayer {
-            let isTopLayer = (layer == numLayer)
-            let nodes = loadSCNNodesByLayer(numLayer: layer + 1, voxelData: voxelData, isTopLayer: isTopLayer, cumulativeCaseCounts: &cumulativeCaseCounts)
-            scnNodesByLayer[layer] = nodes
+        DispatchQueue.main.async {
+            self.isLoading = true
         }
-        let fullNode = loadSCNNodesByLayer(numLayer: numLayer + 1, voxelData: voxelData, isTopLayer: false, cumulativeCaseCounts: &cumulativeCaseCounts)
-        scnNodesByLayer[0] = fullNode
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            for layer in 0...self.numLayer {
+                let isTopLayer = (layer == self.numLayer)
+                let nodes = self.loadSCNNodesByLayer(numLayer: layer + 1, voxelData: self.voxelData, isTopLayer: isTopLayer, cumulativeCaseCounts: &self.cumulativeCaseCounts)
+                DispatchQueue.main.async {
+                    self.scnNodesByLayer[layer] = nodes
+                }
+            }
+            
+            let fullNode = self.loadSCNNodesByLayer(numLayer: self.numLayer + 1, voxelData: self.voxelData, isTopLayer: false, cumulativeCaseCounts: &self.cumulativeCaseCounts)
+            DispatchQueue.main.async {
+                self.scnNodesByLayer[0] = fullNode
+                self.isLoading = false
+            }
+        }
     }
     
     private func loadSCNNodesByLayer(numLayer: Int, voxelData: [[[Int]]], isTopLayer: Bool, cumulativeCaseCounts: inout [String: Int]) -> [SCNNode?] {

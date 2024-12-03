@@ -10,7 +10,7 @@ struct MarchingCubesView: View {
     @StateObject private var dataLoader = VoxelDataLoader()
 
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 5, colorScheme: ColorScheme = .scheme2) {
+    init(filename: String = "rabbit", divisions: Int = 25, colorScheme: ColorScheme = .scheme2) {
         self.filename = filename
         self.divisions = divisions
         self.colorScheme = colorScheme
