@@ -239,7 +239,7 @@ struct DivisionSliderView: View {
                 .font(.headline)
                 .padding()
             
-            Slider(value: $division, in: 1...50, step: 1)
+            Slider(value: $division, in: 1...25, step: 1)
                 .padding()
             
             Text("Divisions: \(Int(division))")
