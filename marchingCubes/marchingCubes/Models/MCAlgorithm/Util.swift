@@ -151,7 +151,7 @@ func getCube(cube: String) -> SCNNode {
     switch cube {
     case "MC0_1":
         algo.getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
-    case "MC1_1N":
+    case "MC7_1":
         algo.getMC1_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3_b4, v3: v_b1_b4, v4: v_a4_b4)
     case "MC1_1":
         algo.getMC1_1(vertices: &vertices, indices: &indices,
@@ -161,13 +161,13 @@ func getCube(cube: String) -> SCNNode {
     case "MC2_1":
         algo.getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
                       v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
-    case "MC2_1N":
+    case "MC6_3":
         algo.getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
                        v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
     case "MC2_2":
         algo.getMC2_2(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
                       v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
-    case "MC2_2N":
+    case "MC6_2":
         algo.getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
                        v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
     case "MC2_3":
@@ -188,7 +188,7 @@ func getCube(cube: String) -> SCNNode {
     case "MC3_4":
         algo.getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
                       v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
-    case "MC3_4N":
+    case "MC5_4":
         algo.getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
                        v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
     case "MC4_1":
