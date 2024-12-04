@@ -3,7 +3,6 @@
 //  marchingCubes
 //
 //  Created by Charles Weng on 10/23/24.
-//
 import Foundation
 import SwiftUI
 import SceneKit
@@ -28,10 +27,15 @@ struct AddModelView: View {
         NavigationView {
             VStack {
                 // Upload title
-                Text("Add Your Model")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.top)
+                VStack {
+                    Text("Add your model")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Text("File should be OBJ")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                .padding(.top)
                 
                 ZStack {
                     // Dashed rounded rectangle as placeholder
@@ -40,11 +44,20 @@ struct AddModelView: View {
                         .frame(height: 400)
                         .foregroundColor(.gray)
                         .overlay(
-                            // 3D Scene View
-                            Group {
-                                if let scene = scene {
+                            VStack {
+                                if scene == nil {
+                                    VStack {
+                                        Image(systemName: "plus")
+                                            .font(.system(size: 50))
+                                            .foregroundColor(.gray)
+                                        Text("Drag & drop or Choose file")
+                                            .foregroundColor(.gray)
+                                            .font(.headline)
+                                    }
+                                } else {
+                                    // 3D Scene View
                                     SCNViewWrapper(
-                                        scene: scene,
+                                        scene: scene!,
                                         translateZ: $translateZ,
                                         translateX: $translateX,
                                         translateY: $translateY,
@@ -67,9 +80,6 @@ struct AddModelView: View {
                                             }
                                     )
                                     .frame(height: 400)
-                                } else {
-                                    Text("Choose file (.obj)")
-                                        .foregroundColor(.gray)
                                 }
                             }
                         )
@@ -111,7 +121,7 @@ struct AddModelView: View {
                         Text("Download Sample Files")
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.blue)
+                            .background(Color(hex: "5A60E3"))
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -143,19 +153,6 @@ struct AddModelView: View {
                             .shadow(radius: 5)
                     }
                     .padding(.bottom, 30)
-                } else {
-//                    Button(action: {
-//                        showDocumentPicker = true
-//                    }) {
-//                        Image(systemName: "plus")
-//                            .font(.system(size: 24))
-//                            .padding()
-//                            .background(Color.blue)
-//                            .foregroundColor(.white)
-//                            .clipShape(Circle())
-//                            .shadow(radius: 5)
-//                    }
-//                    .padding(.bottom, 30)
                 }
                 
                 if isDownloading {
@@ -171,9 +168,6 @@ struct AddModelView: View {
             }
             .padding()
         }
-//        .navigationBarItems(leading: Button("Cancel") {
-//            presentationMode.wrappedValue.dismiss()
-//        })
     }
     
     private func calculateBoundingBox(for scene: SCNScene) -> (min: SCNVector3, max: SCNVector3) {
@@ -343,7 +337,6 @@ struct AddModelView: View {
         _ = saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
     }
 
-    
     private func downloadFile(context: AddModelView) async {
         do {
             let fileManager = FileManager.default
@@ -381,7 +374,6 @@ struct AddModelView: View {
             print("Error downloading files: \(error)")
         }
     }
-
 }
 
 // UIViewRepresentable for SCNView
@@ -420,21 +412,6 @@ struct SCNViewWrapper: UIViewRepresentable {
             
             // Apply the combined transformation
             cameraNode.transform = combinedTransform
-        }
-        
-        // Update lighting intensity based on translateZ
-//        updateLighting(for: scene)
-    }
-    
-    private func updateLighting(for scene: SCNScene) {
-        let baseIntensity: CGFloat = 1000
-        let zoomFactor = max(1.0, abs(translateZ) / 10.0) // Adjust scaling factor
-        let adjustedIntensity = baseIntensity * CGFloat(zoomFactor)
-        
-        scene.rootNode.enumerateChildNodes { node, _ in
-            if let light = node.light {
-                light.intensity = adjustedIntensity
-            }
         }
     }
 }
