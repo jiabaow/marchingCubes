@@ -181,6 +181,35 @@ struct ProfileView: View {
     }
 }
 
+struct DivisionSliderView: View {
+    @Binding var division: Double
+    var onDismiss: () -> Void
+    
+    var body: some View {
+        VStack {
+            Text("Choose Divisions")
+                .font(.headline)
+                .padding()
+            
+            Slider(value: $division, in: 1...25, step: 1)
+                .padding()
+            
+            Text("Divisions: \(Int(division))")
+                .font(.subheadline)
+                .padding()
+            
+            Button("Done") {
+                onDismiss()
+            }
+            .padding()
+        }
+        .presentationDetents([.medium, .fraction(0.3)])
+    }
+}
+
+
+
+
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         let mockProjectViewModel = ProjectViewModel() // Mock or sample data
@@ -196,4 +225,5 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileView(userViewModel: mockUserViewModel)
             .environmentObject(mockProjectViewModel)
     }
+    
 }

@@ -1,8 +1,8 @@
-//
+/*
 //  MyView.swift
 //  marchingCubes
-//
 //  Created by 温嘉宝 on 22.10.2024.
+*/
 import SwiftUI
 import SwiftData
 import UIKit
@@ -51,7 +51,7 @@ struct Dashboard: View {
                                         AsyncImage(url: url) { phase in
                                             switch phase {
                                             case .empty:
-                                                // You can show a placeholder image or spinner while loading
+                                                // Placeholder image or spinner while loading
                                                 ProgressView()
                                                     .frame(width: 100, height: 100)
                                                     .cornerRadius(10)
@@ -75,7 +75,7 @@ struct Dashboard: View {
                                         // Default image if model.image is nil or invalid URL
                                         Image(systemName: "photo")
                                             .resizable()
-                                            .frame(width: 50, height: 50)
+                                            .frame(width: 100, height: 100)
                                             .cornerRadius(10)
                                     }
                                     Text(model.title)
@@ -95,8 +95,10 @@ struct Dashboard: View {
                                     }
                                 }
                                 .frame(width: 120)
-                                .background(Color(UIColor.systemGray6))
+                                .padding()
+                                .background(Color(hex: "E5E6F6")) // Light purple background color
                                 .cornerRadius(10)
+                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2) // Add shadow
                             }
                         }
                         .padding(.horizontal)
@@ -126,17 +128,35 @@ struct Dashboard: View {
                    Spacer()
                    HStack {
                        Spacer()
-                       NavigationLink(destination: AddModelView().environmentObject(viewModel)) {
-                           Image(systemName: "plus")
-                               .font(.system(size: 24))
-                               .padding()
-                               .background(Color.blue)
-                               .foregroundColor(.white)
-                               .clipShape(Circle())
-                               .shadow(radius: 5)
+                       Button(action: {
+                           showAddModelView = true
+                       }) {
+                           ZStack {
+                               Circle()
+                                   .fill(Color(hex: "5A60E3")) // Purple color
+                                   .frame(width: 56, height: 56)
+                                   .shadow(radius: 5)
+                               Image(systemName: "plus")
+                                   .font(.system(size: 24))
+                                   .foregroundColor(.white)
+                           }
                        }
                        Spacer()
                    } // + HStack
+                   .background(
+                       ZStack {
+                           Color.clear
+                           RoundedRectangle(cornerRadius: 25)
+                               .fill(Color.white)
+                               .frame(height: 1) // Only one line below the button
+                               .offset(y: 28)
+                               .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: -2)
+                           Circle()
+                               .fill(Color.white)
+                               .frame(width: 56, height: 28)
+                               .offset(y: 28) // Create a semi-circle effect under the "+" button
+                       }
+                   ) // Separator line with half-circle under the "+" button
                } // + VStack
             }
             .padding(.horizontal)
@@ -238,28 +258,16 @@ struct Dashboard_Previews: PreviewProvider {
     }
 }
 
-struct DivisionSliderView: View {
-    @Binding var division: Double
-    var onDismiss: () -> Void
-    
-    var body: some View {
-        VStack {
-            Text("Choose Divisions")
-                .font(.headline)
-                .padding()
-            
-            Slider(value: $division, in: 1...25, step: 1)
-                .padding()
-            
-            Text("Divisions: \(Int(division))")
-                .font(.subheadline)
-                .padding()
-            
-            Button("Done") {
-                onDismiss()
-            }
-            .padding()
-        }
-        .presentationDetents([.medium, .fraction(0.3)])
+// Extension for using hex colors in SwiftUI
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        scanner.currentIndex = hex.startIndex
+        var rgbValue: UInt64 = 0
+        scanner.scanHexInt64(&rgbValue)
+        let red = Double((rgbValue >> 16) & 0xff) / 255.0
+        let green = Double((rgbValue >> 8) & 0xff) / 255.0
+        let blue = Double(rgbValue & 0xff) / 255.0
+        self.init(red: red, green: green, blue: blue)
     }
 }
