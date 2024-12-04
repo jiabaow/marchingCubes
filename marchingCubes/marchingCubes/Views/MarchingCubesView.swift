@@ -110,7 +110,7 @@ struct MarchingCubesView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(caseCounts.sorted(by: { $0.key < $1.key }), id: \.key) { key, count in
-                        SceneView(scnNodes: [getCube(cube: key)], labelText: "\(count) x", backgroundColor: .darkerLightGray)
+                        SceneView(scnNodes: [getCube(cube: key, colorScheme: colorScheme)], labelText: "\(count) x", backgroundColor: .darkerLightGray)
                             .frame(width: 150, height: 150)
                             .clipShape(InvertedCornerShape(cornerRadius: 15))
                             .padding()

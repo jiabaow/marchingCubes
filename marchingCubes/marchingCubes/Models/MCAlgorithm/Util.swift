@@ -124,125 +124,184 @@ func testGetCube() -> SCNNode{
     return parentNode
 }
 
-func getCube(cube: String) -> SCNNode {
+func getCube(cube: String, colorScheme: ColorScheme) -> SCNNode {
     let parentNode = SCNNode() // Create a parent node to hold all generated nodes
-    var vertices: [SCNVector3] = []
-    var indices: [Int32] = []
     
-    let i = 0
-    let j = 0
-    let k = 0
-    
-    // vertices
-    let v_b4 = SCNVector3(Float(i), Float(j), Float(k))
-    let v_b3 = SCNVector3(Float(i) + 1, Float(j), Float(k))
-    let v_a3 = SCNVector3(Float(i) + 1, Float(j), Float(k) + 1)
-    let v_a4 = SCNVector3(Float(i), Float(j), Float(k) + 1)
-    let v_b1 = SCNVector3(Float(i), Float(j) + 1, Float(k))
-    let v_b2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k))
-    let v_a2 = SCNVector3(Float(i) + 1, Float(j) + 1, Float(k) + 1)
-    let v_a1 = SCNVector3(Float(i), Float(j) + 1, Float(k) + 1)
-    // midpoint of vertices
-    let v_b3_b4 = (v_b4 + v_b3) / 2
-    let v_b1_b4 = (v_b1 + v_b4) / 2
-    let v_a4_b4 = (v_a4 + v_b4) / 2
+    var a1: Int = 1
+    var a2: Int = 1
+    var a3: Int = 1
+    var a4: Int = 1
+    var b1: Int = 1
+    var b2: Int = 1
+    var b3: Int = 1
+    var b4: Int = 1
     
     let algo = MarchingCubesAlgo()
     switch cube {
     case "MC0_1":
-        algo.getMC0_1(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+        a1 = 1
     case "MC7_1":
-        algo.getMC1_1N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3_b4, v3: v_b1_b4, v4: v_a4_b4)
+        a1 = 0
+        a2 = 0
+        a3 = 0
+        a4 = 0
+        b1 = 0
+        b2 = 0
+        b3 = 0
     case "MC1_1":
-        algo.getMC1_1(vertices: &vertices, indices: &indices,
-                      v1: v_a4_b4, v2: v_b3_b4, v3: v_b1_b4,
-                      v4: v_a4, v5: v_b3, v6: v_b1, v7: v_a3,
-                      v8: v_b2, v9: v_a1, v10: v_a2)
+        a1 = 0
     case "MC2_1":
-        algo.getMC2_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
-                      v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
+        a1 = 0
+        a3 = 0
     case "MC6_3":
-        algo.getMC2_1N(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_b1,
-                       v3: v_a1, v4: v_b2, v5: v_a3, v6: v_b4, v7: v_a4, v8: v_b3)
+        a1 = 0
+        a3 = 0
+        b1 = 0
+        b2 = 0
+        b3 = 0
+        b4 = 0
     case "MC2_2":
-        algo.getMC2_2(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                      v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
+        a2 = 0
+        b2 = 0
     case "MC6_2":
-        algo.getMC2_2N(vertices: &vertices, indices: &indices, v1: v_b4, v2: v_b3,
-                       v3: v_a4, v4: v_a3, v5: v_a1, v6: v_a2, v7: v_b1, v8: v_b2)
+        a1 = 0
+        a2 = 0
+        a3 = 0
+        b1 = 0
+        b2 = 0
+        b3 = 0
     case "MC2_3":
-        algo.getMC2_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
-                      v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
-    case "MC2_3N":
-        algo.getMC2_3N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_b3,
-                       v3: v_a2, v4: v_b2, v5: v_b1, v6: v_b4, v7: v_a4, v8: v_a3)
+        a2 = 0
+        b4 = 0
+//    case "MC2_3N":
     case "MC3_1":
-        algo.getMC3_1(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                 v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+        a1 = 0
+        b1 = 0
+        a3 = 0
     case "MC5_6":
-        algo.getMC3_1N(vertices: &vertices, indices: &indices, v1: v_a3, v2: v_a2,
-                       v3: v_b1, v4: v_b4, v5: v_b3, v6: v_b2, v7: v_a4, v8: v_a1)
+        a2 = 0
+        a4 = 0
+        b2 = 0
+        b3 = 0
+        b4 = 0
     case "MC3_3":
-        algo.getMC3_3(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1,
-                 v3: v_a3, v4: v_b4, v5: v_a2, v6: v_b3, v7: v_b1, v8: v_b2)
+        a1 = 0
+        a3 = 0
+        b2 = 0
     case "MC3_4":
-        algo.getMC3_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                      v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
+        a1 = 0
+        a2 = 0
+        b2 = 0
     case "MC5_4":
-        algo.getMC3_4N(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a4,
-                       v3: v_a3, v4: v_a2, v5: v_b1, v6: v_b4, v7: v_b3, v8: v_b2)
+        a1 = 0
+        a2 = 0
+        b1 = 0
+        b2 = 0
+        a3 = 0
     case "MC4_1":
-        algo.getMC4_1(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
+        a1 = 0
+        b2 = 0
+        a3 = 0
+        b4 = 0
     case "MC4_2":
-        algo.getMC4_2(vertices: &vertices, indices: &indices, v1: v_a2, v2: v_a3, v3: v_a4, v4: v_a1, v5: v_b2, v6: v_b3, v7: v_b4, v8: v_b1)
+        a1 = 0
+        a3 = 0
+        b3 = 0
+        b4 = 0
     case "MC4_3":
-        algo.getMC4_3(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+        b1 = 0
+        b2 = 0
+        a3 = 0
+        a4 = 0
     case "MC4_4":
-        algo.getMC4_4(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+        a1 = 0
+        a2 = 0
+        b1 = 0
+        b2 = 0
     case "MC4_5":
-        algo.getMC4_5(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
+        a1 = 0
+        a2 = 0
+        b2 = 0
+        a3 = 0
     case "MC4_6":
-        algo.getMC4_6(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+        a1 = 0
+        a4 = 0
+        b3 = 0
+        a3 = 0
     case "MC4_7":
-        algo.getMC4_7(vertices: &vertices, indices: &indices, v1: v_a1, v2: v_a2, v3: v_a3, v4: v_a4, v5: v_b1, v6: v_b2, v7: v_b3, v8: v_b4)
+        a2 = 0
+        a3 = 0
+        a4 = 0
+        b4 = 0
     case "MC5_5":
-        algo.getMC5_5(vertices: &vertices, indices: &indices, v1: v_a4, v2: v_a1, v3: v_a2, v4: v_a3, v5: v_b4, v6: v_b1, v7: v_b2, v8: v_b3)
+        a2 = 0
+        a3 = 0
+        a4 = 0
+        b3 = 0
+        b1 = 0
     default:
         print("received an unknown cube", cube)
     }
     
-    if (vertices.count != 0 ) {
-        // Create geometry source
-        let vertexSource = SCNGeometrySource(vertices: vertices)
-        
-        // Create geometry element
-        let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
-        
-        // Create geometry
-        let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
-        
-        // Create a material and make it double-sided
-        let material = SCNMaterial()
-        material.isDoubleSided = true
-        
-        // Assign the material to the geometry
-        geometry.materials = [material]
-        
-        // Use the geometry in a node
-        let node = SCNNode(geometry: geometry)
-        
-        parentNode.addChildNode(node)
-        
-        let element4Lines = SCNGeometryElement(indices: algo.indices4Lines, primitiveType: .line)
-        let geometry4Lines = SCNGeometry(sources: [vertexSource], elements: [element4Lines])
-        let material4Lines = SCNMaterial()
-            material4Lines.diffuse.contents = UIColor.black
-        geometry4Lines.materials = [material4Lines]
-        let node4Lines = SCNNode(geometry: geometry4Lines)
-        parentNode.addChildNode(node4Lines)
-    }
+    let voxelData : [[[Int]]] = [
+        [[b4, a4],
+         [b1, a1]],
+        [[b3, a3],
+         [b2, a2]]
+    ]
+    
+    parentNode.addChildNode(algo.marchingCubesV2(data: voxelData))
+    
+    parentNode.addChildNode(drawShapeWithColorForCubes(a1: a1, a2: a2, a3: a3, a4: a4, b1: b1, b2: b2, b3: b3, b4: b4, colorScheme: colorScheme))
+    
     parentNode.addChildNode(createBall(at: SCNVector3(-0.5, -0.5, -0.5), radius: 0.001, color: .white))
     parentNode.addChildNode(createBall(at: SCNVector3(1.5, 1.5, 1.5), radius: 0.001, color: .white))
+    return parentNode
+}
+
+func drawShapeWithColorForCubes(a1: Int, a2: Int, a3: Int, a4: Int,
+                                b1: Int, b2: Int, b3: Int, b4: Int, colorScheme: ColorScheme)-> SCNNode {
+    let parentNode = SCNNode()
+    // 6 faces of the cube
+    let tbl = [
+        [[b1, a1], [b2, a2]],
+        [[b4, a4], [b3, a3]],
+        [[b4, a4], [b1, a1]],
+        [[b3, a3], [b2, a2]],
+        [[a1, a4], [a2, a3]],
+        [[b1, b4], [b2, b3]]
+    ]
+    let algo = MarchingCubes2D(colorScheme: colorScheme)
+    let node1 = algo.marchingCubes2D(data: tbl[0])
+    node1.position.y += 1.01
+    parentNode.addChildNode(node1)
+    
+    let node2 = algo.marchingCubes2D(data: tbl[1])
+    node2.position.y += -0.01
+    parentNode.addChildNode(node2)
+    
+    let node3 = algo.marchingCubes2D(data: tbl[2])
+    node3.eulerAngles.z += Float.pi / 2
+    node3.position.x += -0.01
+    parentNode.addChildNode(node3)
+    
+    let node4 = algo.marchingCubes2D(data: tbl[3])
+    node4.eulerAngles.z += Float.pi / 2
+    node4.position.x += 1.01
+    parentNode.addChildNode(node4)
+
+    let node5 = algo.marchingCubes2D(data: tbl[4])
+    node5.eulerAngles.x += Float.pi / 2
+    node5.position.y += 1
+    node5.position.z += 1.01
+    parentNode.addChildNode(node5)
+    
+    let node6 = algo.marchingCubes2D(data: tbl[5])
+    node6.eulerAngles.x += Float.pi / 2
+    node6.position.y += 1
+    node6.position.z += -0.01
+    parentNode.addChildNode(node6)
+    
     return parentNode
 }
 
