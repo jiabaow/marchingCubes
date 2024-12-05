@@ -14,12 +14,14 @@ class ProjectModel: Identifiable {
     var title: String
     var image: String
     var isFavorite: Bool
+    var fileURLString: String
 
-    init(id: UUID = UUID(), title: String, image: String, isFavorite: Bool = false) {
+    init(id: UUID = UUID(), title: String, image: String, isFavorite: Bool = false, fileURLString: String = "") {
         self.id = id
         self.title = title
         self.image = image
         self.isFavorite = isFavorite
+        self.fileURLString = fileURLString
     }
 }
 

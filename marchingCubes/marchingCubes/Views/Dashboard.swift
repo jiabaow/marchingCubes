@@ -16,6 +16,7 @@ struct Dashboard: View {
     @State private var showDocumentPicker = false
     @State private var searchQuery: String = ""
     @State private var selectedModelTitle: String? = nil // Track selected model title
+    @State private var selectedFileURLString: String? = nil
     @State private var selectedModel: ProjectModel? = nil
     @EnvironmentObject var viewModel: ProjectViewModel
     @Environment(\.modelContext) var modelContext
@@ -45,6 +46,7 @@ struct Dashboard: View {
                             Button(action: {
                                 showDivisionSlider = true
                                 selectedModelTitle = model.title
+                                selectedFileURLString = model.fileURLString
                             }) {
                                 VStack {
                                     // AsyncImage for loading image from URL
@@ -125,6 +127,7 @@ struct Dashboard: View {
             }
             .padding(.horizontal)
             .onAppear {
+                print(viewModel.models)
                 viewModel.fetchData(modelContext: modelContext)
             }
         } // Navigation View
@@ -175,6 +178,7 @@ struct Dashboard: View {
             Button(action: {
                 showDivisionSlider = true
                 selectedModelTitle = model.title
+                selectedFileURLString = model.fileURLString
             }) {
                 Image(systemName: "slider.horizontal.3")
                     .foregroundColor(.blue)
@@ -185,7 +189,7 @@ struct Dashboard: View {
             
             if navigateToMarchingCubes {
                 NavigationLink(
-                    destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme),
+                    destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme, fileURLString: selectedFileURLString!),
                     isActive: $navigateToMarchingCubes
                 ) {
                     EmptyView()

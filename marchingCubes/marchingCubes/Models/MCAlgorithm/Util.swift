@@ -53,11 +53,12 @@ func loadOBJ(filename: String) -> MDLAsset? {
 
 // Voxelize a given MDLAsset with specified divisions
 func voxelize(asset: MDLAsset, divisions: Int32) -> MDLVoxelArray? {
-    guard let mesh = asset.object(at: 0) as? MDLMesh else {
-        print("Failed to extract MDLMesh.")
+    if asset.count > 0 {
+        return MDLVoxelArray(asset: asset, divisions: divisions, patchRadius: 0)
+    } else {
+        print("Failed to create Voxel Array.")
         return nil
     }
-    return MDLVoxelArray(asset: asset, divisions: divisions, patchRadius: 0)
 }
 
 // Test function to create a cube node using SceneKit

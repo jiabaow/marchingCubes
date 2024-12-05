@@ -17,7 +17,7 @@ class VoxelDataLoader: ObservableObject {
     var cumulativeCaseCounts: [String: Int] = [:]
     var colorScheme: ColorScheme = .scheme1
 
-    func loadVoxelData(filename: String, divisions: Int, colorScheme: ColorScheme) {
+    func loadVoxelData(filename: String, divisions: Int, colorScheme: ColorScheme, fileURLString: String = "") {
         self.colorScheme = colorScheme
         let baseFilename = (filename as NSString).deletingPathExtension
         let jsonFilename = "\(baseFilename)_\(divisions)_voxel_data.json"
@@ -45,7 +45,7 @@ class VoxelDataLoader: ObservableObject {
         print("Not cached, need to voxelize the model")
         
         DispatchQueue.global(qos: .userInitiated).async {
-            guard let (loadedVoxelData, loadedNumLayer) = self.loadVoxelDataHelper(filename: filename, divisions: divisions) else {
+            guard let (loadedVoxelData, loadedNumLayer) = self.loadVoxelDataHelper(filename: (fileURLString.isEmpty) ? filename : fileURLString, divisions: divisions) else {
                 print("Failed to load voxel data.")
                 DispatchQueue.main.async {
                     self.isLoading = false
@@ -61,52 +61,6 @@ class VoxelDataLoader: ObservableObject {
                 if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
                     self.saveVoxelDataToFile(data: jsonData, fileURL: fileURL)
                     print("Cached voxel data")
-                }
-            }
-        }
-    }
-    
-    
-    func loadVoxelData2(filename: String, divisions: Int) {
-        let jsonFilename = filename.replacingOccurrences(of: ".obj", with: "_voxel_data.json")
-//        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(jsonFilename)
-        let fileURL = get3DModelURL(filename: filename)!
-        
-        // Check if the JSON file exists
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            print("JSON file exists. Loading voxel data from \(fileURL.path).")
-            do {
-                let data = try Data(contentsOf: fileURL)
-                if let loadedVoxelData = deserializeVoxelData(from: data) {
-                    // Use the loaded voxel data
-                    self.voxelData = loadedVoxelData
-                    self.numLayer = loadedVoxelData[0].count - 1
-                    self.loadSCNNodesForAllLayers()
-                    return
-                }
-            } catch {
-                print("Error loading voxel data from JSON file: \(error)")
-            }
-        }
-        print("not cashed, need to voxelize the model")
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let (loadedVoxelData, loadedNumLayer) = self.loadVoxelDataHelper(filename: filename, divisions: divisions) else {
-                print("Failed to load voxel data.")
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.voxelData = loadedVoxelData
-                self.numLayer = loadedNumLayer
-                self.loadSCNNodesForAllLayers()
-                
-                if let jsonData = self.serializeVoxelData(voxelData: loadedVoxelData) {
-                    self.saveVoxelDataToFile(data: jsonData, fileURL: fileURL)
-                    print("cached Voxel data")
                 }
             }
         }
@@ -200,7 +154,11 @@ class VoxelDataLoader: ObservableObject {
     // Helper function to load and voxelize the model
      func loadVoxelDataHelper(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
          var voxArray: MDLVoxelArray? = nil
-         if let fileURL = get3DModelURL(filename: filename) {
+         if let fileURL = getExternURL(filename: filename),
+            let obj = loadObjAsset(filename: fileURL),
+            let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) {
+            voxArray = voxarr
+         } else if let fileURL = get3DModelURL(filename: filename) {
              guard let obj = loadObjAsset(filename: fileURL),
                    let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
                  print("Failed to load or voxelize the model.")

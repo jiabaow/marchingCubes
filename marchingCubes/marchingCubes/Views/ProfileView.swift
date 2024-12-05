@@ -8,9 +8,11 @@ struct ProfileView: View {
     @ObservedObject var userViewModel: UserViewModel
     @State private var showDivisionSlider = false
     @State private var selectedModelTitle: String? = nil // Track selected model title
+    @State private var selectedFileURLString: String? = nil
     @State private var avatarImage: UIImage? = nil
     @State private var userName: String = "Peter Johnson"
     @State private var navigateToMarchingCubes = false
+    @State private var hasTaskRun = false
     @State private var division: Double = 5.0
     @State private var colorScheme: ColorScheme = .scheme1
     @Environment(\.modelContext) var modelContext
@@ -69,6 +71,7 @@ struct ProfileView: View {
                                     Button(action: {
                                         showDivisionSlider = true
                                         selectedModelTitle = project.title
+                                        selectedFileURLString = project.fileURLString
                                     }) {
                                         VStack {
                                             // AsyncImage for loading image from URL
@@ -131,10 +134,10 @@ struct ProfileView: View {
                     .padding(.top, 20)
                     
                     Spacer()
-                    
+
                     if navigateToMarchingCubes {
                         NavigationLink(
-                            destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme),
+                            destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme, fileURLString: selectedFileURLString!),
                             isActive: $navigateToMarchingCubes
                         ) {
                             EmptyView()
@@ -159,7 +162,10 @@ struct ProfileView: View {
                     }
                 }
                 .task {
-                    await loadUserData()
+                    if !hasTaskRun {
+                        hasTaskRun = true
+                        await loadUserData()
+                    }
                 }
             }
         }

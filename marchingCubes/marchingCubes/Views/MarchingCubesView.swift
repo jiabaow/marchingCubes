@@ -6,15 +6,17 @@ struct MarchingCubesView: View {
     let filename: String
     let divisions: Int
     let colorScheme: ColorScheme
+    let fileURLString: String
 
     @StateObject private var dataLoader = VoxelDataLoader()
     @State private var isSceneLoading: Bool = true
 
     // Optional initializer
-    init(filename: String = "rabbit", divisions: Int = 5, colorScheme: ColorScheme = .scheme2) {
+    init(filename: String = "rabbit", divisions: Int = 5, colorScheme: ColorScheme = .scheme2, fileURLString: String = "") {
         self.filename = filename
         self.divisions = divisions
         self.colorScheme = colorScheme
+        self.fileURLString = fileURLString
         
         // Customize the appearance of the page control dots
         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.primaryBlue
@@ -63,7 +65,7 @@ struct MarchingCubesView: View {
             }
         }
         .onAppear {
-            dataLoader.loadVoxelData(filename: filename, divisions: divisions, colorScheme: colorScheme)
+            dataLoader.loadVoxelData(filename: (!fileURLString.isEmpty) ? fileURLString : filename, divisions: divisions, colorScheme: colorScheme, fileURLString: fileURLString)
         }
     }
     

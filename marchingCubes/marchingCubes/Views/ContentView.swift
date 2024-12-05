@@ -38,8 +38,6 @@ struct ContentView: View {
     }
 }
 
-import SwiftUI
-
 struct MainTabView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
@@ -90,7 +88,7 @@ struct MainTabView: View {
                     .fill(Color.white)
                     .frame(height: 80)
                     .shadow(radius: 5)
-                
+
                 // Custom Tab Bar Buttons
                 HStack {
                     Spacer(minLength: 60)
@@ -104,7 +102,7 @@ struct MainTabView: View {
                                 .font(.system(size: 25))
                                 .font(.footnote)
                         }
-                        .foregroundColor(selectedIndex == 0 ? (Color(hex: "5A60E3")) : .gray)
+                        .foregroundColor(selectedIndex == 0 ? Color(hex: "5A60E3") : .gray)
                     }
 
                     Spacer()
@@ -158,7 +156,6 @@ struct MainTabView: View {
     }
 }
 
-// Custom Tab Bar shape with more defined middle notch and no bottom line
 struct CustomTabBarShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -187,11 +184,9 @@ struct CustomTabBarShape: Shape {
     }
 }
 
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         MainTabView(userViewModel: UserViewModel())
             .environmentObject(ProjectViewModel())
     }
 }
-

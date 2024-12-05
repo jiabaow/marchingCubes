@@ -46,13 +46,13 @@ class ProjectViewModel: ObservableObject {
     }
 
     // Add a new model to the SwiftData store
-    func addModel(title: String, image: String, modelContext: ModelContext) {
+    func addModel(title: String, image: String, modelContext: ModelContext, fileURLString: String = "") {
         if models.contains(where: { $0.title == title }) {
             print("Model with title '\(title)' already exists. Skipping addition.")
             return
         }
         
-        let newModel = ProjectModel(title: title, image: image)
+        let newModel = ProjectModel(title: title, image: image, fileURLString: fileURLString)
         if (models.contains(newModel)) {
             print("Model with title: \(title) already exists")
             return

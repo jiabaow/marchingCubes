@@ -134,7 +134,8 @@ struct AddModelView: View {
                 if let url = selectedFileURL {
                     Button(action: {
                         guard let fileURL = selectedFileURL else { return }
-                        viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext)
+                        viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext, fileURLString: fileURL.absoluteString)
+                        print(viewModel.models)
                         saveDocumentToCache(from: fileURL)
                         takeScreenshot()
                         print("Model obj filename: ", fileURL.lastPathComponent)

@@ -59,6 +59,15 @@ func saveImageToCache(_ image: UIImage, _ filename: String) -> Bool {
 //    }
 //}
 
+func getExternURL(filename: String) -> URL? {
+    guard let url = NSURL(string: filename) else {
+        print("Could not load file from external directory.")
+        return nil
+    }
+    
+    return url.filePathURL
+}
+
 
 func get3DModelURL(filename: String) -> URL? {
     // Get the 3D files directory
