@@ -9,6 +9,7 @@ import UIKit
 
 struct Dashboard: View {
     @State private var division: Double = 5.0
+    @State private var colorScheme: ColorScheme = .scheme1
     @State private var showDivisionSlider = false
     @State private var navigateToMarchingCubes = false
     @State private var showAddModelView = false
@@ -221,7 +222,7 @@ struct Dashboard: View {
             
             if navigateToMarchingCubes {
                 NavigationLink(
-                    destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division)),
+                    destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme),
                     isActive: $navigateToMarchingCubes
                 ) {
                     EmptyView()
@@ -234,7 +235,7 @@ struct Dashboard: View {
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
         .sheet(isPresented: $showDivisionSlider) {
-            DivisionSliderView(division: $division) {
+            DivisionSliderView(division: $division, selectedScheme: $colorScheme) {
                 showDivisionSlider = false
                 navigateToMarchingCubes = true
             }.onAppear {

@@ -12,6 +12,7 @@ struct ProfileView: View {
     @State private var userName: String = "Peter Johnson"
     @State private var navigateToMarchingCubes = false
     @State private var division: Double = 5.0
+    @State private var colorScheme: ColorScheme = .scheme1
     @Environment(\.modelContext) var modelContext
 
     var body: some View {
@@ -133,7 +134,7 @@ struct ProfileView: View {
                     
                     if navigateToMarchingCubes {
                         NavigationLink(
-                            destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division)),
+                            destination: MarchingCubesView(filename: selectedModelTitle!, divisions: Int(division), colorScheme: colorScheme),
                             isActive: $navigateToMarchingCubes
                         ) {
                             EmptyView()
@@ -143,7 +144,7 @@ struct ProfileView: View {
                 .padding()
                 .background(Color.white) // Fixed background color
                 .sheet(isPresented: $showDivisionSlider) {
-                    DivisionSliderView(division: $division) {
+                    DivisionSliderView(division: $division, selectedScheme: $colorScheme) {
                         showDivisionSlider = false
                         if let title = selectedModelTitle {
                             selectedModelTitle = title
@@ -180,34 +181,6 @@ struct ProfileView: View {
         self.isAuthenticated = false
     }
 }
-
-struct DivisionSliderView: View {
-    @Binding var division: Double
-    var onDismiss: () -> Void
-    
-    var body: some View {
-        VStack {
-            Text("Choose Divisions")
-                .font(.headline)
-                .padding()
-            
-            Slider(value: $division, in: 1...25, step: 1)
-                .padding()
-            
-            Text("Divisions: \(Int(division))")
-                .font(.subheadline)
-                .padding()
-            
-            Button("Done") {
-                onDismiss()
-            }
-            .padding()
-        }
-        .presentationDetents([.medium, .fraction(0.3)])
-    }
-}
-
-
 
 
 struct ProfileView_Previews: PreviewProvider {
