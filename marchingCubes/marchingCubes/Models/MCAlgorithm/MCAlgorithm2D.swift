@@ -24,8 +24,6 @@ class MarchingCubes2D {
         
         for i in 0..<xDim {
             for j in 0..<yDim {
-                var vertices: [SCNVector3] = []
-                var indices: [Int32] = []
                 // Retrieve the values of the corners of the current cell
                 let a = data[i][j]
                 let b = data[i+1][j]
@@ -45,83 +43,68 @@ class MarchingCubes2D {
                 
                 // Determine the case
                 if (a + b + c + d == 4){
-                    let node = get0_1(vertices: &vertices, indices: &indices,
-                                       v1: v1, v2: v2, v3: v3, v4: v4)
+                    let node = get0_1(v1: v1, v2: v2, v3: v3, v4: v4)
                     parentNode.addChildNode(node)
                 }
                 else if (a + b + c + d == 3){
                     if (a == 0) {
-                        let node = get1_1(vertices: &vertices, indices: &indices,
-                                          v1: v1, v2: v2, v3: v3, v4: v4)
+                        let node = get1_1(v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b == 0) {
-                        let node = get1_1(vertices: &vertices, indices: &indices,
-                                          v1: v2, v2: v1, v3: v4, v4: v3)
+                        let node = get1_1(v1: v2, v2: v1, v3: v4, v4: v3)
                         parentNode.addChildNode(node)
                     }
                     else if (c == 0) {
-                        let node = get1_1(vertices: &vertices, indices: &indices,
-                                          v1: v3, v2: v2, v3: v1, v4: v4)
+                        let node = get1_1(v1: v3, v2: v2, v3: v1, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (d == 0) {
-                        let node = get1_1(vertices: &vertices, indices: &indices,
-                                          v1: v4, v2: v3, v3: v2, v4: v1)
+                        let node = get1_1(v1: v4, v2: v3, v3: v2, v4: v1)
                         parentNode.addChildNode(node)
                     }
                 }
                 else if (a + b + c + d == 2){
                     if (a + b == 2) {
-                        let node = get2_2(vertices: &vertices, indices: &indices,
-                                             v1: v1, v2: v2, v3: v3, v4: v4)
+                        let node = get2_2(v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b + c == 2) {
-                        let node = get2_2(vertices: &vertices, indices: &indices,
-                                             v1: v2, v2: v3, v3: v4, v4: v1)
+                        let node = get2_2(v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (c + d == 2) {
-                        let node = get2_2(vertices: &vertices, indices: &indices,
-                                             v1: v3, v2: v4, v3: v1, v4: v2)
+                        let node = get2_2(v1: v3, v2: v4, v3: v1, v4: v2)
                         parentNode.addChildNode(node)
                     }
                     else if (d + a == 2) {
-                        let node = get2_2(vertices: &vertices, indices: &indices,
-                                             v1: v4, v2: v1, v3: v2, v4: v3)
+                        let node = get2_2(v1: v4, v2: v1, v3: v2, v4: v3)
                         parentNode.addChildNode(node)
                     }
                     else if (a + c == 2) {
-                        let node = get2_1(vertices: &vertices, indices: &indices,
-                                             v1: v2, v2: v3, v3: v4, v4: v1)
+                        let node = get2_1(v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (b + d == 2) {
-                        let node = get2_1(vertices: &vertices, indices: &indices,
-                                             v1: v1, v2: v2, v3: v3, v4: v4)
+                        let node = get2_1(v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                 }
                 else if (a + b + c + d == 1) {
                     if (a == 1) {
-                        let node = get3_1(vertices: &vertices, indices: &indices,
-                                             v1: v1, v2: v2, v3: v3, v4: v4)
+                        let node = get3_1(v1: v1, v2: v2, v3: v3, v4: v4)
                         parentNode.addChildNode(node)
                     }
                     else if (b == 1) {
-                        let node = get3_1(vertices: &vertices, indices: &indices,
-                                             v1: v2, v2: v3, v3: v4, v4: v1)
+                        let node = get3_1(v1: v2, v2: v3, v3: v4, v4: v1)
                         parentNode.addChildNode(node)
                     }
                     else if (c == 1) {
-                        let node = get3_1(vertices: &vertices, indices: &indices,
-                                             v1: v3, v2: v4, v3: v1, v4: v2)
+                        let node = get3_1(v1: v3, v2: v4, v3: v1, v4: v2)
                         parentNode.addChildNode(node)
                     }
                     else if (d == 1) {
-                        let node = get3_1(vertices: &vertices, indices: &indices,
-                                             v1: v4, v2: v1, v3: v2, v4: v3)
+                        let node = get3_1(v1: v4, v2: v1, v3: v2, v4: v3)
                         parentNode.addChildNode(node)
                     }
                 }
@@ -135,7 +118,7 @@ class MarchingCubes2D {
     // |   |
     // + - +
     // Generate geometry for a fully filled cell (case: all corners filled)
-    func get0_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get0_1(v1: SCNVector3, v2: SCNVector3,
                  v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
@@ -157,13 +140,13 @@ class MarchingCubes2D {
         let v24 = scaled_v1 * 0.2 + scaled_v4 * 0.8
         let v25 = scaled_v2 * 0.2 + scaled_v4 * 0.8
         let (v26, v27, v28) = calculateCircle(v1: v23, v2: v24, v3: v25, v4: scaled_v4)
-        vertices += [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
         v5, v6, v7, v8, v9, v10,
         v11, v12, v13, v14, v15,
         v16, v17, v18, v19, v20,
         v21, v22, v23, v24, v25,
         v26, v27, v28]
-        indices += [5, 12, 17,
+        let indices: [Int32] = [5, 12, 17,
                     5, 17, 24,
                     6, 7, 11,
                     7, 11, 13,
@@ -205,7 +188,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with three filled corners (case: one corner empty)
-    func get1_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get1_1(v1: SCNVector3, v2: SCNVector3,
                 v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
@@ -224,7 +207,7 @@ class MarchingCubes2D {
         let v24 = scaled_v1 * 0.2 + scaled_v4 * 0.8
         let v25 = scaled_v2 * 0.2 + scaled_v4 * 0.8
         let (v26, v27, v28) = calculateCircle(v1: v23, v2: v24, v3: v25, v4: scaled_v4)
-        vertices += [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
                      (scaled_v1 + scaled_v2) / 2, (scaled_v1 + scaled_v4) / 2,
         v1, v1, v1, v1,
         v11, v12, v13, v14, v15,
@@ -232,7 +215,7 @@ class MarchingCubes2D {
         v21, v22, v23, v24, v25,
         v26, v27, v28]
 
-        indices += [
+        let indices: [Int32] = [
             5, 6, 19,
             6, 24, 25,
             6, 19, 25,
@@ -274,7 +257,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with two diagonally filled corners (case: opposite corners filled)
-    func get2_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get2_1(v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let scaled_v1 = v1 * scale + v3 * (1 - scale)
         let scaled_v2 = v2 * scale + v4 * (1 - scale)
@@ -289,12 +272,12 @@ class MarchingCubes2D {
         let v17 = scaled_v2 * 0.15 + scaled_v4 * 0.85
         let (v18, v19, v20) = calculateCircle(v1: v15, v2: v16, v3: v17, v4: scaled_v4)
 
-        vertices += [ v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+        let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
                       (scaled_v1 + scaled_v2) / 2, (scaled_v2 + scaled_v3) / 2,
                       (scaled_v3 + scaled_v4) / 2, (scaled_v1 + scaled_v4) / 2,
                       v9, v10, v11, v12, v13, v14, v15,
                       v16, v17, v18, v19, v20]
-        indices += [
+        let indices: [Int32] = [
             11, 9, 12,
             11, 12, 13,
             11, 13, 14,
@@ -331,7 +314,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with two adjacent filled corners (case: adjacent corners filled)
-    func get2_2(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get2_2(v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let v_5 = (v1 + v4) / 2
         let v_6 = (v2 + v3) / 2
@@ -351,11 +334,11 @@ class MarchingCubes2D {
         let v12 = scaled_v3 * 0.15 + scaled_v2 * 0.85
         let v13 = scaled_v4 * 0.15 + scaled_v2 * 0.85
         let (v14, v15, v16) = calculateCircle(v1: v11, v2: v12, v3: v13, v4: scaled_v2)
-        vertices += [ v1, scaled_v1, scaled_v2, v3, v4,
+        let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, v3, v4,
                       v5, v6, v7, v8, v9, v10,
                       v11, v12, v13, v14,v15, v16,
                       scaled_v5, scaled_v6]
-        indices += [
+        let indices: [Int32] = [
             7, 5, 8,
             7, 8, 9,
             7, 9, 10,
@@ -396,7 +379,7 @@ class MarchingCubes2D {
     }
     
     // Generate geometry for a cell with one filled corner (case: one corner filled)
-    func get3_1(vertices: inout [SCNVector3], indices: inout [Int32], v1: SCNVector3, v2: SCNVector3,
+    func get3_1(v1: SCNVector3, v2: SCNVector3,
                    v3: SCNVector3, v4: SCNVector3) -> SCNNode {
         let v5 = (v1 + v2) / 2
         let v6 = (v1 + v4) / 2
@@ -412,10 +395,10 @@ class MarchingCubes2D {
         let v10 = v8 + v9 - scaled_v1
         let (v11, v12, v13) = calculateCircle(v1: v8, v2: v9, v3: v10, v4: scaled_v1)
         
-        vertices += [ v1, scaled_v1, v2, v3, v4,
+        let vertices: [SCNVector3] = [ v1, scaled_v1, v2, v3, v4,
                       scaled_v5, scaled_v6,
                       v7, v8, v9, v10, v11, v12, v13]
-        indices += [
+        let indices: [Int32] = [
             10, 5, 6,
             6,8, 10,
             5, 9, 10,
