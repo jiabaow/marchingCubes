@@ -14,19 +14,15 @@ struct DivisionSliderView: View {
     
     var body: some View {
         VStack {
-            Text("Choose Divisions")
+            Text("Choose Configuration")
                 .font(.headline)
                 .padding()
             
             Picker("Color Scheme", selection: $selectedScheme) {
-                Image("color_scheme_1")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                Text("Scheme 1")
                     .tag(ColorScheme.scheme1)
                 
-                Image("color_scheme_2")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                Text("Scheme 2")
                     .tag(ColorScheme.scheme2)
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -45,5 +41,22 @@ struct DivisionSliderView: View {
             .padding()
         }
         .presentationDetents([.medium, .fraction(0.3)])
+    }
+}
+
+struct DivisionSliderView_Previews: PreviewProvider {
+    @State static private var division: Double = 5.0
+    @State static private var colorScheme: ColorScheme = .scheme1
+    
+    static var previews: some View {
+        DivisionSliderView(
+            division: $division,
+            selectedScheme: $colorScheme,
+            onDismiss: {
+                print("Dismissed")
+            }
+        )
+        .previewLayout(.sizeThatFits)
+        .padding()
     }
 }

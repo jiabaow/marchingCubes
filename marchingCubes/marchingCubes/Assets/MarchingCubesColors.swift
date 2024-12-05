@@ -30,7 +30,8 @@ extension UIColor {
     static let primaryBlue = UIColor(red: 90 / 255, green: 103 / 255, blue: 216 / 255, alpha: 1.0)
 }
 
-enum ColorScheme {
+enum ColorScheme: String, CaseIterable, Hashable {
     case scheme1
     case scheme2
+    
 }
