@@ -140,36 +140,40 @@ class MarchingCubes2D {
         let v24 = scaled_v1 * 0.2 + scaled_v4 * 0.8
         let v25 = scaled_v2 * 0.2 + scaled_v4 * 0.8
         let (v26, v27, v28) = calculateCircle(v1: v23, v2: v24, v3: v25, v4: scaled_v4)
-        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
-        v5, v6, v7, v8, v9, v10,
-        v11, v12, v13, v14, v15,
-        v16, v17, v18, v19, v20,
-        v21, v22, v23, v24, v25,
-        v26, v27, v28]
-        let indices: [Int32] = [5, 12, 17,
-                    5, 17, 24,
-                    6, 7, 11,
-                    7, 11, 13,
-                    18, 19, 23,
-                    19, 23, 25,
-                    7, 5, 8,
-                    7, 8, 9,
-                    7, 9, 10,
-                    7, 10, 6,
-                    13, 11, 14,
-                    13, 14, 15,
-                    13, 15, 16,
-                    13, 16, 12,
-                    19, 17, 20,
-                    19, 20, 21,
-                    19, 21, 22,
-                    19, 22, 18,
-                    25, 23, 26,
-                    25, 26, 27,
-                    25, 27, 28,
-                    25, 28, 24
+//        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+//        v5, v6, v7, v8, v9, v10,
+//        v11, v12, v13, v14, v15,
+//        v16, v17, v18, v19, v20,
+//        v21, v22, v23, v24, v25,
+//        v26, v27, v28]
+        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4]
+//        let indices: [Int32] = [5, 12, 17,
+//                    5, 17, 24,
+//                    6, 7, 11,
+//                    7, 11, 13,
+//                    18, 19, 23,
+//                    19, 23, 25,
+//                    7, 5, 8,
+//                    7, 8, 9,
+//                    7, 9, 10,
+//                    7, 10, 6,
+//                    13, 11, 14,
+//                    13, 14, 15,
+//                    13, 15, 16,
+//                    13, 16, 12,
+//                    19, 17, 20,
+//                    19, 20, 21,
+//                    19, 21, 22,
+//                    19, 22, 18,
+//                    25, 23, 26,
+//                    25, 26, 27,
+//                    25, 27, 28,
+//                    25, 28, 24
+//        ]
+        let indices: [Int32] = [
+            1, 2, 3,
+            1, 3, 4
         ]
-        
         let vertexSource = SCNGeometrySource(vertices: vertices)
         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
@@ -207,38 +211,43 @@ class MarchingCubes2D {
         let v24 = scaled_v1 * 0.2 + scaled_v4 * 0.8
         let v25 = scaled_v2 * 0.2 + scaled_v4 * 0.8
         let (v26, v27, v28) = calculateCircle(v1: v23, v2: v24, v3: v25, v4: scaled_v4)
-        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
-                     (scaled_v1 + scaled_v2) / 2, (scaled_v1 + scaled_v4) / 2,
-        v1, v1, v1, v1,
-        v11, v12, v13, v14, v15,
-        v16, v17, v18, v19, v20,
-        v21, v22, v23, v24, v25,
-        v26, v27, v28]
-
+//        let vertices: [SCNVector3] = [v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+//                     (scaled_v1 + scaled_v2) / 2, (scaled_v1 + scaled_v4) / 2,
+//        v1, v1, v1, v1,
+//        v11, v12, v13, v14, v15,
+//        v16, v17, v18, v19, v20,
+//        v21, v22, v23, v24, v25,
+//        v26, v27, v28]
+        let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+                              (scaled_v1 + scaled_v2) / 2, (scaled_v1 + scaled_v4) / 2]
+//        let indices: [Int32] = [
+//            5, 6, 19,
+//            6, 24, 25,
+//            6, 19, 25,
+//            5, 11, 13,
+//            5, 13, 19,
+//            12, 17, 19,
+//            12, 13, 19,
+//            18, 19, 25,
+//            18, 23, 25,
+//            13, 11, 14,
+//            13, 14, 15,
+//            13, 15, 16,
+//            13, 16, 12,
+//            19, 17, 20,
+//            19, 20, 21,
+//            19, 21, 22,
+//            19, 22, 18,
+//            25, 23, 26,
+//            25, 26, 27,
+//            25, 27, 28,
+//            25, 28, 24
+//        ]
         let indices: [Int32] = [
-            5, 6, 19,
-            6, 24, 25,
-            6, 19, 25,
-            5, 11, 13,
-            5, 13, 19,
-            12, 17, 19,
-            12, 13, 19,
-            18, 19, 25,
-            18, 23, 25,
-            13, 11, 14,
-            13, 14, 15,
-            13, 15, 16,
-            13, 16, 12,
-            19, 17, 20,
-            19, 20, 21,
-            19, 21, 22,
-            19, 22, 18,
-            25, 23, 26,
-            25, 26, 27,
-            25, 27, 28,
-            25, 28, 24
+            2, 3, 5,
+            3, 5, 6,
+            3, 4, 6,
         ]
-        
         let vertexSource = SCNGeometrySource(vertices: vertices)
         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
@@ -272,30 +281,38 @@ class MarchingCubes2D {
         let v17 = scaled_v2 * 0.15 + scaled_v4 * 0.85
         let (v18, v19, v20) = calculateCircle(v1: v15, v2: v16, v3: v17, v4: scaled_v4)
 
+//        let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
+//                      (scaled_v1 + scaled_v2) / 2, (scaled_v2 + scaled_v3) / 2,
+//                      (scaled_v3 + scaled_v4) / 2, (scaled_v1 + scaled_v4) / 2,
+//                      v9, v10, v11, v12, v13, v14, v15,
+//                      v16, v17, v18, v19, v20]
         let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, scaled_v3, scaled_v4,
-                      (scaled_v1 + scaled_v2) / 2, (scaled_v2 + scaled_v3) / 2,
-                      (scaled_v3 + scaled_v4) / 2, (scaled_v1 + scaled_v4) / 2,
-                      v9, v10, v11, v12, v13, v14, v15,
-                      v16, v17, v18, v19, v20]
+                              (scaled_v1 + scaled_v2) / 2, (scaled_v2 + scaled_v3) / 2,
+                              (scaled_v3 + scaled_v4) / 2, (scaled_v1 + scaled_v4) / 2]
+//        let indices: [Int32] = [
+//            11, 9, 12,
+//            11, 12, 13,
+//            11, 13, 14,
+//            11, 14, 10,
+//            17, 15, 18,
+//            17, 18, 19,
+//            17, 19, 20,
+//            17, 20, 16,
+//            7, 15, 17,
+//            6, 7, 17,
+//            6, 10, 17,
+//            10, 11, 17,
+//            9, 11, 17,
+//            5, 9, 17,
+//            5, 8, 17,
+//            8, 16, 17,
+//        ]
         let indices: [Int32] = [
-            11, 9, 12,
-            11, 12, 13,
-            11, 13, 14,
-            11, 14, 10,
-            17, 15, 18,
-            17, 18, 19,
-            17, 19, 20,
-            17, 20, 16,
-            7, 15, 17,
-            6, 7, 17,
-            6, 10, 17,
-            10, 11, 17,
-            9, 11, 17,
-            5, 9, 17,
-            5, 8, 17,
-            8, 16, 17,
+            2, 5, 8,
+            2, 6, 8,
+            4, 7, 6,
+            4, 8, 6,
         ]
-        
         let vertexSource = SCNGeometrySource(vertices: vertices)
         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
         let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
@@ -334,32 +351,39 @@ class MarchingCubes2D {
         let v12 = scaled_v3 * 0.15 + scaled_v2 * 0.85
         let v13 = scaled_v4 * 0.15 + scaled_v2 * 0.85
         let (v14, v15, v16) = calculateCircle(v1: v11, v2: v12, v3: v13, v4: scaled_v2)
+        
         let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, v3, v4,
-                      v5, v6, v7, v8, v9, v10,
-                      v11, v12, v13, v14,v15, v16,
                       scaled_v5, scaled_v6]
         let indices: [Int32] = [
-            7, 5, 8,
-            7, 8, 9,
-            7, 9, 10,
-            7, 10, 6,
-            13, 11, 14,
-            13, 14, 15,
-            13, 15, 16,
-            13, 16, 12,
-            19, 17, 20,
-            19, 20, 21,
-            19, 21, 22,
-            19, 22, 18,
-            25, 23, 26,
-            25, 26, 27,
-            25, 27, 28,
-            25, 28, 24,
-            6, 7, 13,
-            6, 11, 13,
-            5, 12, 18,
-            5, 17, 18,
+            1, 5, 6,
+            1, 2, 6,
         ]
+//        let vertices: [SCNVector3] = [ v1, scaled_v1, scaled_v2, v3, v4,
+//                      v5, v6, v7, v8, v9, v10,
+//                      v11, v12, v13, v14,v15, v16,
+//                      scaled_v5, scaled_v6]
+//        let indices: [Int32] = [
+//            7, 5, 8,
+//            7, 8, 9,
+//            7, 9, 10,
+//            7, 10, 6,
+//            13, 11, 14,
+//            13, 14, 15,
+//            13, 15, 16,
+//            13, 16, 12,
+//            19, 17, 20,
+//            19, 20, 21,
+//            19, 21, 22,
+//            19, 22, 18,
+//            25, 23, 26,
+//            25, 26, 27,
+//            25, 27, 28,
+//            25, 28, 24,
+//            6, 7, 13,
+//            6, 11, 13,
+//            5, 12, 18,
+//            5, 17, 18,
+//        ]
         
         let vertexSource = SCNGeometrySource(vertices: vertices)
         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
@@ -394,19 +418,23 @@ class MarchingCubes2D {
         let v9 = (scaled_v1 * 0.6 + scaled_v5 * 0.4)
         let v10 = v8 + v9 - scaled_v1
         let (v11, v12, v13) = calculateCircle(v1: v8, v2: v9, v3: v10, v4: scaled_v1)
-        
         let vertices: [SCNVector3] = [ v1, scaled_v1, v2, v3, v4,
-                      scaled_v5, scaled_v6,
-                      v7, v8, v9, v10, v11, v12, v13]
+                      scaled_v5, scaled_v6]
         let indices: [Int32] = [
-            10, 5, 6,
-            6,8, 10,
-            5, 9, 10,
-            10, 8, 11,
-            10, 11, 12,
-            10, 12, 13,
-            10, 13, 9
+            1, 5, 6
         ]
+//        let vertices: [SCNVector3] = [ v1, scaled_v1, v2, v3, v4,
+//                      scaled_v5, scaled_v6,
+//                      v7, v8, v9, v10, v11, v12, v13]
+//        let indices: [Int32] = [
+//            10, 5, 6,
+//            6,8, 10,
+//            5, 9, 10,
+//            10, 8, 11,
+//            10, 11, 12,
+//            10, 12, 13,
+//            10, 13, 9
+//        ]
         
         let vertexSource = SCNGeometrySource(vertices: vertices)
         let element = SCNGeometryElement(indices: indices, primitiveType: .triangles)
