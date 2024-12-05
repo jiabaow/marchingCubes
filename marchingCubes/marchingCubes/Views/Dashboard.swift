@@ -201,7 +201,9 @@ struct Dashboard: View {
             DivisionSliderView(division: $division, selectedScheme: $colorScheme) {
                 showDivisionSlider = false
                 navigateToMarchingCubes = true
-            }.onAppear {
+            }
+            .presentationDetents([.medium, .large])
+            .onAppear {
                 print("\(selectedModelTitle)")
             }
         }

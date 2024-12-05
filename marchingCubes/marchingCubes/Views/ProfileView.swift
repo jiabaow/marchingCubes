@@ -152,7 +152,9 @@ struct ProfileView: View {
                                 navigateToMarchingCubes = true
                             }
                         }
-                    }.onAppear {
+                    }
+                    .presentationDetents([.medium, .large])
+                    .onAppear {
                         print("\(selectedModelTitle)")
                     }
                 }
