@@ -38,10 +38,16 @@ func loadOBJ(filename: URL) -> MDLAsset? {
 
 // Load an OBJ file from the app bundle using its filename
 func loadOBJ(filename: String) -> MDLAsset? {
-    guard let url = Bundle.main.url(forResource: filename, withExtension: "obj") else {
+    // Check if the filename already includes the ".obj" extension
+    let filenameWithExtension = filename.hasSuffix(".obj") ? filename : "\(filename).obj"
+    
+    // Attempt to find the file in the main bundle
+    guard let url = Bundle.main.url(forResource: filenameWithExtension, withExtension: nil) else {
         print("Failed to find the .obj file.")
         return nil
     }
+    
+    // Load the MDLAsset from the URL
     return MDLAsset(url: url)
 }
 

@@ -122,43 +122,6 @@ struct Dashboard: View {
                     .listRowBackground(Color.clear)
                 }
                 .listStyle(PlainListStyle())
-                                
-               // Add button for new upload
-               // Floating "+" button at the bottom
-               VStack {
-                   Spacer()
-                   HStack {
-                       Spacer()
-                       Button(action: {
-                           showAddModelView = true
-                       }) {
-                           ZStack {
-                               Circle()
-                                   .fill(Color(hex: "5A60E3")) // Purple color
-                                   .frame(width: 56, height: 56)
-                                   .shadow(radius: 5)
-                               Image(systemName: "plus")
-                                   .font(.system(size: 24))
-                                   .foregroundColor(.white)
-                           }
-                       }
-                       Spacer()
-                   } // + HStack
-                   .background(
-                       ZStack {
-                           Color.clear
-                           RoundedRectangle(cornerRadius: 25)
-                               .fill(Color.white)
-                               .frame(height: 1) // Only one line below the button
-                               .offset(y: 28)
-                               .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: -2)
-                           Circle()
-                               .fill(Color.white)
-                               .frame(width: 56, height: 28)
-                               .offset(y: 28) // Create a semi-circle effect under the "+" button
-                       }
-                   ) // Separator line with half-circle under the "+" button
-               } // + VStack
             }
             .padding(.horizontal)
             .onAppear {
