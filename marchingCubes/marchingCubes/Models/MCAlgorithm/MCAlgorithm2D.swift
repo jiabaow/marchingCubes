@@ -21,12 +21,11 @@ class MarchingCubes2D {
         let parentNode = SCNNode() // Create a parent node to hold all generated nodes
         let xDim = data.count - 1
         let yDim = data[0].count - 1
-        var vertices: [SCNVector3] = []
-        var indices: [Int32] = []
         
         for i in 0..<xDim {
             for j in 0..<yDim {
-                
+                var vertices: [SCNVector3] = []
+                var indices: [Int32] = []
                 // Retrieve the values of the corners of the current cell
                 let a = data[i][j]
                 let b = data[i+1][j]
@@ -126,9 +125,6 @@ class MarchingCubes2D {
                         parentNode.addChildNode(node)
                     }
                 }
-                
-                vertices.removeAll()
-                indices.removeAll()
             }
         }
         
