@@ -104,7 +104,7 @@ struct MainTabView: View {
                                 .font(.system(size: 25))
                                 .font(.footnote)
                         }
-                        .foregroundColor(selectedIndex == 0 ? .blue : .gray)
+                        .foregroundColor(selectedIndex == 0 ? (Color(hex: "5A60E3")) : .gray)
                     }
 
                     Spacer()
@@ -115,10 +115,10 @@ struct MainTabView: View {
                     }) {
                         VStack {
                             Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 35))
+                                .font(.system(size: 40))
                         }
-                        .foregroundColor(.blue)
-                        .padding(.bottom, 30)
+                        .foregroundColor(Color(hex: "5A60E3"))
+                        .padding(.bottom, 80)
                     }
                     .buttonStyle(PlainButtonStyle())
 
@@ -133,7 +133,7 @@ struct MainTabView: View {
                                 .font(.system(size: 25))
                                 .font(.footnote)
                         }
-                        .foregroundColor(selectedIndex == 1 ? .blue : .gray)
+                        .foregroundColor(selectedIndex == 1 ? Color(hex: "5A60E3") : .gray)
                     }
 
                     Spacer(minLength: 60)
@@ -162,8 +162,8 @@ struct MainTabView: View {
 struct CustomTabBarShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let notchRadius: CGFloat = 50.0
-        let notchHeight: CGFloat = 50.0
+        let notchRadius: CGFloat = 55.0
+        let notchHeight: CGFloat = 60.0
 
         // Start from the bottom-left corner
         path.move(to: CGPoint(x: 0, y: 0))

@@ -41,7 +41,7 @@ struct Dashboard: View {
                     .padding(.leading)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
-                        ForEach(viewModel.models.prefix(2)) { model in
+                        ForEach(viewModel.models.suffix(10).reversed(), id: \.self) { model in
                             Button(action: {
                                 showDivisionSlider = true
                                 selectedModelTitle = model.title
