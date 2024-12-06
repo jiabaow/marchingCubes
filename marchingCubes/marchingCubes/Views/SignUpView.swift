@@ -208,7 +208,7 @@ struct SignUpView: View {
         if let cognitoError = error as? AWSCognitoIdentityProvider.UsernameExistsException {
             emailError = "An account with this email already exists."
         } else if let cognitoError = error as? AWSCognitoIdentityProvider.InvalidPasswordException {
-            passwordError = "Invalid password format."
+            passwordError = "Invalid password format. (Include 8 characters, One Upper Case [A-Z], One Lower Case [a-z], One Numeric [0-9], One Special [!@#$%^&*()], Password Must Not Contain Spaces."
         } else if let cognitoError = error as? AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException {
             emailError = "Invalid email address."
         } else {

@@ -65,7 +65,7 @@ struct MarchingCubesView: View {
             }
         }
         .onAppear {
-            dataLoader.loadVoxelData(filename: (!fileURLString.isEmpty) ? fileURLString : filename, divisions: divisions, colorScheme: colorScheme, fileURLString: fileURLString)
+            dataLoader.loadVoxelData(filename: filename, divisions: divisions, colorScheme: colorScheme, fileURLString: fileURLString)
         }
     }
     

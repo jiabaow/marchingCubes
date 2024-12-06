@@ -10,7 +10,7 @@ struct ProfileView: View {
     @State private var selectedModelTitle: String? = nil // Track selected model title
     @State private var selectedFileURLString: String? = nil
     @State private var avatarImage: UIImage? = nil
-    @State private var userName: String = "Peter Johnson"
+    @State private var userName: String = "Loading..."
     @State private var navigateToMarchingCubes = false
     @State private var hasTaskRun = false
     @State private var division: Double = 5.0

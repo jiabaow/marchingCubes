@@ -76,7 +76,7 @@ struct AddModelView: View {
                                         MagnificationGesture()
                                             .onChanged { value in
                                                 let zoomFactor: Float = Float(value)
-                                                translateZ += (1.0 - zoomFactor) * 2.0 // Adjust sensitivity as needed
+                                                translateZ += (1.0 - zoomFactor) * 8.0 // Adjust sensitivity as needed
                                             }
                                     )
                                     .frame(height: 400)
@@ -96,7 +96,7 @@ struct AddModelView: View {
                         showDocumentPicker = false
                     }
                 }
-                .disabled(isDownloading)
+                .disabled(isDownloading || selectedFileURL == nil)
                 
                 Spacer()
                 
@@ -132,28 +132,46 @@ struct AddModelView: View {
                 
                 // Conditional Button: Plus or Save
                 if let url = selectedFileURL {
-                    Button(action: {
-                        guard let fileURL = selectedFileURL else { return }
-                        viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext, fileURLString: fileURL.absoluteString)
-                        print(viewModel.models)
-                        saveDocumentToCache(from: fileURL)
-                        takeScreenshot()
-                        print("Model obj filename: ", fileURL.lastPathComponent)
-                        print("Models inside save: ", viewModel.models)
-                        selectedFileURL = nil
-                        scene = nil // Clear the scene after saving
-                        resetCameraValues()
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "square.and.arrow.down")
-                            .font(.system(size: 24))
-                            .padding()
-                            .background(Color.green)
-                            .foregroundColor(.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
+                    HStack {
+                        Button(action: {
+                            selectedFileURL = nil
+                            scene = nil
+                            resetCameraValues()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 24))
+                                .padding()
+                                .background(Color.red)
+                                .foregroundColor(.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.bottom, 30)
+                        Spacer()
+                        Button(action: {
+                            guard let fileURL = selectedFileURL else { return }
+                            print(fileURL.absoluteString)
+                            viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext, fileURLString: fileURL.absoluteString)
+                            print(viewModel.models)
+                            saveDocumentToCache(from: fileURL)
+                            takeScreenshot()
+                            print("Model obj filename: ", fileURL.lastPathComponent)
+                            print("Models inside save: ", viewModel.models)
+                            selectedFileURL = nil
+                            scene = nil // Clear the scene after saving
+                            resetCameraValues()
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 24))
+                                .padding()
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.bottom, 30)
                     }
-                    .padding(.bottom, 30)
                 }
                 
                 if isDownloading {
@@ -283,6 +301,8 @@ struct AddModelView: View {
             // Add a camera if it doesn't exist
             let cameraNode = SCNNode()
             cameraNode.camera = SCNCamera()
+            cameraNode.camera?.zFar = [10_000.0, Double(translateZ * 10.0)].max()!
+            cameraNode.camera?.zNear = 0.1
             cameraNode.position = SCNVector3(x: 0, y: 0, z: translateZ)
             loadedScene.rootNode.addChildNode(cameraNode)
 
@@ -299,9 +319,14 @@ struct AddModelView: View {
             print("Failed to load the scene from URL: \(url)")
         }
     }
+    
+    private func onScreenShotTaken(sceneView: SCNView, selectedFileURL: URL) {
+        let image = sceneView.snapshot()
+        _ = saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
+    }
 
     private func takeScreenshot(scene: SCNScene? = nil, size: CGSize = CGSize(width: 80, height: 80)) {
-        guard let currentScene = self.scene else { return }
+        guard let currentScene = scene ?? self.scene else { return }
         guard let selectedFileURL = self.selectedFileURL else { return }
 
         let scnView = SCNView(frame: CGRect(origin: .zero, size: size))
@@ -386,36 +411,54 @@ struct SCNViewWrapper: UIViewRepresentable {
     @Binding var rotateX: Float
     @Binding var rotateY: Float
     @Binding var rotateZ: Float
+    var onSnapshotTaken: ((SCNView) -> Void)?
+
+    class Coordinator {
+        var scnView: SCNView?
+
+        init(scnView: SCNView? = nil) {
+            self.scnView = scnView
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.allowsCameraControl = true
         scnView.cameraControlConfiguration.allowsTranslation = true
         scnView.backgroundColor = UIColor.lightGray
+        scnView.scene = scene
+
+        // Store the SCNView instance in the coordinator
+        context.coordinator.scnView = scnView
         return scnView
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
         uiView.scene = scene
-        
-        // Update camera position based on zoom and translation
+
         if let cameraNode = scene.rootNode.childNodes.first(where: { $0.camera != nil }) {
-            // Translation
             let translation = SCNMatrix4MakeTranslation(translateX, translateY, translateZ)
-            
-            // Rotations
-            let rotationX = SCNMatrix4MakeRotation(rotateX * .pi / 180, 1, 0, 0) // X-axis rotation
-            let rotationY = SCNMatrix4MakeRotation(rotateY * .pi / 180, 0, 1, 0) // Y-axis rotation
-            let rotationZ = SCNMatrix4MakeRotation(rotateZ * .pi / 180, 0, 0, 1) // Z-axis rotation
-            
-            // Combine translation and rotations
+            let rotationX = SCNMatrix4MakeRotation(rotateX * .pi / 180, 1, 0, 0)
+            let rotationY = SCNMatrix4MakeRotation(rotateY * .pi / 180, 0, 1, 0)
+            let rotationZ = SCNMatrix4MakeRotation(rotateZ * .pi / 180, 0, 0, 1)
+
             let combinedTransform = SCNMatrix4Mult(SCNMatrix4Mult(SCNMatrix4Mult(rotationX, rotationY), rotationZ), translation)
-            
-            // Apply the combined transformation
             cameraNode.transform = combinedTransform
         }
+
+        // Update SCNView in the coordinator
+        context.coordinator.scnView = uiView
+    }
+
+    func getCurrentSCNView(context: Context) -> SCNView? {
+        return context.coordinator.scnView
     }
 }
+
 
 struct Upload_Previews: PreviewProvider {
     static var previews: some View {

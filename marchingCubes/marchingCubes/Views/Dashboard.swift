@@ -179,6 +179,7 @@ struct Dashboard: View {
                 showDivisionSlider = true
                 selectedModelTitle = model.title
                 selectedFileURLString = model.fileURLString
+                print(selectedFileURLString)
             }) {
                 Image(systemName: "slider.horizontal.3")
                     .foregroundColor(.blue)
