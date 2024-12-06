@@ -91,8 +91,6 @@ struct MainTabView: View {
 
                 // Custom Tab Bar Buttons
                 HStack {
-                    Spacer(minLength: 60)
-
                     // Dashboard Button
                     Button(action: {
                         selectedIndex = 0
@@ -107,16 +105,17 @@ struct MainTabView: View {
 
                     Spacer()
 
-                    // Add Button
+                    // Add Button - Centered on the notch
                     Button(action: {
                         selectedIndex = 2
                     }) {
                         VStack {
                             Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 40))
+                                .font(.system(size: 50))
                         }
                         .foregroundColor(Color(hex: "5A60E3"))
-                        .padding(.bottom, 80)
+                        .padding(.bottom, 80) // Adjust padding to align it correctly with the notch
+                        .offset(x: -5)
                     }
                     .buttonStyle(PlainButtonStyle())
 
@@ -133,10 +132,9 @@ struct MainTabView: View {
                         }
                         .foregroundColor(selectedIndex == 1 ? Color(hex: "5A60E3") : .gray)
                     }
-
-                    Spacer(minLength: 60)
                 }
                 .frame(height: 80)
+                .padding(.horizontal, 50) // Adjust horizontal padding to make room for the center button
             }
             .edgesIgnoringSafeArea(.bottom)
         }
@@ -159,7 +157,7 @@ struct MainTabView: View {
 struct CustomTabBarShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let notchRadius: CGFloat = 55.0
+        let notchRadius: CGFloat = 60.0
         let notchHeight: CGFloat = 60.0
 
         // Start from the bottom-left corner
