@@ -1,10 +1,3 @@
-//
-//  SwiftUIView.swift
-//  marchingCubes
-//
-//  Created by 温嘉宝 on 04.12.2024.
-//
-
 import SwiftUI
 
 struct DivisionSliderView: View {
@@ -18,12 +11,15 @@ struct DivisionSliderView: View {
                 .font(.headline)
                 .padding()
             
+            // Display the image based on the selected scheme
+            SafeImage(imageName: selectedScheme == .scheme1 ? "color_scheme_1.jpg" : "color_scheme_2.jpg")
+                .frame(width: 300, height: 30)
+                .cornerRadius(5)
+                .padding()
+            
             Picker("Color Scheme", selection: $selectedScheme) {
-                Text("Scheme 1")
-                    .tag(ColorScheme.scheme1)
-                
-                Text("Scheme 2")
-                    .tag(ColorScheme.scheme2)
+                Text("Scheme 1").tag(ColorScheme.scheme1)
+                Text("Scheme 2").tag(ColorScheme.scheme2)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
@@ -46,7 +42,7 @@ struct DivisionSliderView: View {
 
 struct DivisionSliderView_Previews: PreviewProvider {
     @State static private var division: Double = 5.0
-    @State static private var colorScheme: ColorScheme = .scheme1
+    @State static private var colorScheme: ColorScheme = .scheme2
     
     static var previews: some View {
         DivisionSliderView(
@@ -58,5 +54,24 @@ struct DivisionSliderView_Previews: PreviewProvider {
         )
         .previewLayout(.sizeThatFits)
         .padding()
+    }
+}
+
+struct SafeImage: View {
+    let imageName: String
+
+    var body: some View {
+        if let uiImage = UIImage(named: imageName) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFit()
+        } else {
+            Color.red // Placeholder view
+                .overlay(
+                    Text("Image not found")
+                        .foregroundColor(.white)
+                        .padding()
+                )
+        }
     }
 }
