@@ -152,14 +152,15 @@ class VoxelDataLoader: ObservableObject {
     }
     
     // Helper function to load and voxelize the model
-     func loadVoxelDataHelper(filename: String, divisions: Int) -> ([[[Int]]], Int)? {
+    func loadVoxelDataHelper(filename: String, divisions: Int, fileURLString: String? = nil) -> ([[[Int]]], Int)? {
          var voxArray: MDLVoxelArray? = nil
-//         if let fileURL = getExternURL(filename: filename),
-//            let obj = loadObjAsset(filename: fileURL),
-//            let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) {
-//            voxArray = voxarr
-//         } else
-         if let fileURL = get3DModelURL(filename: filename) {
+        if  let fileString = fileURLString,
+            !fileString.isEmpty,
+            let fileURL = getExternURL(filename: filename),
+            let obj = loadObjAsset(filename: fileURL),
+            let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) {
+            voxArray = voxarr
+         } else if let fileURL = get3DModelURL(filename: filename) {
              guard let obj = loadObjAsset(filename: fileURL),
                    let voxarr = voxelize(asset: obj, divisions: Int32(divisions)) else {
                  print("Failed to load or voxelize the model.")

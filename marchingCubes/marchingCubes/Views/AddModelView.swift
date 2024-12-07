@@ -9,10 +9,10 @@ import SceneKit
 import AWSS3
 
 struct AddModelView: View {
-    @Environment(\.presentationMode) var presentationMode
     @State private var selectedFileURL: URL?
     @State private var showDocumentPicker = false
     @State private var scene: SCNScene? = nil
+    @State private var sceneView: SCNView? = nil
     @State private var translateZ: Float = 100.0 // Initial zoom level
     @State private var translateX: Float = 0.0 // Initial X translation
     @State private var translateY: Float = 0.0 // Initial Y translation
@@ -63,7 +63,8 @@ struct AddModelView: View {
                                         translateY: $translateY,
                                         rotateX: $rotateX,
                                         rotateY: $rotateY,
-                                        rotateZ: $rotateZ
+                                        rotateZ: $rotateZ,
+                                        sceneView: $sceneView
                                     )
                                     .gesture(
                                         DragGesture()
@@ -76,7 +77,7 @@ struct AddModelView: View {
                                         MagnificationGesture()
                                             .onChanged { value in
                                                 let zoomFactor: Float = Float(value)
-                                                translateZ += (1.0 - zoomFactor) * 8.0 // Adjust sensitivity as needed
+                                                translateZ += (1.0 - zoomFactor) * 15.0 // Adjust sensitivity as needed
                                             }
                                     )
                                     .frame(height: 400)
@@ -86,7 +87,7 @@ struct AddModelView: View {
                         .padding(.horizontal)
                         .padding(.top)
                         .onTapGesture {
-                            showDocumentPicker = true
+                            showDocumentPicker = true && selectedFileURL == nil
                         }
                 }
                 .sheet(isPresented: $showDocumentPicker) {
@@ -96,7 +97,7 @@ struct AddModelView: View {
                         showDocumentPicker = false
                     }
                 }
-                .disabled(isDownloading || selectedFileURL == nil)
+                .disabled(isDownloading)
                 
                 Spacer()
                 
@@ -154,13 +155,13 @@ struct AddModelView: View {
                             viewModel.addModel(title: fileURL.lastPathComponent, image: "\(fileURL.lastPathComponent).png", modelContext: modelContext, fileURLString: fileURL.absoluteString)
                             print(viewModel.models)
                             saveDocumentToCache(from: fileURL)
-                            takeScreenshot()
+//                            takeScreenshot()
+                            takeScreenShot(sceneView: self.sceneView, selectedFileURL: self.selectedFileURL)
                             print("Model obj filename: ", fileURL.lastPathComponent)
                             print("Models inside save: ", viewModel.models)
                             selectedFileURL = nil
                             scene = nil // Clear the scene after saving
                             resetCameraValues()
-                            presentationMode.wrappedValue.dismiss()
                         }) {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 24))
@@ -320,8 +321,16 @@ struct AddModelView: View {
         }
     }
     
-    private func onScreenShotTaken(sceneView: SCNView, selectedFileURL: URL) {
-        let image = sceneView.snapshot()
+    private func takeScreenShot(sceneView: SCNView?, selectedFileURL: URL?) {
+        guard let scnView = sceneView else {
+            print("Unable to get scnView")
+            return
+        }
+        guard let selectedFileURL = selectedFileURL else {
+            print("Selected file null")
+            return
+        }
+        let image = scnView.snapshot()
         _ = saveImageToCache(image, "\(selectedFileURL.lastPathComponent)")
     }
 
@@ -411,7 +420,7 @@ struct SCNViewWrapper: UIViewRepresentable {
     @Binding var rotateX: Float
     @Binding var rotateY: Float
     @Binding var rotateZ: Float
-    var onSnapshotTaken: ((SCNView) -> Void)?
+    @Binding var sceneView: SCNView?
 
     class Coordinator {
         var scnView: SCNView?
@@ -434,6 +443,7 @@ struct SCNViewWrapper: UIViewRepresentable {
 
         // Store the SCNView instance in the coordinator
         context.coordinator.scnView = scnView
+        self.sceneView = scnView
         return scnView
     }
 
@@ -452,6 +462,7 @@ struct SCNViewWrapper: UIViewRepresentable {
 
         // Update SCNView in the coordinator
         context.coordinator.scnView = uiView
+        self.sceneView = uiView
     }
 
     func getCurrentSCNView(context: Context) -> SCNView? {
