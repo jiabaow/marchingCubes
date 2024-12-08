@@ -39,7 +39,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
                     ).appendingPathComponent(selectedFile.lastPathComponent)
                     
                     try document.write(to: documentsURL)
-                    parent.onFilePicked(selectedFile)
+                    parent.onFilePicked(documentsURL)
                 }
             } catch (let error) {
                 print("Error opening file \(error).")
