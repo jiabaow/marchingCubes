@@ -76,15 +76,15 @@ struct LoginView: View {
             .padding(.horizontal)
 
             // Forgot Password Link
-            Button(action: {
-                // Handle forgot password logic here
-            }) {
-                Text("Forgot Password?")
-                    .foregroundColor(.gray)
-                    .font(.caption)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing, 20)
-            }
+//            Button(action: {
+//                // Handle forgot password logic here
+//            }) {
+//                Text("Forgot Password?")
+//                    .foregroundColor(.gray)
+//                    .font(.caption)
+//                    .frame(maxWidth: .infinity, alignment: .trailing)
+//                    .padding(.trailing, 20)
+//            }
 
             // Error Message
             if let errorMessage = errorMessage {
