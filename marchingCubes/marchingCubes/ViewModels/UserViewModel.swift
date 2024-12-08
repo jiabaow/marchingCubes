@@ -24,19 +24,30 @@ class UserViewModel: ObservableObject {
     }
     
     @MainActor
-    func fetchUserData(idToken: String) async throws {
+    func fetchUserData(idToken: String, userToken: String = "") async throws {
+        var dynamodbMan: DynamoDBManager? = nil
         do {
-            let dynamodbManager = try await DynamoDBManager()
-            let userModel = await dynamodbManager.getUserModel(idToken: idToken)
-            self.email = userModel?.email
-            self.username = userModel?.username
-            self.profileImage = userModel?.profile_image
-            self.projects = userModel?.projects
-            self.favorites = userModel?.favorites
-        } catch(let error) {
-            print("\(error)")
-            throw NSError(domain: "UserViewModel", code: -1, userInfo: ["fetchUserData": "\(error)"])
+            dynamodbMan = try await DynamoDBManager()
+        } catch (let error) {
+            print("Error with default access keys: \(error).")
+            do {
+                dynamodbMan = try await DynamoDBManager(userToken: userToken)
+            } catch (let error) {
+                print("Error with cached token key: \(error).")
+                throw NSError(domain: "UserViewModel", code: -1, userInfo: ["fetchUserData": "\(error)"])
+            }
         }
+        
+        guard let dynamodbManager = dynamodbMan else {
+            throw NSError(domain: "UserViewModel", code: -1, userInfo: ["fetchUserData": "Cannot initialize dynamodb due to credential issues."])
+        }
+        
+        let userModel = await dynamodbManager.getUserModel(idToken: idToken)
+        self.email = userModel?.email
+        self.username = userModel?.username
+        self.profileImage = userModel?.profile_image
+        self.projects = userModel?.projects
+        self.favorites = userModel?.favorites
     }
     
     // Computed property for formatted date

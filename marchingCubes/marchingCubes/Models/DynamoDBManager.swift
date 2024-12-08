@@ -15,10 +15,48 @@ class DynamoDBManager {
     
     let dynamoDB: AWSDynamoDB.DynamoDBClient
     
+    init(userToken: String) async throws {
+        do {
+            let keySecretToken = try await CognitoAuthManager().getCredentials(userToken: userToken)
+            
+            var awsCred: AWSCredentialIdentity? = nil
+            if let accessKeyId = keySecretToken?[0],
+               let secretKey = keySecretToken?[1],
+               let sessionToken = keySecretToken?[2] {
+                awsCred = AWSCredentialIdentity(
+                    accessKey: accessKeyId,
+                    secret: secretKey,
+                    expiration: nil,
+                    sessionToken: sessionToken
+                )
+//                print("AWS Access Key: \(accessKeyId)")
+//                print("AWS Secret Key: \(secretKey)")
+            } else {
+                print("Cannot find AWS keys.")
+                throw NSError(domain: "Cannot find AWS keys.", code: -1)
+            }
+            
+            
+            // Create a custom credentials identity resolver
+            let staticResolver = try StaticAWSCredentialIdentityResolver(
+                awsCred!
+            )
+            
+            let config = try await DynamoDBClient.DynamoDBClientConfiguration(
+                awsCredentialIdentityResolver: staticResolver,
+                region: "us-east-2"
+            )
+                        
+            self.dynamoDB = AWSDynamoDB.DynamoDBClient(config: config)
+        } catch {
+            print("Error: ", dump(error, name: "Initializing Amazon DynamoDBClient client"))
+            throw error
+        }
+    }
+    
     init() async throws {
         do {
             var awsCred: AWSCredentialIdentity? = nil
-//            let creds = (CredentialsProvider.Source.static(accessKey: ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"]!, secret: ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"]!))
             if let accessKeyId = ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"],
                let secretKey = ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"],
                let sessionToken = ProcessInfo.processInfo.environment["AWS_SESSION_TOKEN"] {

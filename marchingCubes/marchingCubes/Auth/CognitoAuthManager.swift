@@ -86,6 +86,40 @@ class CognitoAuthManager {
         
         return nil
     }
+    
+    func getCredentials(userToken: String) async -> [String]? {
+        let idToken = userToken
+        
+        do {
+            let cognitoIdentityClient = try CognitoIdentityClient(region: "us-east-2")
+            let getIdInput = GetIdInput(
+                accountId: accountId,
+                identityPoolId: identityPoolId,
+                logins: ["cognito-idp.\(region).amazonaws.com/\(userPoolId)": idToken]
+            )
+            
+            let getIdResponse = try await cognitoIdentityClient.getId(input: getIdInput)
+            guard let identityId = getIdResponse.identityId else {
+                throw NSError(domain: "AuthManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Identity ID not found"])
+            }
+            
+            let getCredentialsInput = GetCredentialsForIdentityInput(
+                identityId: identityId,
+                logins: ["cognito-idp.\(region).amazonaws.com/\(userPoolId)": idToken]
+            )
+            
+            let credentialsResponse = try await cognitoIdentityClient.getCredentialsForIdentity(input: getCredentialsInput)
+            guard let credentials = credentialsResponse.credentials else {
+                throw NSError(domain: "AuthManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "AWS Credentials not found"])
+            }
+            
+            return [credentials.accessKeyId!, credentials.secretKey!, credentials.sessionToken!]
+        } catch (let error) {
+            print(error)
+        }
+        
+        return nil
+    }
 
     func signUp(username: String, password: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) async -> SignUpOutput? {
         let signUpInput = SignUpInput(

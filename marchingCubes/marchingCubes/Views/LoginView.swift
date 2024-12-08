@@ -14,6 +14,7 @@ import AWSCognitoIdentityProvider
 struct LoginView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
+    @AppStorage("userToken") private var userToken = ""
     @Binding var isLoginView: Bool
     @State private var name: String = Randoms.randomFakeName()
     @State private var username: String = ""
@@ -175,7 +176,7 @@ struct LoginView: View {
                     if let subValue = extractSubFromIDToken(idToken) {
                         print("Extracted sub: \(subValue)")
                         currentUser = "\(subValue):\(username)"
-                        
+                        userToken = subValue
                         var retryCount = 0
                         let maxRetries = 5
                         var delay: UInt64 = 1 // Start with a 1-second delay
@@ -189,8 +190,8 @@ struct LoginView: View {
                                 isAuthenticated = isAuthed
                                 return
                             } else {
-                                // Use the `sub` value as the ID in the UserModel
-                                _ = await dynamoManager.insertUserModel(userModel: UserModel(
+                                    // Use the `sub` value as the ID in the UserModel
+                                    _ = await dynamoManager.insertUserModel(userModel: UserModel(
                                     id: subValue, // Use `sub` as the ID
                                     email: username,
                                     username: name,

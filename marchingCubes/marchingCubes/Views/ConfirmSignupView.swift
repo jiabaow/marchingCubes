@@ -12,6 +12,7 @@ struct ConfirmSignupView: View {
     @Environment(\.dismiss) private var dismiss // For dismissing the view
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
+    @AppStorage("userToken") private var userToken = ""
     @State private var confirmationCode: String = ""
     @State private var errorMessage: String? = nil
     @State private var isConfirmationSuccessful = false
@@ -135,6 +136,7 @@ struct ConfirmSignupView: View {
                         if let subValue = extractSubFromIDToken(idToken) {
                             print("Extracted sub: \(subValue)")
                             currentUser = "\(subValue):\(email)"
+                            userToken = subValue
                             
                             var retryCount = 0
                             let maxRetries = 5

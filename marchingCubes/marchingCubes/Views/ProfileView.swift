@@ -4,6 +4,7 @@ import UIKit
 struct ProfileView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
+    @AppStorage("userToken") private var userToken = ""
     @EnvironmentObject var viewModel: ProjectViewModel
     @ObservedObject var userViewModel: UserViewModel
     @State private var showDivisionSlider = false
@@ -187,6 +188,8 @@ struct ProfileView: View {
     
     private func signOut() {
         self.isAuthenticated = false
+        self.currentUser = ""
+        self.userToken = ""
     }
 }
 
