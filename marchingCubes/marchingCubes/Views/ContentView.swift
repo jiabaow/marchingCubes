@@ -41,6 +41,7 @@ struct ContentView: View {
 struct MainTabView: View {
     @AppStorage("isAuthenticated") private var isAuthenticated = false
     @AppStorage("currentUser") private var currentUser = ""
+    @AppStorage("userToken") private var userToken = ""
     @State private var hasTaskRun = false
     @ObservedObject var userViewModel: UserViewModel
     @State private var selectedIndex: Int = 0
@@ -57,7 +58,7 @@ struct MainTabView: View {
                         if !hasTaskRun {
                             hasTaskRun = true
                             do {
-                                try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
+                                try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel, userToken: userToken)
                             } catch {
                                 print("\(error)")
                                 currentUser = ""
@@ -69,7 +70,7 @@ struct MainTabView: View {
                 ProfileView(userViewModel: userViewModel)
                     .task {
                         do {
-                            try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel)
+                            try await fetchUserDataIfAuthenticated(currentUser: currentUser, userViewModel: userViewModel, userToken: userToken)
                         } catch {
                             print("\(error)")
                             currentUser = ""
@@ -141,12 +142,12 @@ struct MainTabView: View {
     }
 
     // Fetch user data if authenticated
-    private func fetchUserDataIfAuthenticated(currentUser: String = "", userViewModel: UserViewModel) async throws {
+    private func fetchUserDataIfAuthenticated(currentUser: String = "", userViewModel: UserViewModel, userToken: String = "") async throws {
         guard !currentUser.isEmpty else {
             throw NSError(domain: "MainTabView", code: -1, userInfo: ["fetchUserDataIfAuthenticated": "User unauthenticated."])
         }
         do {
-            try await userViewModel.fetchUserData(idToken: currentUser)
+            try await userViewModel.fetchUserData(idToken: currentUser, userToken: userToken)
         } catch let error {
             print("\(error)")
             throw NSError(domain: "MainTabView", code: -1, userInfo: ["fetchUserDataIfAuthenticated": "\(error)"])
