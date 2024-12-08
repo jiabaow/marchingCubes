@@ -414,6 +414,7 @@ struct AddModelView: View {
     private func downloadFile(context: AddModelView) async {
         do {
             let fileManager = FileManager.default
+            
             // Get the Documents directory
             let documentsURL = try fileManager.url(
                 for: .documentDirectory,

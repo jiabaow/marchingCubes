@@ -18,8 +18,31 @@ struct DocumentPicker: UIViewControllerRepresentable {
         }
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            if let selectedFile = urls.first {
-                parent.onFilePicked(selectedFile)
+            guard controller.documentPickerMode == .open, let url = urls.first, url.startAccessingSecurityScopedResource() else { return }
+            defer {
+                DispatchQueue.main.async {
+                    url.stopAccessingSecurityScopedResource()
+                }
+            }
+            do {
+                if let selectedFile = urls.first {
+                    let document = try Data(contentsOf: selectedFile.absoluteURL)
+                    
+                    let fileManager = FileManager.default
+                    
+                    // Get the Documents directory
+                    let documentsURL = try fileManager.url(
+                        for: .documentDirectory,
+                        in: .userDomainMask,
+                        appropriateFor: nil,
+                        create: true
+                    ).appendingPathComponent(selectedFile.lastPathComponent)
+                    
+                    try document.write(to: documentsURL)
+                    parent.onFilePicked(selectedFile)
+                }
+            } catch (let error) {
+                print("Error opening file \(error).")
             }
         }
 

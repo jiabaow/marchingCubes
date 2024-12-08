@@ -12,5 +12,7 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+    <key>NSDocumentsUsageDescription</key>
+    <string>We need access to documents for uploading and processing.</string>
 </dict>
 </plist>
