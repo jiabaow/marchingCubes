@@ -254,7 +254,7 @@ struct AddModelView: View {
     private func resetCameraValues() {
         self.translateX = 0
         self.translateY = 0
-        self.translateZ = 0
+        self.translateZ = 100.0
         self.rotateX = 0
         self.rotateY = 0
         self.rotateZ = 0
