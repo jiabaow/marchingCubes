@@ -50,7 +50,7 @@ struct ConfirmSignupView: View {
                 Text("Confirm Signup")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.green)
+                    .background(Color(UIColor.primaryBlue))
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
@@ -66,7 +66,7 @@ struct ConfirmSignupView: View {
 
             Button(action: resendConfirmationCode) {
                 Text("Resend Confirmation Code")
-                    .foregroundColor(.blue)
+                    .foregroundColor(.primaryBlue)
             }
             
             // "Go Back" Button
