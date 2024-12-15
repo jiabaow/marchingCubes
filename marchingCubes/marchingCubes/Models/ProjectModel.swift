@@ -30,3 +30,9 @@ extension ProjectModel: Equatable {
         return lhs.title == rhs.title
     }
 }
+
+extension ProjectModel: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+    }
+}
